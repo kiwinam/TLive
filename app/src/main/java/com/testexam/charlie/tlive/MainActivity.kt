@@ -1,7 +1,6 @@
-package com.example.charlie.tlive
+package com.testexam.charlie.tlive
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 
 
 class MainActivity : BaseActivity() {

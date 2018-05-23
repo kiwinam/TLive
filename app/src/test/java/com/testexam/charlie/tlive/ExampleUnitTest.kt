@@ -1,4 +1,4 @@
-package com.example.charlie.tlive
+package com.testexam.charlie.tlive
 
 import org.junit.Test
 
