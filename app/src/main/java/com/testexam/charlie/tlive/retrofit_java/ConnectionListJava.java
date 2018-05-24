@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PartMap;
 
 /**
- * Created by charlie on 2018. 5. 23..
+ * Created by charlie on 2018. 5. 23
  */
 
 public interface ConnectionListJava {
@@ -17,4 +17,12 @@ public interface ConnectionListJava {
     @Multipart
     @POST("join.php")
     Call<JoinResponseJava> requestJoin(@PartMap()Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST("UpdateOptionalInfo.php")
+    Call<ResultResponse> requestUpdateInfo(@PartMap()Map<String, RequestBody> partMap);
+
+    @Multipart
+    @POST("login.php")
+    Call<LoginResponse> requestLogin(@PartMap()Map<String, RequestBody> partMap);
 }

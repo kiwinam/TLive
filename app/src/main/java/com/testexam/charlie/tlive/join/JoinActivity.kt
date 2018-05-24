@@ -1,22 +1,19 @@
 package com.testexam.charlie.tlive.join
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Toast
-import com.testexam.charlie.tlive.BaseActivity
+import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.R
+import com.testexam.charlie.tlive.common.JoinTask
 import com.testexam.charlie.tlive.login.LoginActivity
-import com.testexam.charlie.tlive.retrofit_java.ConnectionListJava
-import com.testexam.charlie.tlive.retrofit_java.JoinResponseJava
-import com.testexam.charlie.tlive.retrofit_java.RetrofitConnJava
 import kotlinx.android.synthetic.main.activity_join.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import retrofit2.Call
 
 /**
  * 회원 가입을 진행하는 Activity.
@@ -24,6 +21,9 @@ import retrofit2.Call
  * Created by charlie on 2018. 5. 22
  */
 class JoinActivity : BaseActivity() {
+    private var name : String = ""
+    private var email : String = ""
+    private var password : String =""
 
     private var toastHandler: Handler? = Handler()
 
@@ -37,17 +37,13 @@ class JoinActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
 
-        joinCloseIv.setOnClickListener {
-            onBackPressed()
-        }
+        joinCloseIv.setOnClickListener { onBackPressed() }
 
         joinNextBtn.setOnClickListener {
-            joinProcess()
-        }
+            Log.d("joinNextBtn","pressed")
+            joinProcess() }
 
-        joinPwVisibleIv.setOnClickListener {
-            switchPasswordVisible()
-        }
+        joinPwVisibleIv.setOnClickListener { switchPasswordVisible() }
     }
 
 
@@ -67,43 +63,40 @@ class JoinActivity : BaseActivity() {
      * 승인 후에는 MariaDB User 테이블에 회원 정보가 저장되고, 추가적인 정보를 입력할 수 있도록 Activity 로 이동한다.
      */
     private fun joinProcess(){
-        var name = joinNameEt.text.toString()
-        var email = joinEmailEt.text.toString()
-        var password = joinPwEt.text.toString()
+        name = joinNameEt.text.toString()
+        email = joinEmailEt.text.toString()
+        password = joinPwEt.text.toString()
 
-        //var getResponse : ConnectionList = RetrofitConn.getRetrofit().create(ConnectionList::class.java)
+        // name, email, password, age, gender
+        Log.d("joinProcess",name)
+        Log.d("joinProcess",email)
+        Log.d("joinProcess",password)
 
-        var getResponse : ConnectionListJava = RetrofitConnJava.getRetrofit().create(ConnectionListJava::class.java)
+        val result : Int = JoinTask().execute(name,email,password,"-1","-1").get()
 
-        var map : HashMap<String, RequestBody> = HashMap()
-
-        map.put("name",RequestBody.create(MediaType.parse("multipart/form-data"),name))
-        map.put("email",RequestBody.create(MediaType.parse("multipart/form-data"),email))
-        map.put("password",RequestBody.create(MediaType.parse("multipart/form-data"),password))
-
-        Log.d("requestJoin","pressed")
-        Log.d("name",name)
-        Log.d("email",email)
-        Log.d("password",password)
-
-        var call : Call<JoinResponseJava> = getResponse.requestJoin(map)
-        //call.enqueue(Callback<JoinResponseJava>)
-        Thread({
-            val response = call.execute()
-            if(response.isSuccessful){
-                Log.d("response","success")
-                Log.d("success",response.body().success.toString())
-                Log.d("message",response.body().message.toString())
-                if(response.body().message.toString().equals("-1")){
-                    toastHandler?.post(toastRunnable)
-                }else{
-                    startActivity(Intent(applicationContext,OptionalInfoActivity::class.java))
-                    finish()
-                }
-            }else{
-                Log.d("response","failed")
+        when (result){
+            JoinTask.JOIN_OK ->{
+                Log.d("Join result","ok")
+                val prefs : SharedPreferences? = getSharedPreferences("login", Context.MODE_PRIVATE)
+                val editor = prefs!!.edit()
+                //editor.putInt("userNo",)
+                editor.putString("email",email)
+                editor.putString("name",name)
+                editor.apply()
+                startActivity(Intent(applicationContext, OptionalInfoActivity::class.java))
+                finish()
             }
-        }).start()
+            JoinTask.JOIN_EXSIST -> {
+                // 여기 핸들러 문제 있는듯
+                toastHandler.run { toastRunnable }
+                Log.e("Join result","exist")
+            }
+            JoinTask.JOIN_FAILED -> {
+                Log.e("Join result","failed")
+                Toast.makeText(applicationContext,"회원 가입 진행 중 에러가 발생하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            }
+            else-> Log.d("result is else",result.toString()+"..")
+        }
     }
 
     /**

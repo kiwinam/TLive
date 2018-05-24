@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.testexam.charlie.tlive.MainActivity"/>
+        <activity android:name="com.testexam.charlie.tlive.main.MainActivity"/>
         <activity android:name="com.testexam.charlie.tlive.login.LoginActivity"/>
         <activity android:name="com.testexam.charlie.tlive.join.JoinActivity"/>
         <activity android:name="com.testexam.charlie.tlive.login.SelectActivity"/>

@@ -14,4 +14,23 @@
     <string name="email_needs">Email *</string>
     <string name="aggree_statement">회원가입 시 T Live의 개인정보 취급 방침 서비스 이용약관에 동의 하게 됩니다.</string>
     <string name="name_need">Name *</string>
+    <string name="tasty_live">Tasty Live</string>
+    <string name="create_by_kiwinam">Create by Kiwinam</string>
+    <string name="male_ko">남자</string>
+    <string name="female_ko">여자</string>
+    <string name="_10">10</string>
+    <string name="_20">20</string>
+    <string name="_30">30</string>
+    <string name="_40">40</string>
+    <string name="_50">50+</string>
+    <string name="opt_welcome">회원가입이 완료되었습니다! \n추가 정보를 입력해주시면 꼭 맞는 동영상을 추천해드려요!</string>
+    <string name="opt_skip_ko">다음에 할래요</string>
+    <string name="confirm_ko">확인</string>
+    <string name="channel_ko">채널</string>
+    <string name="live_ko">라이브</string>
+    <string name="place_ko">맛집</string>
+    <string name="follow_ko">팔로우</string>
+    <string name="friend_ko">친구</string>
+    <string name="hide_chat_ko">귓속말</string>
+    <string name="recommand_ko">추천</string>
 </resources>

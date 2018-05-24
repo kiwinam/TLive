@@ -1,52 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <VideoView
-        android:id="@+id/selectVideoView"
+    <com.crust87.texturevideoview.widget.TextureVideoView
+        android:id="@+id/videoClip"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:scaleType="centerCrop" />
+
     <View
-        android:background="#70ffc107"
+        android:background="#87845d00"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
+    <ImageView
+        android:id="@+id/selectLogoIv"
+        android:src="@drawable/ic_line_logo"
+        android:layout_centerHorizontal="true"
+        android:foregroundGravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        />
     <TextView
         android:id="@+id/selectTitleTv"
-        android:text="T Live"
+        android:text="@string/tasty_live"
         android:textColor="#fff"
+        android:textSize="28sp"
+        android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
+        android:layout_below="@id/selectLogoIv"
+        android:layout_marginTop="8dp"
         />
-    <Button
-        android:id="@+id/selectEmailBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/selectNaverBtn"
-        android:text="@string/start_email"
+    <TextView
+        android:text="함께하는 즐거운 먹방"
+        android:textSize="16sp"
         android:textColor="@color/colorTextWhite"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:background="@drawable/sp_white_rounded_box"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="36dp"
-        android:layout_marginLeft="36dp"
+
+        android:layout_below="@id/selectTitleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
         />
-    <Button
-        android:id="@+id/selectNaverBtn"
+
+    <RelativeLayout
+        android:id="@+id/selectEmailLo"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/selectNaverLo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        >
+        <TextView
+            android:text="@string/start_email"
+            android:textColor="@color/colorTextWhite"
+            android:textStyle="bold"
+            android:drawableLeft="@drawable/ic_email_white_14dp"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/selectEmailBtn"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorTextWhite"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/sp_white_rounded_box"
+            android:gravity="center"
+            android:layout_marginRight="36dp"
+            android:layout_marginLeft="36dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/selectNaverLo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text="@string/start_naver"
-        android:textColor="@color/colorTextWhite"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:background="@drawable/sp_white_rounded_box"
         android:layout_marginBottom="48dp"
-        android:layout_marginRight="36dp"
-        android:layout_marginLeft="36dp"
-        />
+        android:gravity="center"
+        >
+        <TextView
+            android:text="@string/start_naver"
+            android:textColor="@color/colorTextWhite"
+            android:textStyle="bold"
+            android:drawableLeft="@drawable/ic_naver_logo_white_12dp"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/selectNaverBtn"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/sp_white_rounded_box"
+            android:layout_marginRight="36dp"
+            android:layout_marginLeft="36dp"
+            android:drawable="@drawable/ic_naver_logo_white_12dp"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

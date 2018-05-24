@@ -3,8 +3,10 @@
     <color name="colorPrimary">#FFB300</color>
     <color name="colorPrimaryDark">#FF8F00</color>
     <color name="colorPrimaryLight">#FFCA28</color>
+    <color name="colorPrimaryDeepDark">#c26d00</color>
     <color name="colorAccent">#FFB300</color> <!-- FF4081-->
     <color name="colorTextWhite">#FFFFFF</color>
-    <color name="colorBackground">#f2f2f2</color>
+    <color name="colorBackground">#efeef3</color>
+    <color name="colorBottomMenu">#706f75</color>
     <color name="colorGray">#313131</color>
 </resources>

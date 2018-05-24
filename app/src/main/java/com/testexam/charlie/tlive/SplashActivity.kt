@@ -1,9 +1,13 @@
 package com.testexam.charlie.tlive
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.login.SelectActivity
+import com.testexam.charlie.tlive.main.MainActivity
 
 /**
  * Splash Activity
@@ -13,11 +17,17 @@ import com.testexam.charlie.tlive.login.SelectActivity
  */
 class SplashActivity : BaseActivity() {
     private var mDelayHandler : Handler? = null
-    private val SPLASH_DELAY : Long = 3000
-
+    private val splashDelay: Long = 3000
     private val mRunnable : Runnable = Runnable {
-        val intent = Intent(applicationContext, SelectActivity::class.java)
-        startActivity(intent)
+        val prefs : SharedPreferences? = getSharedPreferences("login", Context.MODE_PRIVATE)
+
+        val nextIntent =
+            if(prefs!!.getString("email","none") == "none"){
+              Intent(applicationContext, SelectActivity::class.java)
+          }else{
+             Intent(applicationContext, MainActivity::class.java)
+        }
+        startActivity(nextIntent)
         finish()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +35,7 @@ class SplashActivity : BaseActivity() {
         setContentView(R.layout.activity_splash)
 
         mDelayHandler = Handler() // 핸들러 초기화
-        mDelayHandler!!.postDelayed(mRunnable, SPLASH_DELAY) // 3초 만큼의 지연 후 mRunnable 실행
+        mDelayHandler!!.postDelayed(mRunnable, splashDelay) // 3초 만큼의 지연 후 mRunnable 실행
     }
 
     override fun onDestroy() {

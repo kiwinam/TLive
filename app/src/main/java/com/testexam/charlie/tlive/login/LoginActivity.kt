@@ -1,9 +1,15 @@
 package com.testexam.charlie.tlive.login
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import com.testexam.charlie.tlive.BaseActivity
+import android.util.Log
+import android.widget.Toast
+import com.testexam.charlie.tlive.common.BaseActivity
+import com.testexam.charlie.tlive.main.MainActivity
 import com.testexam.charlie.tlive.R
+import com.testexam.charlie.tlive.common.LoginTask
 import com.testexam.charlie.tlive.join.JoinActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -21,19 +27,36 @@ class LoginActivity : BaseActivity() {
         }
 
         loginBtn.setOnClickListener {
-            // 로그인 프로세스 진행
+            loginProcess()
         }
 
         joinBtn.setOnClickListener{
             startActivity(Intent(applicationContext, JoinActivity::class.java))
             finish()
         }
-
-
     }
+
+
 
     override fun onBackPressed() {
         startActivity(Intent(applicationContext, SelectActivity::class.java))
         super.onBackPressed()
+    }
+
+    private fun loginProcess(){
+        val email = loginEmailEt.text.toString()
+        val pw = loginPwEt.text.toString()
+
+        val result : Boolean = LoginTask(applicationContext).execute(email,pw).get()
+
+        if(result){
+
+            Log.d("LoginActivity","result true")
+            startActivity(Intent(applicationContext, MainActivity::class.java))
+            finish()
+        }else{
+            Toast.makeText(applicationContext,"로그인 회원정보가 일치하지 않습니다. 다시 확인해주세요.", Toast.LENGTH_SHORT).show()
+            Log.d("LoginActivity","result false")
+        }
     }
 }
