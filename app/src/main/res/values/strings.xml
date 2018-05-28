@@ -32,5 +32,20 @@
     <string name="follow_ko">팔로우</string>
     <string name="friend_ko">친구</string>
     <string name="hide_chat_ko">귓속말</string>
-    <string name="recommand_ko">추천</string>
+    <string name="recommend_rc">추천</string>
+    <string name="recommend_ko">한식</string>
+    <string name="recommend_jp">일식</string>
+    <string name="recommend_ca">중식</string>
+    <string name="recommend_ws">양식</string>
+    <string name="use_mic_ko">마이크 사용</string>
+    <string name="use_camera_ko">카메라 사용</string>
+    <string name="update_ko">업데이트 게시...</string>
+    <string name="start_broadcast_ko">방송 시작하기</string>
+    <string name="camera_on_ko">카메라 켜짐</string>
+    <string name="mic_on_ko">마이크 켜짐</string>
+    <string name="check_info_ko">방송을 시작하기 전에 확인해야 할 사항:</string>
+    <string name="ready_broadcast_ko">방송을 시작할 준비가 되었습니다!</string>
+    <string name="start_live_ko">방송 시작</string>
+    <string name="set_broadcast_ko">방송 설정</string>
+
 </resources>

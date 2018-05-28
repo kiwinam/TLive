@@ -14,6 +14,7 @@
                 android:id="@+id/placeToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:contentInsetStart="0dp">
                 <RelativeLayout
                     android:layout_width="match_parent"

@@ -11,6 +11,7 @@ import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.main.follow.FollowFragment
 import com.testexam.charlie.tlive.main.live.LiveFragment
+import com.testexam.charlie.tlive.main.live.LiveFragmentJava
 import com.testexam.charlie.tlive.main.place.PlaceFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -60,7 +61,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 R.id.mainBNLiveMenu->{
                     //mainToolbarTitleTv.text = getString(R.string.live_ko)
 
-                    val liveFragment = LiveFragment.newInstance()
+                    val liveFragment = LiveFragmentJava.newInstance()
                     openFragment(liveFragment)
 
                     return@OnNavigationItemSelectedListener true
@@ -100,5 +101,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             }*/
         }
+    }
+
+    override fun onBackPressed() {
+        finish()
     }
 }

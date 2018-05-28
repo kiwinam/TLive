@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,6 +15,7 @@
                 android:id="@+id/liveToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:contentInsetStart="0dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -58,13 +59,68 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/liveRv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/liveSwipeRefreshLo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <RelativeLayout
+                        android:id="@+id/liveNewTextLo"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="#fff"
+                        android:elevation="2dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        >
+                        <TextView
+                            android:text="@string/update_ko"
+                            android:textSize="16sp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"/>
+                        <ImageButton
+                            android:id="@+id/liveNewBtn"
+                            android:src="@drawable/ic_videocam_white_24dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="4dp"
+                            />
+                    </RelativeLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/liveRv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        />
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
     </android.support.design.widget.CoordinatorLayout>
-</LinearLayout>
+
+
+</RelativeLayout>

@@ -44,7 +44,7 @@ class JoinTask : AsyncTask<String,Void,Int>() {
 
         val getResponse : ConnectionListJava = RetrofitConnJava.getRetrofit().create(ConnectionListJava::class.java)
 
-        var resultCode : Int = -1
+        var resultCode : Int
 
         // map 에 회원가입 필수 입력 사항 (name, email, password) 을 넣는다.
         val map : HashMap<String, RequestBody> = HashMap()

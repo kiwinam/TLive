@@ -22,6 +22,11 @@ class PlaceFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommand_ko)))
+        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_rc)))
+        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_ko)))
+        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_jp)))
+        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_ca)))
+        placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_ws)))
+
     }
 }

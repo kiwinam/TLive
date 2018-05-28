@@ -148,11 +148,11 @@ class OptionalInfoActivity : BaseActivity(), View.OnClickListener {
             0 -> { optAge10Btn.setTextColor(Color.parseColor("#ffffff"))
                 optAge10Btn.setBackgroundResource(R.drawable.sp_left_solid_rect)  }
             1 -> { optAge20Btn.setTextColor(Color.parseColor("#ffffff"))
-                optAge20Btn.setBackgroundResource(R.drawable.sp_midle_solid_rect)  }
+                optAge20Btn.setBackgroundResource(R.drawable.sp_middle_solid_rect)  }
             2 -> { optAge30Btn.setTextColor(Color.parseColor("#ffffff"))
-                optAge30Btn.setBackgroundResource(R.drawable.sp_midle_solid_rect)  }
+                optAge30Btn.setBackgroundResource(R.drawable.sp_middle_solid_rect)  }
             3 -> { optAge40Btn.setTextColor(Color.parseColor("#ffffff"))
-                optAge40Btn.setBackgroundResource(R.drawable.sp_midle_solid_rect)  }
+                optAge40Btn.setBackgroundResource(R.drawable.sp_middle_solid_rect)  }
             4 -> { optAge50Btn.setTextColor(Color.parseColor("#ffffff"))
                 optAge50Btn.setBackgroundResource(R.drawable.sp_right_solid_rect)  }
         }

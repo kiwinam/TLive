@@ -15,7 +15,7 @@ import com.testexam.charlie.tlive.R
  *
  * Created by charlie on 2018. 5. 24
  */
-class BroadcastAdapter(private val broadcastList : ArrayList<Broadcast>, context : Context) : RecyclerView.Adapter<BroadcastAdapter.ViewHolder>(){
+class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>, context : Context) : RecyclerView.Adapter<BroadcastAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent?.context).inflate(R.layout.item_broadcast_card,parent,false)
         return ViewHolder(v)
@@ -37,6 +37,10 @@ class BroadcastAdapter(private val broadcastList : ArrayList<Broadcast>, context
 
     override fun getItemCount(): Int {
         return broadcastList.size
+    }
+
+    public fun setData(list : ArrayList<Broadcast>){
+        broadcastList = list
     }
 
     class ViewHolder (broadView : View) : RecyclerView.ViewHolder(broadView){
