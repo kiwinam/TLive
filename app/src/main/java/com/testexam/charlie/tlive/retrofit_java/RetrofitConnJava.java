@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitConnJava {
-    private static String BASE_URL = "http://13.125.101.158/app/";
+    private static String BASE_URL = "http://13.125.64.135/app/";
 
     public static Retrofit getRetrofit(){
 

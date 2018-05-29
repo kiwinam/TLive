@@ -20,9 +20,20 @@ public class KurentoPresenterRTCClient implements RTCClient {
 
     private SocketService socketService; // Server 에 접근하기 위한 SocketService
 
+
+    private String ownerEmail;
+    private String roomName;
+    private String roomTag;
+
     // SocketService 를 초기화한다.
     public KurentoPresenterRTCClient(SocketService socketService){
         this.socketService = socketService;
+    }
+
+    public void setInfo(String ownerEmail, String roomName, String roomTag){
+        this.ownerEmail = ownerEmail;
+        this.roomName = roomName;
+        this.roomTag = roomTag;
     }
 
     // 방에 호스트로 연결한다.
@@ -37,11 +48,18 @@ public class KurentoPresenterRTCClient implements RTCClient {
             object.put("id","presenter"); // 방송 송출자용 ID
             object.put("sdpOffer",sessionDescription.description);
 
+            JSONObject infoJson = new JSONObject();
+            infoJson.put("owner_email", ownerEmail);
+            infoJson.put("room_name",roomName);
+            infoJson.put("room_tag",roomTag);
+
+            object.put("info",infoJson);
             socketService.sendMessage(object.toString()); // WebSocket 을 통해 서버에 전송한다.
         } catch (JSONException e){
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void sendAnswerSdp(SessionDescription sessionDescription) {
@@ -51,6 +69,7 @@ public class KurentoPresenterRTCClient implements RTCClient {
     @Override
     public void sendLocalIceCandidate(IceCandidate iceCandidate) {
         try{
+            Log.e(TAG,"sendLocalIceCandidate");
             JSONObject object = new JSONObject();
             object.put("id","onIceCandidate");
             JSONObject candidate = new JSONObject();

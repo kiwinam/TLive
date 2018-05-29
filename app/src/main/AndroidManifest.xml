@@ -39,6 +39,7 @@
         <activity android:name=".main.live.LivePermissionActivity"/>
 
         <activity android:name=".main.live.webrtc.broadcaster.BroadCasterActivity_"/>
+        <activity android:name=".main.live.webrtc.viewer.ViewerActivity_"/>
 
     </application>
 

@@ -20,16 +20,20 @@ public enum IdResponse {
 
     private String id;
 
-    IdResponse(String id){ this.id = id; }
+    IdResponse(String id) {
+        this.id = id;
+    }
 
-    public static IdResponse getIdRes(String idRes){
-        for(IdResponse idResponse : IdResponse.values()){
-            if(idRes.equals(idResponse.getId())){
+    public static IdResponse getIdRes(String idRes) {
+        for (IdResponse idResponse : IdResponse.values()) {
+            if (idRes.equals(idResponse.getId())) {
                 return idResponse;
             }
         }
         return UN_KNOWN;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 }

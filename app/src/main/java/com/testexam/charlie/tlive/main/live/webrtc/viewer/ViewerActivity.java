@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.main.live.webrtc.viewer;
 
+import android.app.Application;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ public class ViewerActivity extends MvpActivity<ViewerView, ViewerPresenter> imp
         remoteProxyRenderer.setTarget(vGLSurfaceViewCall);
 
         presenter.initPeerConfig();
-        presenter.startCall();
+        //presenter.startCall();
     }
 
     @Override
@@ -61,7 +62,8 @@ public class ViewerActivity extends MvpActivity<ViewerView, ViewerPresenter> imp
     @NonNull
     @Override
     public ViewerPresenter createPresenter() {
-        return new ViewerPresenter(getApplication());
+        Application app = this.getApplication();
+        return new ViewerPresenter(app);
     }
 
     @Override

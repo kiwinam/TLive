@@ -16,55 +16,58 @@ import org.webrtc.SessionDescription;
  */
 
 public class KurentoViewerRTCClient implements RTCClient{
-
     private static final String TAG = KurentoViewerRTCClient.class.getSimpleName();
 
     private SocketService socketService;
 
-    public KurentoViewerRTCClient(SocketService socketService){
+    public KurentoViewerRTCClient(SocketService socketService) {
         this.socketService = socketService;
     }
 
-    public void connectToRoom(String host, BaseSocketCallback socketCallback){
-        socketService.connect(host,socketCallback);
+    public void connectToRoom(String host, BaseSocketCallback socketCallback) {
+        socketService.connect(host, socketCallback);
     }
 
     @Override
-    public void sendOfferSdp(SessionDescription sessionDescription) {
-        try{
-            JSONObject object = new JSONObject();
-            object.put("id","viewer");
-            object.put("sdpOffer",sessionDescription.description);
+    public void sendOfferSdp(SessionDescription sdp) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("id", "viewer");
+            obj.put("sdpOffer", sdp.description);
 
-            socketService.sendMessage(object.toString());
-        }catch (JSONException e){
+            socketService.sendMessage(obj.toString());
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void sendAnswerSdp(SessionDescription sessionDescription) {
-        Log.e(TAG,"sendAnswerSdp: ");
+    public void sendAnswerSdp(SessionDescription sdp) {
+        Log.e(TAG, "sendAnswerSdp: ");
     }
 
     @Override
     public void sendLocalIceCandidate(IceCandidate iceCandidate) {
-        try{
-            JSONObject object = new JSONObject();
-            object.put("id","onIceCandidate");
-
+        try {
+            Log.e(TAG,"sendLocalIceCandidate");
+            JSONObject obj = new JSONObject();
+            obj.put("id", "onIceCandidate");
             JSONObject candidate = new JSONObject();
-            candidate.put("candidate",iceCandidate.sdp);
-            candidate.put("sdpMid",iceCandidate.sdpMid);
-            candidate.put("sdpMLineIndex",iceCandidate.sdpMLineIndex);
-            object.put("candidate",candidate);
-        }catch (JSONException e){
+            candidate.put("candidate", iceCandidate.sdp);
+            candidate.put("sdpMid", iceCandidate.sdpMid);
+            candidate.put("sdpMLineIndex", iceCandidate.sdpMLineIndex);
+            obj.put("candidate", candidate);
+
+            socketService.sendMessage(obj.toString());
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void sendLocalIceCandidateRemovals(IceCandidate[] iceCandidates) {
-        Log.e(TAG,"sendLocalIceCandidateRemovals");
+    public void sendLocalIceCandidateRemovals(IceCandidate[] candidates) {
+        Log.e(TAG, "sendLocalIceCandidateRemovals: ");
     }
+
 }

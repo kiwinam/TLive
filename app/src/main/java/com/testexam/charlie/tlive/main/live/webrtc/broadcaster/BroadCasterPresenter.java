@@ -40,7 +40,7 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
 
     private static final String TAG = BroadCasterPresenter.class.getSimpleName(); // 로그 출력을 위한 태그 설정. 현재 클래스의 이름으로 저장함.
 
-    private static final String STREAM_HOST = "wss://13.125.64.135:6008/one2many"; // 서버에 WebRTC 스트리밍을 하기 위한 url 과 port, JS 파일 경로 설정
+    private static final String STREAM_HOST = "wss://13.125.64.135:8443/one2many"; // 서버에 WebRTC 스트리밍을 하기 위한 url 과 port, JS 파일 경로 설정
 
     private Application application;
     private SocketService socketService;
@@ -66,8 +66,29 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
         defaultConfig = new DefaultConfig();
         peerConnectionParameters = defaultConfig.createPeerConnectionParams(StreamMode.SEND_ONLY);
         peerConnectionClient = PeerConnectionClient.getInstance();
-        peerConnectionClient.createPeerConnectionFactory(
-                application.getApplicationContext(), peerConnectionParameters, this );
+        peerConnectionClient.createPeerConnectionFactory(application.getApplicationContext(), peerConnectionParameters, this );
+        //
+
+        peerConnectionClient.setVideoEnabled(true);
+
+    }
+
+    /*
+    방송 시작 전에 SurfaceView 설정하는 메소드
+     */
+    public void setVideoToSurfaceView(){
+        peerConnectionClient.startVideoSource();
+//        signalingParameters = null;
+//        VideoCapturer videoCapturer = null;
+//
+//        if(peerConnectionParameters.videoCallEnabled){
+//            videoCapturer = getView().createVideoCapturer();
+//        }
+//
+//        peerConnectionClient.createPeerConnection(getView().getEglBaseContext(), getView().getLocalProxyRenderer(), new ArrayList<>(), videoCapturer, signalingParameters);
+        //VideoCapturer capturer = getView().createVideoCapturer();
+        //getView().getLocalProxyRenderer().renderFrame(capturer);
+
     }
 
     public void disconnect(){
@@ -99,7 +120,7 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
             Log.e(TAG,"AppRTC client is not allocated for a call");
             return;
         }
-
+        rtcClient.setInfo("ownerEmail","roomName","roomTag");
         rtcClient.connectToRoom(STREAM_HOST, new BaseSocketCallback(){
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
@@ -134,15 +155,17 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
                                    }
                                 });
                             }else{
+                                Log.e(TAG+"::presenterResponse",TypeResponse.ACCEPTED.toString());
                                 SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, serverResponse.getSdpAnswer());
 
                                 onRemoteDescription(sdp);
+                                Log.e(TAG+"::presenterResponse","onRemoteDescription");
                             }
 
                             break;
 
                         case ICE_CANDIDATE:
-
+                            Log.e(TAG+"::onMessage","ICE_CANDIDATE");
                             CandidateModel candidateModel = serverResponse.getCandidate();
                             onRemoteIceCandidate(
                                     new IceCandidate(candidateModel.getSdpMid(),candidateModel.getSdpMLineIndex(),candidateModel.getSdp()));
@@ -249,6 +272,7 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
                 if(isViewAttached()) getView().logAndToast("Creating ANSWER");
 
                 peerConnectionClient.createAnswer();
+                Log.e(TAG+"::onRemoteDescription","createAnswer");
             }
         });
     }
@@ -306,6 +330,7 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
 
     @Override
     public void onIceCandidate(IceCandidate iceCandidate) {
+        Log.e(TAG,"onIceCandidate");
         RxScheduler.runOnUi(o->{
             if(rtcClient != null){
                 rtcClient.sendLocalIceCandidate(iceCandidate);

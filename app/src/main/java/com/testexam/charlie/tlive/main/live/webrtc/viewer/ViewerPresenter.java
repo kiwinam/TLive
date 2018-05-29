@@ -38,8 +38,8 @@ import static android.content.ContentValues.TAG;
 
 public class ViewerPresenter extends MvpBasePresenter<ViewerView>
         implements SignalingEvents, PeerConnectionClient.PeerConnectionEvents {
-
-    private static final String STREAM_HOST = "wss://13.125.64.135:6008/one2many";
+    private static final String TAG = ViewerPresenter.class.getSimpleName();
+    private static final String STREAM_HOST = "wss://13.125.64.135:8443/one2many";
 
     private Application application;
     private SocketService socketService;
@@ -66,6 +66,7 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
         peerConnectionClient = PeerConnectionClient.getInstance();
         peerConnectionClient.createPeerConnectionFactory(
                 application.getApplicationContext(), peerConnectionParameters, this);
+        startCall();
     }
 
     public void disconnect() {
@@ -110,6 +111,7 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
                         new LinkedList<PeerConnection.IceServer>() {
                             {
                                 add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
+                                //add(new PeerConnection.IceServer("kurento:kurentopw@turn:13.125.64.135"));
                             }
                         }, true, null, null, null, null, null);
                 onSignalConnected(parameters);
@@ -130,16 +132,17 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
                                     }
                                 });
                             } else {
-                                SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER,
-                                        serverResponse.getSdpAnswer());
+                                Log.e(TAG+"::viewerResponse",TypeResponse.ACCEPTED.toString());
+                                SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, serverResponse.getSdpAnswer());
                                 onRemoteDescription(sdp);
+                                Log.e(TAG+"::viewerResponse","onRemoteDescription");
                             }
                             break;
                         case ICE_CANDIDATE:
+                            Log.e(TAG+"::onMessage","ICE_CANDIDATE");
                             CandidateModel candidateModel = serverResponse.getCandidate();
                             onRemoteIceCandidate(
-                                    new IceCandidate(candidateModel.getSdpMid(), candidateModel.getSdpMLineIndex(),
-                                            candidateModel.getSdp()));
+                                    new IceCandidate(candidateModel.getSdpMid(), candidateModel.getSdpMLineIndex(), candidateModel.getSdp()));
                             break;
                         case STOP_COMMUNICATION:
                             RxScheduler.runOnUi(o -> {
@@ -245,9 +248,9 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
             peerConnectionClient.setRemoteDescription(sdp);
             if (!signalingParameters.initiator) {
                 if (isViewAttached()) getView().logAndToast("Creating ANSWER...");
-                // Create answer. Answer SDP will be sent to offering client in
-                // PeerConnectionEvents.onLocalDescription event.
+
                 peerConnectionClient.createAnswer();
+                Log.e(TAG+"::onRemoteDescription","createAnswer");
             }
         });
     }
@@ -306,6 +309,7 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
 
     @Override
     public void onIceCandidate(IceCandidate candidate) {
+        Log.e(TAG,"onIceCandidate");
         RxScheduler.runOnUi(o -> {
             if (rtcClient != null) {
                 rtcClient.sendLocalIceCandidate(candidate);
@@ -341,7 +345,7 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
 
     @Override
     public void onPeerConnectionClosed() {
-
+        Log.e(TAG, "onPeerConnectionClosed: ");
     }
 
     @Override

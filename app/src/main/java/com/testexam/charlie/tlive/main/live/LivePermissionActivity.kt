@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
+import com.testexam.charlie.tlive.common.KotlinJavaFunction
 import kotlinx.android.synthetic.main.activity_live_permission.*
 import kotlinx.android.synthetic.main.activity_live_permission.view.*
 
@@ -40,6 +41,12 @@ class LivePermissionActivity : BaseActivity() , View.OnClickListener {
             livePerMicBtn->{
                 ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.RECORD_AUDIO),MIC_REQUEST_CODE)
             }
+
+            livePerStartBtn->{
+                val ko = KotlinJavaFunction()
+                ko.goLive(this)
+                finish()
+            }
         }
     }
 
@@ -47,6 +54,7 @@ class LivePermissionActivity : BaseActivity() , View.OnClickListener {
         livePerCloseIv.setOnClickListener(this)
         livePerCameraBtn.setOnClickListener(this)
         livePerMicBtn.setOnClickListener(this)
+        livePerStartBtn.setOnClickListener(this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -79,6 +87,12 @@ class LivePermissionActivity : BaseActivity() , View.OnClickListener {
         if(micPermission == PackageManager.PERMISSION_GRANTED){
             livePerMicBtn.visibility = View.INVISIBLE
             livePerOKMicTv.visibility = View.VISIBLE
+        }
+        if(micPermission == PackageManager.PERMISSION_GRANTED && micPermission == PackageManager.PERMISSION_GRANTED){
+            livePerMicBtn.visibility = View.INVISIBLE
+            livePerOKMicTv.visibility = View.INVISIBLE
+            livePerOKCameraTv.visibility = View.INVISIBLE
+            livePerOKMicTv.visibility = View.INVISIBLE
         }
 
     }
