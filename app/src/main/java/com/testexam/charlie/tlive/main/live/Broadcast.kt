@@ -1,15 +1,23 @@
 package com.testexam.charlie.tlive.main.live
 
 /**
- * Created by charlie on 2018. 5. 24..
+ * Live Fragment 에 있는 현재 방송 목록의 데이터 클래스
+ *
+ * Created by charlie on 2018. 5. 24
  */
 
-data class Broadcast(val broadNo : Int,
-                     val broadHostNo : Int,
-                     val broadHostName : String,
-                     val broadHostProfileUrl : String,
-                     val broadRoomName : String,
-                     val broadRoomTag : String,
-                     val broadPreviewUrl : String,
-                     val broadIsLive : Int
+data class Broadcast(val hostEmail : String,
+                     val hostName : String,
+                     var hostProfileUrl : String,
+                     // Room information
+                     val roomNo : Int,
+                     val roomSessionNo : Int,
+                     val roomName : String,
+                     val roomTag : String,
+                     var likeNum : Int,
+                     var viewerNum : Int,
+                     var isLive : Int,
+                     val uploadTime : String,
+                     val previewUrl : String,
+                     val vodUrl : String
                      )

@@ -16,12 +16,12 @@ class PlaceFragment : Fragment(){
         fun newInstance(): PlaceFragment = PlaceFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_place,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_place,container,false)
         //return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
         placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_rc)))
         placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_ko)))
         placeTabLo.addTab(placeTabLo.newTab().setText(getString(R.string.recommend_jp)))

@@ -61,7 +61,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 R.id.mainBNLiveMenu->{
                     //mainToolbarTitleTv.text = getString(R.string.live_ko)
 
-                    val liveFragment = LiveFragmentJava.newInstance()
+                    val liveFragment = LiveFragment.newInstance()
                     openFragment(liveFragment)
 
                     return@OnNavigationItemSelectedListener true

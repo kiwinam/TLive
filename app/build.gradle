@@ -4,12 +4,15 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+//apply plugin: "kotlin-kapt"
+
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.testexam.charlie.tlive"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,11 +40,20 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+
+
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     implementation ('com.naver.nid:naveridlogin-android-sdk:4.2.0')
 
-    implementation 'com.android.support:support-core-utils:26.1.0'
-    implementation 'com.android.support:customtabs:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:support-core-utils:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
 
     implementation "com.squareup.retrofit2:retrofit:2.1.0"
     implementation "com.squareup.retrofit2:converter-moshi:2.1.0"
@@ -49,33 +61,32 @@ dependencies {
 
     implementation 'com.crust87:texturevideoview:1.0.4'
 
-    //implementation 'fi.vtt.nubomedia:kurento-room-client-android:1.1.2'
-    //implementation 'fi.vtt.nubomedia:webrtcpeer-android:1.1.2'
-    // End of compile
-
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     implementation 'com.github.nhancv:nc-android-webrtcpeer:2.1.0'
-    //implementation 'com.github.nhancv:nc-android-npermission:1.4'
+
+
     //Android annotation
     annotationProcessor "org.androidannotations:androidannotations:4.4.0"
     implementation 'org.androidannotations:androidannotations-api:4.4.0'
     //Mosby mvp lib
     implementation 'com.hannesdorfmann.mosby:mvp:2.0.1'
+    implementation 'com.hannesdorfmann.mosby:viewstate:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.2'
     //Async
     implementation 'io.reactivex:rxandroid:1.2.0'
     implementation 'io.reactivex:rxjava:1.3.0'
 
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.6.0'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.6.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.6.0'
+    implementation 'com.github.wseemann:FFmpegMediaPlayer:1.0.4'
 
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:support-annotations:27.1.1'
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    testImplementation 'junit:junit:4.12'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

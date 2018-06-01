@@ -53,6 +53,7 @@ public class ViewerPresenter extends MvpBasePresenter<ViewerView>
     private SignalingParameters signalingParameters;
     private boolean iceConnected;
 
+
     public ViewerPresenter(Application application) {
         this.application = application;
         this.socketService = new DefaultSocketService(application);

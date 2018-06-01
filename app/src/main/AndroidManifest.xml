@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -24,22 +25,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.testexam.charlie.tlive.SplashActivity">
+        <activity android:name="com.testexam.charlie.tlive.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.testexam.charlie.tlive.main.MainActivity"/>
-        <activity android:name="com.testexam.charlie.tlive.login.LoginActivity"/>
-        <activity android:name="com.testexam.charlie.tlive.join.JoinActivity"/>
-        <activity android:name="com.testexam.charlie.tlive.login.SelectActivity"/>
+        <activity android:name="com.testexam.charlie.tlive.main.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.testexam.charlie.tlive.login.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.testexam.charlie.tlive.join.JoinActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.testexam.charlie.tlive.login.SelectActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".join.OptionalInfoActivity"/>
-        <activity android:name=".main.live.LivePermissionActivity"/>
+        <activity android:name=".main.live.LivePermissionActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".main.live.webrtc.vod_viewer.VodActivity"
+            android:screenOrientation="landscape"/>
+        <!-- MVP Activity -->
+        <activity
+            android:name=".main.live.webrtc.broadcaster.BroadCasterActivity_"
+            android:screenOrientation="landscape"
+            />
+        <activity android:name=".main.live.webrtc.viewer.ViewerActivity_"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".main.live.webrtc.broadcaster.BroadCasterActivity_"/>
-        <activity android:name=".main.live.webrtc.viewer.ViewerActivity_"/>
 
     </application>
 

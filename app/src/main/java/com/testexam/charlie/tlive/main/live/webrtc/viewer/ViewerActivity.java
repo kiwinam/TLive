@@ -1,11 +1,21 @@
 package com.testexam.charlie.tlive.main.live.webrtc.viewer;
 
 import android.app.Application;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
+import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateActivity;
+import com.hannesdorfmann.mosby.mvp.viewstate.ViewState;
 import com.nhancv.webrtcpeer.rtc_plugins.ProxyRenderer;
 import com.testexam.charlie.tlive.R;
 
@@ -25,12 +35,13 @@ import org.webrtc.VideoRenderer;
 public class ViewerActivity extends MvpActivity<ViewerView, ViewerPresenter> implements ViewerView {
     private static final String TAG = ViewerActivity.class.getSimpleName();
 
-    @ViewById(R.id.vGLSurfaceViewCall)
-    protected SurfaceViewRenderer vGLSurfaceViewCall;
-
     private EglBase rootEglBase;
     private ProxyRenderer remoteProxyRenderer;
     private Toast logToast;
+
+    @ViewById(R.id.vGLSurfaceViewCall)
+    protected SurfaceViewRenderer vGLSurfaceViewCall;
+
 
     @AfterViews
     protected void init() {
@@ -45,7 +56,6 @@ public class ViewerActivity extends MvpActivity<ViewerView, ViewerPresenter> imp
         remoteProxyRenderer.setTarget(vGLSurfaceViewCall);
 
         presenter.initPeerConfig();
-        //presenter.startCall();
     }
 
     @Override
@@ -96,5 +106,4 @@ public class ViewerActivity extends MvpActivity<ViewerView, ViewerPresenter> imp
     public VideoRenderer.Callbacks getRemoteProxyRenderer() {
         return remoteProxyRenderer;
     }
-
 }

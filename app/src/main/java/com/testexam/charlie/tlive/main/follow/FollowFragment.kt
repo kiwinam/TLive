@@ -15,11 +15,11 @@ import kotlinx.android.synthetic.main.fragment_follow.*
  * Created by charlie on 2018. 5. 24
  */
 class FollowFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_follow,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_follow,container,false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         followTabLo.addTab(followTabLo.newTab().setText(getString(R.string.channel_ko)))
         followTabLo.addTab(followTabLo.newTab().setText(getString(R.string.friend_ko)))
@@ -55,7 +55,7 @@ class FollowFragment : Fragment() {
     }
 
     private fun openFragment(fragment: Fragment){
-        val transaction = activity.supportFragmentManager.beginTransaction()
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.followContainer,fragment)
         transaction.addToBackStack(null)
         transaction.commit()

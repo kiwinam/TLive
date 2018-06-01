@@ -43,8 +43,8 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
     private static final String STREAM_HOST = "wss://13.125.64.135:8443/one2many"; // 서버에 WebRTC 스트리밍을 하기 위한 url 과 port, JS 파일 경로 설정
 
     private Application application;
-    private SocketService socketService;
-    private Gson gson;
+    private SocketService socketService; // 서버 WebSocket 과 연결하기 위한 SocketService
+    private Gson gson; // 서버에서 결과값으로 넘어오거나 서버로 전달해주는 데이터들을 JSON 형식으로 만들어 보내기 위한 GSON
 
     private PeerConnectionClient peerConnectionClient;
     private KurentoPresenterRTCClient rtcClient;
@@ -55,10 +55,20 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
 
     private boolean iceConnected;
 
+
     public BroadCasterPresenter(Application application){
         this.application = application;
         this.socketService = new DefaultSocketService(application);
         this.gson = new Gson();
+    }
+
+    public void setInfo(String ownerEmail, String roomName, String roomTag){
+        if(rtcClient!=null){
+            rtcClient.setInfo(ownerEmail,roomName,roomTag);
+        }else{
+            Log.e(TAG+":setInfo",",rtc client null");
+            return;
+        }
     }
 
     public void initPeerConfig(){
@@ -75,9 +85,10 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
 
     /*
     방송 시작 전에 SurfaceView 설정하는 메소드
+    여기에서 카메라를 SurfaceView 에 넣어야한다.
      */
     public void setVideoToSurfaceView(){
-        peerConnectionClient.startVideoSource();
+        //peerConnectionClient.startVideoSource();
 //        signalingParameters = null;
 //        VideoCapturer videoCapturer = null;
 //
@@ -91,6 +102,9 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
 
     }
 
+    /*
+    WebSocket 연결 해제
+     */
     public void disconnect(){
         if(rtcClient != null){
             rtcClient = null;
@@ -116,11 +130,11 @@ public class BroadCasterPresenter extends MvpBasePresenter<BroadCasterView> impl
     }
 
     public void startCall(){
+        // rtcClient 가 없다면 에러 로그 발생 후 종료
         if(rtcClient == null){
-            Log.e(TAG,"AppRTC client is not allocated for a call");
+            Log.e(TAG,"rtcClient is null");
             return;
         }
-        rtcClient.setInfo("ownerEmail","roomName","roomTag");
         rtcClient.connectToRoom(STREAM_HOST, new BaseSocketCallback(){
             @Override
             public void onOpen(ServerHandshake serverHandshake) {

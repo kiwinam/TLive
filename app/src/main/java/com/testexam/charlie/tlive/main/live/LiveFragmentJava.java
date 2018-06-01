@@ -17,9 +17,6 @@ import android.widget.ImageView;
 
 import com.testexam.charlie.tlive.R;
 import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity;
-import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity_;
-import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity;
-import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity_;
 
 import java.util.ArrayList;
 
@@ -49,7 +46,7 @@ public class LiveFragmentJava extends Fragment implements View.OnClickListener{
         recyclerView = view.findViewById(R.id.liveRv);
         liveNewBtn = view.findViewById(R.id.liveNewBtn);
         liveProfileIv = view.findViewById(R.id.liveProfileIv);
-        addBroadcast();
+        //addBroadcast();
         setRecyclerView();
         setOnClickListeners();
         super.onViewCreated(view, savedInstanceState);
@@ -65,7 +62,8 @@ public class LiveFragmentJava extends Fragment implements View.OnClickListener{
 
                 if(micPermission == PackageManager.PERMISSION_GRANTED && cameraPermission == PackageManager.PERMISSION_GRANTED){
                     // 방송 시작에 필요한 모든 권한을 가지고 있다면
-                    BroadCasterActivity_.intent(this).start();
+
+                    //BroadCasterActivity_.intent(this).start();
                     //BroadCasterActivity.intent(this).start();
                 }else{
                     // 방송 시작하는데 권한이 필요하다면
@@ -73,7 +71,7 @@ public class LiveFragmentJava extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.liveProfileIv:
-                ViewerActivity_.intent(this).start();
+                //ViewerActivity_.intent(this).start();
         }
     }
 
@@ -87,7 +85,7 @@ public class LiveFragmentJava extends Fragment implements View.OnClickListener{
         liveNewBtn.setOnClickListener(this);
         liveProfileIv.setOnClickListener(this);
     }
-
+/*
     private void addBroadcast(){
         broadcastList.add(new Broadcast(0,0,"박천명",
                 "none","치킨 먹방",
@@ -101,5 +99,5 @@ public class LiveFragmentJava extends Fragment implements View.OnClickListener{
         broadcastList.add(new Broadcast(0,0,"박천명",
                 "none","치킨 먹방",
                 "#치킨 #먹방 #가즈아","none",1));
-    }
+    }*/
 }

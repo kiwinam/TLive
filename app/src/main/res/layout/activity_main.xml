@@ -23,6 +23,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:elevation="8dp"
+        app:itemIconTint="@drawable/selector_bottom_color"
+        app:itemTextColor="@drawable/selector_bottom_color"
         >
     </android.support.design.widget.BottomNavigationView>
 </android.support.constraint.ConstraintLayout>

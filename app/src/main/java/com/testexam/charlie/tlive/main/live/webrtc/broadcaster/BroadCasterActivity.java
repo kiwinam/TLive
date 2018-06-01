@@ -1,15 +1,21 @@
 package com.testexam.charlie.tlive.main.live.webrtc.broadcaster;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,10 +59,31 @@ public class BroadCasterActivity extends MvpActivity<BroadCasterView, BroadCaste
     @ViewById(R.id.liveBroadRoomTagTv)
     protected TextView roomTagTv;
 
-    protected Button liveStartBtn;
+    @ViewById(R.id.liveBroadStartBtn)
+    protected Button liveBroadStartBtn;
+
+    @ViewById(R.id.liveBroadInfoLo)
+    protected RelativeLayout liveBroadInfoLo;
+
+    @ViewById(R.id.liveBroadCloseIb)
+    protected ImageButton liveBroadCloseIb;
+
+    @ViewById(R.id.liveBroadSetTv)
+    protected TextView liveBroadSetTv;
+
+    @ViewById(R.id.liveBroadStopBtn)
+    protected Button liveBroadStopBtn;
+
+    @ViewById(R.id.liveBroadChatRv)
+    protected RecyclerView liveBroadChatRv;
+
+    private String ownerEmail;
+    private String ownerName;
     @AfterViews
     protected void init() {
-
+        SharedPreferences prefs = getSharedPreferences("login",MODE_PRIVATE);
+        ownerEmail = prefs.getString("email",null);
+        ownerName = prefs.getString("name",null);
         // 클릭 리스너 설정.
         setOnClickListeners();
 
@@ -76,25 +103,64 @@ public class BroadCasterActivity extends MvpActivity<BroadCasterView, BroadCaste
     }
 
     private void setOnClickListeners(){
-        liveStartBtn = findViewById(R.id.liveBroadStartBtn);
-        liveStartBtn.setOnClickListener(this);
+        liveBroadStartBtn.setOnClickListener(this);
+        liveBroadCloseIb.setOnClickListener(this);
+        liveBroadStopBtn.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            // 방송 시작 버튼
+            // 버튼을 누르게 되면 방송 제목이 있는지 확인 한 다음
+            // 제목이 있을 경우 방송을 시작한다.
+            // 없을 경우 방송 제목이 필요하다는 메시지를 보여준다.
             case R.id.liveBroadStartBtn:
                 String roomName = roomNameEt.getText().toString();
                 String roomTag = roomTagTv.getText().toString();
                 // 방송 시작의 필수 사항인 방 제목이 없으면 방송을 시작하지 않는다.
                 if(!roomName.isEmpty()){
+                    presenter.setInfo(ownerEmail,roomName,roomTag);
                     presenter.startCall();
+                    liveBroadStartBtn.setVisibility(View.GONE);
+                    liveBroadInfoLo.setVisibility(View.GONE);
+                    liveBroadCloseIb.setVisibility(View.GONE);
+                    liveBroadSetTv.setText(ownerName+"님의 생방송");
+                    liveBroadStopBtn.setVisibility(View.VISIBLE);
+                    liveBroadChatRv.setVisibility(View.VISIBLE);
                 }else{
                     // 방송 제목이 필요하다는 Toast 메시지를 띄워준다.
                     Toast.makeText(getApplicationContext(),"방송 제목을 입력해주세요.",Toast.LENGTH_SHORT).show();
                 }
 
+                break;
+
+            // 방송 시작 전 종료 버튼
+            case R.id.liveBroadCloseIb:
+                finish();
+                break;
+
+            // 방송 시작 후 종료 버튼
+            // 방송 종료 의사를 묻는 다이얼로그를 띄운 후 종료한다면 종료를, 취소하면 그대로 방송을 진행한다.
+            // 종료 시 서버와 소켓 연결을 종료한다.
+            case R.id.liveBroadStopBtn:
+                AlertDialog.Builder stopDialog = new AlertDialog.Builder(getApplicationContext());
+                stopDialog.setTitle("방송 종료")
+                        .setMessage("방송을 종료하시겠습니까?")
+                        .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                disconnect();
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
                 break;
         }
     }

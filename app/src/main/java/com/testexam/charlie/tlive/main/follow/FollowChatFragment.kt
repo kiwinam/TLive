@@ -11,8 +11,8 @@ import com.testexam.charlie.tlive.R
  * Created by charlie on 2018. 5. 24..
  */
 class FollowChatFragment : Fragment(){
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_follow_chat,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_follow_chat,container,false)
     }
     companion object {
         fun newInstance(): FollowChatFragment = FollowChatFragment()
