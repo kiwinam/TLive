@@ -13,12 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.HttpTask
-import com.testexam.charlie.tlive.common.KotlinJavaFunction
 import com.testexam.charlie.tlive.common.Params
+import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity
 
 import kotlinx.android.synthetic.main.fragment_live.*
 import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * 라이브 방송 프레그먼트
@@ -56,9 +55,9 @@ class LiveFragment : Fragment() , View.OnClickListener{
 
                 if(micPermission == PackageManager.PERMISSION_GRANTED && cameraPermission == PackageManager.PERMISSION_GRANTED){
                     // 방송 시작에 필요한 모든 권한을 가지고 있다면
-                    //startActivity(Intent(context, BroadCasterActivity::class.java))
-                    val kotlinJava = KotlinJavaFunction()
-                    kotlinJava.goLive(context)
+                    startActivity(Intent(context, BroadCasterActivity::class.java))
+//                    val kotlinJava = KotlinJavaFunction()
+//                    kotlinJava.goLive(context)
                 }else{
                     // 방송 시작하는데 권한이 필요하다면
                     startActivity(Intent(context,LivePermissionActivity::class.java))
@@ -78,6 +77,7 @@ class LiveFragment : Fragment() , View.OnClickListener{
         adapter = BroadcastAdapter(broadcastList,context!!)
         liveRv.layoutManager = LinearLayoutManager(context)
         liveRv.adapter = adapter
+        liveRv.isNestedScrollingEnabled = false
 
         liveSwipeRefreshLo.setOnRefreshListener({
             getBroadcastList()
@@ -93,8 +93,11 @@ class LiveFragment : Fragment() , View.OnClickListener{
     }
 
     private fun getBroadcastList(){
+        //Glide.get(context!!).clearMemory()
+
         Thread(Runnable {
             try{
+                //Glide.get(context!!).clearDiskCache()
                 val httpTask = HttpTask("getBroadcastList.php", ArrayList<Params>())
                 val result = httpTask.execute().get()
                 val array = JSONArray(result)
@@ -124,10 +127,10 @@ class LiveFragment : Fragment() , View.OnClickListener{
                         liveSwipeRefreshLo.isRefreshing = false
                     }
                 })
+                
             } catch (e : Exception){
                 e.printStackTrace()
             }
         }).start()
-
     }
 }

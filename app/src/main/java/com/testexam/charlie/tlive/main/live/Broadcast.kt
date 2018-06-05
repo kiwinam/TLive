@@ -8,15 +8,15 @@ package com.testexam.charlie.tlive.main.live
 
 data class Broadcast(val hostEmail : String,
                      val hostName : String,
-                     var hostProfileUrl : String,
+                     val hostProfileUrl : String,
                      // Room information
                      val roomNo : Int,
                      val roomSessionNo : Int,
                      val roomName : String,
                      val roomTag : String,
-                     var likeNum : Int,
-                     var viewerNum : Int,
-                     var isLive : Int,
+                     val likeNum : Int,
+                     val viewerNum : Int,
+                     val isLive : Int,
                      val uploadTime : String,
                      val previewUrl : String,
                      val vodUrl : String

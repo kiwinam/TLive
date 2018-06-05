@@ -11,7 +11,6 @@ import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.main.follow.FollowFragment
 import com.testexam.charlie.tlive.main.live.LiveFragment
-import com.testexam.charlie.tlive.main.live.LiveFragmentJava
 import com.testexam.charlie.tlive.main.place.PlaceFragment
 import kotlinx.android.synthetic.main.activity_main.*
 

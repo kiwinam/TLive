@@ -47,5 +47,6 @@
     <string name="ready_broadcast_ko">방송을 시작할 준비가 되었습니다!</string>
     <string name="start_live_ko">방송 시작</string>
     <string name="set_broadcast_ko">방송 설정</string>
+    <string name="send_ko">보내기</string>
 
 </resources>

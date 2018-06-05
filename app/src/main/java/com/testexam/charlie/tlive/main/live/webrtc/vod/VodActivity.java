@@ -1,6 +1,5 @@
-package com.testexam.charlie.tlive.main.live.webrtc.vod_viewer;
+package com.testexam.charlie.tlive.main.live.webrtc.vod;
 
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,6 +58,7 @@ public class VodActivity extends BaseActivity implements ExoPlayer.EventListener
         shouldAutoPlay = true;
 
         vodUrl = getIntent().getStringExtra("vodUrl");
+        // /vod/20180604054907_email@naver.com.m3u8
 
     }
 
@@ -79,6 +79,7 @@ public class VodActivity extends BaseActivity implements ExoPlayer.EventListener
         simpleExoPlayerView.setPlayer(player); // 뷰와 플레이어 바인딩
         simpleExoPlayerView.setUseController(true); // 컨트롤러 사용 설정
         simpleExoPlayerView.requestFocus();
+
         player.setPlayWhenReady(shouldAutoPlay);
 
         // 4. 미디어 소스 가져오기
@@ -94,6 +95,7 @@ public class VodActivity extends BaseActivity implements ExoPlayer.EventListener
             @Override
             public void onLoadCompleted(DataSpec dataSpec, int dataType, int trackType, Format trackFormat, int trackSelectionReason, Object trackSelectionData, long mediaStartTimeMs, long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs, long bytesLoaded) {
                 Log.d("hlsMediaSource","onLoadCompleted");
+                Log.d("hls elapsed ms",elapsedRealtimeMs+"..");
             }
 
             @Override
@@ -149,7 +151,9 @@ public class VodActivity extends BaseActivity implements ExoPlayer.EventListener
     }
 
     @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) { }
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
 
     @Override
     public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) { }
@@ -184,12 +188,9 @@ public class VodActivity extends BaseActivity implements ExoPlayer.EventListener
         AlertDialog.Builder adb = new AlertDialog.Builder(VodActivity.this);
         adb.setTitle("Could not able to stream video");
         adb.setMessage("It seems that something is going wrong.\nPlease try again.");
-        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish(); // take out user from this activity. you can skip this
-            }
+        adb.setPositiveButton("OK", (dialog, which) -> {
+            dialog.dismiss();
+            finish(); // take out user from this activity. you can skip this
         });
         AlertDialog ad = adb.create();
         ad.show();

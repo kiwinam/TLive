@@ -12,17 +12,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
+
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.common.KotlinJavaFunction
-import com.testexam.charlie.tlive.main.live.webrtc.vod_viewer.VodActivity
+import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity
+import com.testexam.charlie.tlive.main.live.webrtc.vod.VodActivity
 
 /**
  *
  * Created by charlie on 2018. 5. 24
  */
-class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val context : Context) : RecyclerView.Adapter<BroadcastAdapter.ViewHolder>(){
+
+class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val context : Context) : RecyclerView.Adapter<BroadcastAdapter.ViewHolder>()  {
     private val serverUrl = "http://13.125.64.135"
-    private val kotlinFun : KotlinJavaFunction? = KotlinJavaFunction()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_broadcast_card,parent,false)
@@ -40,23 +43,32 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val cont
             holder.broadLiveTv.visibility = View.VISIBLE
             holder.broadVodTv.visibility = View.GONE
             holder.broadCardView.setOnClickListener( {
-                kotlinFun!!.goViewer(context)
-                Log.d("onclick","go live")
+                val intent = Intent(context,ViewerActivity::class.java)
+                intent.putExtra("presenterSessionId",broadcast.roomSessionNo)
+                context.startActivity(intent)
             })
+            holder.broadLiveNumTv.visibility = View.VISIBLE
+            holder.broadLiveNumTv.text = "시청자"+broadcast.viewerNum.toString()+"명"
+            holder.broadLiveCircle.visibility = View.VISIBLE
+
+            Picasso.get().load(serverUrl+"/livePreview/"+broadcast.previewUrl).into(holder.broadPreviewIv)
         }else{
             holder.broadLiveTv.visibility = View.GONE
             holder.broadVodTv.visibility = View.VISIBLE
             holder.broadCardView.setOnClickListener( {
-                Log.d("onclick","gogo")
                 val intent = Intent(context,VodActivity::class.java)
                 intent.putExtra("vodUrl",broadcast.vodUrl)
                 context.startActivity(intent)
             })
             if(broadcast.previewUrl.endsWith("png")){
                 Glide.with(context)
-                        .load(serverUrl+broadcast.previewUrl)
+                        .load(serverUrl+"/preview/"+broadcast.previewUrl)
                         .into(holder.broadPreviewIv)
+                Log.d("preview","png")
             }
+            Log.d("vodUrl",broadcast.vodUrl);
+            holder.broadLiveNumTv.visibility = View.GONE
+            holder.broadLiveCircle.visibility = View.GONE
         }
     }
 
@@ -71,6 +83,8 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val cont
     class ViewHolder (broadView : View) : RecyclerView.ViewHolder(broadView){
         val broadCardView = broadView.findViewById<CardView>(R.id.broadCardView)!!
 
+        val broadLiveCircle = broadView.findViewById<View>(R.id.broadLiveCircle)!!
+
         val broadPreviewIv = broadView.findViewById<ImageView>(R.id.broadPreviewIv)!!
         val broadHostIv = broadView.findViewById<ImageView>(R.id.broadHostIv)!!
         val broadMoreInfoIv = broadView.findViewById<ImageView>(R.id.broadMoreInfoIv)!!
@@ -81,5 +95,6 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val cont
         val broadRoomTagTv = broadView.findViewById<TextView>(R.id.broadRoomTagTv)!!
         val broadLiveTv = broadView.findViewById<TextView>(R.id.broadLiveTv)!!
         val broadVodTv = broadView.findViewById<TextView>(R.id.broadVodTv)!!
+        val broadLiveNumTv = broadView.findViewById<TextView>(R.id.broadLiveNumTv)!!
     }
 }

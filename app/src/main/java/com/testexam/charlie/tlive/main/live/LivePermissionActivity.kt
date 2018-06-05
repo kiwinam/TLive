@@ -1,17 +1,17 @@
 package com.testexam.charlie.tlive.main.live
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
-import com.testexam.charlie.tlive.common.KotlinJavaFunction
+import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity
+import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity
 import kotlinx.android.synthetic.main.activity_live_permission.*
-import kotlinx.android.synthetic.main.activity_live_permission.view.*
 
 /**
  * 라이브 방송 전 필요한 권한을 확인하는 Activity
@@ -43,8 +43,7 @@ class LivePermissionActivity : BaseActivity() , View.OnClickListener {
             }
 
             livePerStartBtn->{
-                val ko = KotlinJavaFunction()
-                ko.goLive(this)
+                startActivity(Intent(applicationContext, BroadCasterActivity::class.java))
                 finish()
             }
         }
@@ -104,6 +103,8 @@ class LivePermissionActivity : BaseActivity() , View.OnClickListener {
             livePerMicBtn.visibility = View.GONE
             livePerCameraBtn.visibility = View.GONE
             livePerStartBtn.visibility = View.VISIBLE
+            livePerOKCameraTv.visibility = View.INVISIBLE
+            livePerOKMicTv.visibility = View.INVISIBLE
             livePerInfoTv.text = getString(R.string.ready_broadcast_ko)
         }
     }

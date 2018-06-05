@@ -24,6 +24,8 @@ public class ServerResponse extends IdModel implements Serializable {
     private boolean success;
     @SerializedName("from")
     private String from;
+    @SerializedName("sender")
+    private String sender;
 
     public IdResponse getIdRes() { return IdResponse.getIdRes(getId()); }
 
@@ -40,6 +42,8 @@ public class ServerResponse extends IdModel implements Serializable {
     public boolean isSuccess() { return success; }
 
     public String getFrom() { return from; }
+
+    public String getSender() { return sender; }
 
     @Override
     public String toString() {

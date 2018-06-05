@@ -56,7 +56,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/sp_white_rounded_filled_box"
-        android:layout_height="250dp">
+        android:layout_height="250dp"
+        android:visibility="visible"
+        >
         <ImageView
             android:id="@+id/liveBroadProfileIv"
             android:src="@drawable/ic_profile_ex1"
@@ -110,6 +112,36 @@
         </LinearLayout>
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/liveBroadCountLo"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
+        android:background="#5c000000"
+        android:visibility="gone"
+        >
+        <View
+            android:background="@drawable/sp_red_circle"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="6dp"
+            />
+        <TextView
+            android:id="@+id/liveBroadCountTv"
+            android:text="시청자 0명"
+            android:textColor="#fff"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="6dp"
+            />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/liveBroadStartBtn"
         android:text="@string/start_live_ko"
@@ -120,7 +152,9 @@
         android:layout_marginEnd="8dp"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:visibility="visible"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/liveBroadChatRv"
         android:layout_alignParentBottom="true"
@@ -128,6 +162,8 @@
         android:paddingStart="16dp"
         android:background="@drawable/sp_broadchat_rv_gradient"
         android:layout_height="160dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="16dp"
         android:visibility="gone"
         />
 </RelativeLayout>

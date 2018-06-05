@@ -15,6 +15,8 @@ public enum IdResponse {
     INCOMING_CALL("incomingCall"),
     START_COMMUNICATION("startCommunication"),
     CALL_RESPONSE("callResponse"),
+    VIEWER_CHANGE("viewerNumChange"),
+    CHAT("chat"),
 
     UN_KNOWN("unknown");
 

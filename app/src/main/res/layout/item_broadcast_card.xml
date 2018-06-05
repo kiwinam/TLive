@@ -45,6 +45,25 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             />
+        <View
+            android:id="@+id/broadLiveCircle"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/sp_red_circle"
+            android:layout_above="@id/broadInfoLo"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="16dp"
+            />
+        <TextView
+            android:id="@+id/broadLiveNumTv"
+            android:text="시청자 14,200명"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/broadInfoLo"
+            android:layout_toEndOf="@id/broadLiveCircle"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="12dp"/>
         <RelativeLayout
             android:id="@+id/broadInfoLo"
             android:layout_below="@id/broadPreviewIv"

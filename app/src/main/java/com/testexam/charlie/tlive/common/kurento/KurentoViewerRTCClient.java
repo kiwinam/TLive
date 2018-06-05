@@ -16,6 +16,7 @@ import org.webrtc.SessionDescription;
  */
 
 public class KurentoViewerRTCClient implements RTCClient{
+    private int presenterSsionId;
     private static final String TAG = KurentoViewerRTCClient.class.getSimpleName();
 
     private SocketService socketService;
@@ -28,13 +29,17 @@ public class KurentoViewerRTCClient implements RTCClient{
         socketService.connect(host, socketCallback);
     }
 
+    public void setPresenterSID(int presenterSsionId){
+        this.presenterSsionId = presenterSsionId;
+    }
+
     @Override
     public void sendOfferSdp(SessionDescription sdp) {
         try {
             JSONObject obj = new JSONObject();
             obj.put("id", "viewer");
             obj.put("sdpOffer", sdp.description);
-
+            obj.put("presenterSessionId",presenterSsionId);
             socketService.sendMessage(obj.toString());
         } catch (JSONException e) {
             e.printStackTrace();

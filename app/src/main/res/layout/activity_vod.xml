@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@+id/vodRoot"
+<RelativeLayout android:id="@+id/vodRoot"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-    <!--<com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/vodPlayerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>-->
+    >
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/vodPlayerView"
         android:layout_width="match_parent"
@@ -19,5 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone"
+        android:layout_centerInParent="true"
         />
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/vodChatRv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

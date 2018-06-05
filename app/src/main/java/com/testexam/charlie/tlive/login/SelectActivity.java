@@ -95,6 +95,7 @@ public class SelectActivity extends BaseActivity {
     private void setNaver(){
         mOAuthLoginModule = OAuthLogin.getInstance();
         mOAuthLoginModule.init(this,CLIENT_ID,CLIENT_SECRET,CLIENT_NAME);
+        mOAuthLoginModule.logout(this);
     }
 
     private class RequestApiTask extends AsyncTask<Void,Void,Void>{

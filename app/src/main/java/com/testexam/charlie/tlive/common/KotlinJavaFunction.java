@@ -1,13 +1,8 @@
 package com.testexam.charlie.tlive.common;
 
 import android.content.Context;
-import android.content.Intent;
 
-import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity;
-import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity_;
-import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity;
-import com.testexam.charlie.tlive.main.live.webrtc.viewer.ViewerActivity_;
-//import com.testexam.charlie.tlive.main.live.webrtc.broadcaster.BroadCasterActivity_;
+import android.widget.ImageView;
 
 /**
  * Created by charlie on 2018. 5. 29..
@@ -17,14 +12,14 @@ public class KotlinJavaFunction {
 
     public KotlinJavaFunction(){}
 
-    public void goLive(Context context){
-        //context.startActivity(new Intent(context,BroadCasterActivity.class));
-        //context.startActivity(new Intent(context, BroadCasterActivity_))
+    public void setGlide(Context context, ImageView imageView, String imageUrl){
+        //
+        //Glide.get(context).clearDiskCache();
+//        Glide.with(context)
+//                .load(Uri.parse(imageUrl))
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .into(imageView);
 
-        BroadCasterActivity_.intent(context).start();
-    }
 
-    public void goViewer(Context context){
-        ViewerActivity_.intent(context).start();
     }
 }
