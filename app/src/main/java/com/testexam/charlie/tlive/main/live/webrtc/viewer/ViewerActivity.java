@@ -82,7 +82,7 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
     private String name;
 
     private ChatAdapter chatAdapter; // 채팅 recycler view 와 연결하는 어댑터
-
+    private RecyclerView chatRecyclerView;
     private EditText viewerChatEt;
     private Button viewerChatSendBtn;
 
@@ -129,7 +129,7 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
                 chatObj.put("message",viewerChatEt.getText().toString());
                 socketService.sendMessage(chatObj.toString());
                 runOnUiThread(()->{
-                    chatAdapter.setData(new Chat(name,viewerChatEt.getText().toString()));
+                    chatAdapter.setData(new Chat(name,viewerChatEt.getText().toString(),0));
                     viewerChatEt.setText("");
                 });
             } catch (JSONException e){
@@ -169,7 +169,7 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
     private void setChatRecyclerView(){
         chatAdapter = new ChatAdapter(new ArrayList<>(), getApplicationContext(),0);
 
-        RecyclerView chatRecyclerView = findViewById(R.id.viewerChatRv);
+        chatRecyclerView = findViewById(R.id.viewerChatRv);
         chatRecyclerView.setAdapter(chatAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
@@ -178,7 +178,10 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
     }
 
     private void receiveChatMessage(String sender, String message){
-        runOnUiThread(() -> chatAdapter.setData(new Chat(sender, message)));
+        runOnUiThread(() ->{
+            chatAdapter.setData(new Chat(sender, message,0));
+            chatRecyclerView.scrollToPosition(chatAdapter.getItemCount()-1);
+        });
     }
 
     public EglBase.Context getEglBaseContext() {

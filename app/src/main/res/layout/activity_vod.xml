@@ -19,8 +19,14 @@
         />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/vodChatRv"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="8dp"
+        android:background="@drawable/sp_vod_rv_gradient"
         />
 </RelativeLayout>

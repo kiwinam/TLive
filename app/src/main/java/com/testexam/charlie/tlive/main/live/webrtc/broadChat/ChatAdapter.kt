@@ -37,7 +37,16 @@ class ChatAdapter(private var chatLists : ArrayList<Chat>, val context : Context
         chatLists.add(chat)
         //notifyItemInserted(chatLists.size-1)
         notifyDataSetChanged() // 스레드 문제
+    }
 
+    fun setChatListData(newChatArray : ArrayList<Chat>){
+        chatLists = newChatArray
+        notifyDataSetChanged()
+    }
+
+    fun clearAll(){
+        chatLists.clear()
+        notifyDataSetChanged()
     }
 
 //    fun setColorMode(colorMode : Int){

@@ -180,7 +180,7 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
 
     private void receiveChatMessage(String sender, String message) {
         runOnUiThread(()-> {
-            chatAdapter.setData(new Chat(sender,message));
+            chatAdapter.setData(new Chat(sender,message,0));
             liveBroadChatRv.scrollToPosition(chatAdapter.getItemCount()-1);
         });
     }
