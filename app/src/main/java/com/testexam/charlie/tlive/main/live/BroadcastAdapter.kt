@@ -98,6 +98,16 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val cont
             holder.broadLiveNumTv.visibility = View.GONE
             holder.broadLiveCircle.visibility = View.GONE
         }
+        // 구독 버튼을 눌렀을 때,
+        holder.broadSubscriptIv.setOnClickListener( {
+            
+        })
+
+        // 좋아요 버튼을 눌렀을 때,
+        holder.broadLikeIv.setOnClickListener({
+
+        })
+
     }
 
     override fun getItemCount(): Int {
@@ -116,7 +126,8 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>,val cont
         val broadPreviewIv = broadView.findViewById<ImageView>(R.id.broadPreviewIv)!!
         val broadHostIv = broadView.findViewById<ImageView>(R.id.broadHostIv)!!
         val broadMoreInfoIv = broadView.findViewById<ImageView>(R.id.broadMoreInfoIv)!!
-
+        val broadLikeIv = broadView.findViewById<ImageView>(R.id.broadLikeIv)!!
+        val broadSubscriptIv = broadView.findViewById<ImageView>(R.id.broadSubscriptIv)!!
 
         val broadHostNameTv = broadView.findViewById<TextView>(R.id.broadHostNameTv)!!
         val broadRoomNameTv = broadView.findViewById<TextView>(R.id.broadRoomNameTv)!!

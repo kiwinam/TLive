@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp"
+    >
+    <ImageView
+        android:id="@+id/findFriendProfileIv"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:padding="6dp"
+        android:src="@drawable/ic_profile_ex1"
+        />
+    <TextView
+        android:id="@+id/findFriendNameTv"
+        android:text="박천명"
+        android:textSize="20sp"
+        android:textColor="#484848"
+        android:layout_toEndOf="@id/findFriendProfileIv"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        />
+    <ImageView
+        android:id="@+id/findFriendPlusIv"
+        android:src="@drawable/ic_person_add_gray_24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_width="56dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="16dp"
+        />
+</RelativeLayout>

@@ -53,6 +53,8 @@
             android:configChanges="orientation|screenSize"/>
         <activity android:name=".main.live.webrtc.broadcaster.BroadCasterActivity"
             android:screenOrientation="landscape"/>
+
+        <activity android:name=".main.follow.FindFriendActivity" />
     </application>
 
 </manifest>

@@ -48,5 +48,9 @@
     <string name="start_live_ko">방송 시작</string>
     <string name="set_broadcast_ko">방송 설정</string>
     <string name="send_ko">보내기</string>
+    <string name="friend_detail_text">친구로 추가하여 온라인 상태를  확인하고 멋진 방송에 초대하세요</string>
+    <string name="friend_text">친구와 함께 보기</string>
+    <string name="add_friend_ko">친구 추가</string>
+    <string name="close">close</string>
 
 </resources>

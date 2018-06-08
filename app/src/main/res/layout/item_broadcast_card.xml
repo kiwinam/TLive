@@ -18,10 +18,15 @@
             android:background="#89545454"
             android:scaleType="centerCrop"
             />
+        <View
+            android:layout_alignBottom="@id/broadPreviewIv"
+            android:layout_width="match_parent"
+            android:background="@drawable/sp_broadchat_rv_gradient"
+            android:layout_height="60dp"/>
         <TextView
             android:id="@+id/broadLiveTv"
             android:text="라이브"
-            android:textColor="#eac60000"
+            android:textColor="#fff"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:padding="4dp"
@@ -34,7 +39,7 @@
         <TextView
             android:id="@+id/broadVodTv"
             android:text="VOD"
-            android:textColor="@color/colorGray"
+            android:textColor="#fff"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:padding="4dp"
@@ -43,7 +48,7 @@
             android:background="@drawable/sp_vod_rect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             />
         <View
             android:id="@+id/broadLiveCircle"
@@ -69,7 +74,7 @@
             android:layout_below="@id/broadPreviewIv"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:background="@color/colorPrimaryDeepDark"
+            android:background="#c2720a"
             >
             <ImageView
                 android:id="@+id/broadHostIv"

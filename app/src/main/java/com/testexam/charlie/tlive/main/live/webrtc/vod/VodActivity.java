@@ -52,6 +52,7 @@ import java.util.concurrent.ExecutionException;
  * Created by charlie on 2018. 5. 30
  */
 
+@SuppressWarnings("deprecation")
 public class VodActivity extends BaseActivity implements ExoPlayer.EventListener{
 
     private SimpleExoPlayer player;
