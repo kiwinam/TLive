@@ -37,12 +37,17 @@
             android:text="@string/add_friend_ko"
             android:textColor="@color/colorPrimary" />
     </LinearLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/friendNestedScrollView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/friendSwipeLo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/friendNestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,7 +106,9 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/friendPlusFAB"

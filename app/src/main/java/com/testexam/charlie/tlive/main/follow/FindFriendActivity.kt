@@ -89,7 +89,7 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
                             searchList.add(User(
                                     friend.getString("email"),
                                     friend.getString("name"),
-                                    friend.getString("profileUrl"),false))
+                                    friend.getString("profileUrl"),false,0))
                         }
                         this.runOnUiThread({
                             findAdapter!!.setDate(searchList)

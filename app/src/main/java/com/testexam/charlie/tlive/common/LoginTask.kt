@@ -6,7 +6,6 @@ import android.os.AsyncTask
 import android.util.Log
 import com.testexam.charlie.tlive.retrofit_java.ConnectionListJava
 import com.testexam.charlie.tlive.retrofit_java.LoginResponse
-import com.testexam.charlie.tlive.retrofit_java.ResultResponse
 import com.testexam.charlie.tlive.retrofit_java.RetrofitConnJava
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -17,7 +16,7 @@ import java.net.SocketTimeoutException
  * 로그인 처리를 진행하는 클래스
  * Created by charlie on 2018. 5. 24
  */
-class LoginTask(val context: Context) : AsyncTask<String,Void,Boolean>() {
+class LoginTask(val context : Context) : AsyncTask<String,Void,Boolean>() {
     private var email : String = ""
     private var password : String = ""
 
@@ -30,8 +29,8 @@ class LoginTask(val context: Context) : AsyncTask<String,Void,Boolean>() {
 
         // map 에 회원가입 필수 입력 사항 (name, email, password) 을 넣는다.
         val map : HashMap<String, RequestBody> = HashMap()
-        map.put("email", RequestBody.create(MediaType.parse("multipart/form-data"),email))
-        map.put("password", RequestBody.create(MediaType.parse("multipart/form-data"),password))
+        map["email"] = RequestBody.create(MediaType.parse("multipart/form-data"),email)
+        map["password"] = RequestBody.create(MediaType.parse("multipart/form-data"),password)
 
         val call : Call<LoginResponse> = getResponse.requestLogin(map)
         try{

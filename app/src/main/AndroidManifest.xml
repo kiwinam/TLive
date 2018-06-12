@@ -53,8 +53,21 @@
             android:configChanges="orientation|screenSize"/>
         <activity android:name=".main.live.webrtc.broadcaster.BroadCasterActivity"
             android:screenOrientation="landscape"/>
-
         <activity android:name=".main.follow.FindFriendActivity" />
+        <activity android:name=".main.follow.chat.ChatActivity"/>
+
+        <!-- 채팅 관련 Receiver 와 service -->
+        <receiver android:name=".main.follow.chat.ChatReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.testexam.charlie.tlive.main.follow.chat.ChatService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

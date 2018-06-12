@@ -3,11 +3,13 @@ package com.testexam.charlie.tlive
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.login.SelectActivity
 import com.testexam.charlie.tlive.main.MainActivity
+import com.testexam.charlie.tlive.main.follow.chat.ChatService
 
 /**
  * Splash Activity
@@ -22,10 +24,15 @@ class SplashActivity : BaseActivity() {
         val prefs : SharedPreferences? = getSharedPreferences("login", Context.MODE_PRIVATE)
 
         val nextIntent =
-            if(prefs!!.getString("email","none") == "none"){
-              Intent(applicationContext, SelectActivity::class.java)
-          }else{
-             Intent(applicationContext, MainActivity::class.java)
+        if(prefs!!.getString("email","none") == "none"){
+            Intent(applicationContext, SelectActivity::class.java)
+        }else{
+            Intent(applicationContext, MainActivity::class.java)
+        }
+
+
+        if(prefs.getString("email","none") !== "none"){
+            startService(Intent(applicationContext, ChatService::class.java))
         }
         startActivity(nextIntent)
         finish()

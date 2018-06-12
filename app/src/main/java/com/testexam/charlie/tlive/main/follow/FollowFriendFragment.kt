@@ -4,15 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.testexam.charlie.tlive.R
+import com.testexam.charlie.tlive.R.id.*
+import com.testexam.charlie.tlive.R.string.email
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
+import com.testexam.charlie.tlive.common.RecyclerItemClickListener
+import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
+import com.testexam.charlie.tlive.main.follow.chat.ClickListener
 import kotlinx.android.synthetic.main.fragment_follow_friend.*
+import org.androidannotations.annotations.Click
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -48,18 +57,42 @@ class FollowFriendFragment : Fragment() , View.OnClickListener{
     }
 
     private fun setFriendListRecyclerView(){
+        val linearLayoutManager = LinearLayoutManager(context)
+
         // 새로운 친구 요청 RecyclerView 설정
         friendNewList = ArrayList()
-        friendNewAdapter = FriendAdapter(friendNewList!!, context!!)
+        friendNewAdapter = FriendAdapter(email!!, friendNewList!!,context!!)
         friendNewRv.layoutManager = LinearLayoutManager(context)
         friendNewRv.adapter = friendNewAdapter
+        friendNewRv.addItemDecoration(DividerItemDecoration(context, linearLayoutManager.orientation))
 
         // 기존 친구 리스트 RecyclerView 설정
         friendList = ArrayList()
-        friendAdapter = FriendAdapter(friendList!!, context!!)
+        friendAdapter = FriendAdapter(email!!,friendList!!, context!!)
         friendListRv.layoutManager = LinearLayoutManager(context)
         friendListRv.adapter = friendAdapter
+        friendListRv.addItemDecoration(DividerItemDecoration(context, linearLayoutManager.orientation))
 
+        // recyclerView onClickListener
+        friendListRv.addOnItemTouchListener(RecyclerItemClickListener(
+                context, friendListRv, object : RecyclerItemClickListener.OnItemClickListener{
+            override fun onItemClick(view: View?, position: Int) {
+                val friend = friendList!!.get(position)
+                Log.d("friend Rv", "onItemClick ($position)")
+                val intent = Intent(context,ChatActivity::class.java)
+                intent.putExtra("targetEmail",friend.email)
+                intent.putExtra("targetName",friend.name)
+                context!!.startActivity(intent)
+            }
+
+            override fun onLongItemClick(view: View?, position: Int) {
+            }})
+        )
+
+        // 스와이프 레이아웃 설정
+        friendSwipeLo.setOnRefreshListener({
+            getFriendList()
+        })
 
         getFriendList() // 친구 목록 불러오기
     }
@@ -95,7 +128,8 @@ class FollowFriendFragment : Fragment() , View.OnClickListener{
                             friendNewList!!.add(User(
                                     friend.getString("email"),
                                     friend.getString("name"),
-                                    friend.getString("profileUrl"), true))
+                                    friend.getString("profileUrl"), true,
+                                    friend.getInt("friendNo")))
                         // 기존 친구 목록일 경우
                         }else{
                             Log.d("friend","already")
@@ -103,7 +137,8 @@ class FollowFriendFragment : Fragment() , View.OnClickListener{
                             friendList!!.add(User(
                                     friend.getString("email"),
                                     friend.getString("name"),
-                                    friend.getString("profileUrl"), false))
+                                    friend.getString("profileUrl"), false,
+                                    friend.getInt("friendNo")))
                         }
                     }
                     // 친구 요청이 있는 경우
@@ -127,6 +162,10 @@ class FollowFriendFragment : Fragment() , View.OnClickListener{
                 }
             }catch (e : Exception){
                 e.printStackTrace()
+            }finally{
+                if(friendSwipeLo != null){
+                    friendSwipeLo.isRefreshing = false
+                }
             }
         }.run()
     }
@@ -140,6 +179,7 @@ class FollowFriendFragment : Fragment() , View.OnClickListener{
             friendPlusFAB -> {
                 Log.d("friend","fab plus")
                 startFindActivity()
+                //startActivity(Intent(context,ChatActivity::class.java))
             }
         }
     }
