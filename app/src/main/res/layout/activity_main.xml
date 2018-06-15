@@ -25,6 +25,7 @@
         android:elevation="8dp"
         app:itemIconTint="@drawable/selector_bottom_color"
         app:itemTextColor="@drawable/selector_bottom_color"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
         >
     </android.support.design.widget.BottomNavigationView>
 </android.support.constraint.ConstraintLayout>

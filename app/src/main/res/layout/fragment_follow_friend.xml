@@ -118,5 +118,6 @@
         android:layout_marginEnd="24dp"
         android:src="@drawable/ic_person_add_white_24dp"
         app:layout_anchor="@id/friendNestedScrollView"
+        app:layout_scrollFlags="scroll|enterAlways"
         app:layout_anchorGravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

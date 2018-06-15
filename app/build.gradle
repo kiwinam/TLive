@@ -50,9 +50,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
 
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    implementation ('com.naver.nid:naveridlogin-android-sdk:4.2.0')
+    implementation('com.naver.nid:naveridlogin-android-sdk:4.2.0')
 
     //noinspection GradleCompatible
     implementation 'com.android.support:support-core-utils:27.1.1'
@@ -70,6 +70,8 @@ dependencies {
 
     implementation 'com.github.nhancv:nc-android-webrtcpeer:2.1.0'
 
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     //Android annotation
     annotationProcessor "org.androidannotations:androidannotations:4.4.0"

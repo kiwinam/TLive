@@ -1,6 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="210dp"
+    android:layout_margin="4dp"
+    android:background="#fff"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/placePreviewIv"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:scaleType="centerCrop"
+            />
+        <TextView
+            android:id="@+id/placeNameTv"
+            android:layout_marginTop="8dp"
+            android:text="1. 아빠곰수제돈까스"
+            android:textColor="#000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_below="@id/placePreviewIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            />
+        <TextView
+            android:id="@+id/placeStationTv"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            android:text="강남역 - "
+            android:textSize="10sp"
+            android:layout_below="@id/placeNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/placeDistanceTv"
+            android:text="364m"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@id/placeNameTv"
+            android:layout_toEndOf="@id/placeStationTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/placeViewerIv"
+            android:layout_below="@id/placeStationTv"
+            android:src="@drawable/ic_visibility_gray_24dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_width="20dp"
+            android:layout_height="16dp" />
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/placeViewerTv"
+            android:text="3941"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_below="@id/placeStationTv"
+            android:layout_toEndOf="@id/placeViewerIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/placeReviewIv"
+            android:layout_below="@id/placeStationTv"
+            android:src="@drawable/ic_edit_gray_24dp"
+            android:layout_toEndOf="@id/placeViewerTv"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_width="20dp"
+            android:layout_height="16dp" />
+
+        <TextView
+            android:id="@+id/placeReviewTv"
+            android:text="0"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_below="@id/placeStationTv"
+            android:layout_toEndOf="@id/placeReviewIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/placeStarScoreTv"
+            android:text="4.5"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            android:layout_below="@id/placePreviewIv"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>

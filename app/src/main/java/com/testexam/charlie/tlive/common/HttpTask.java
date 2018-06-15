@@ -21,13 +21,12 @@ import java.util.ArrayList;
  * Created by charlie on 2018. 5. 30
  */
 public class HttpTask extends AsyncTask<String, Void, String> {
-    private final String serverUrl = "http://13.125.64.135:80/app/";
     //private final String serverUrl = "http://13.209.41.194:80/app/";
     private String requestUrl; // 요청할 서버 URL
-    private ArrayList<Params> params = new ArrayList<>(); // 요청시 전달할 파라미터
+    private ArrayList<Params> params; // 요청시 전달할 파라미터
 
     private String result;  // http response body 값을 저장하는 변수
-
+    private HttpURLConnection conn;
     /*
      * Http Constructor, requestUrl 과 params 변수를 초기화한다.
      */
@@ -43,7 +42,7 @@ public class HttpTask extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... strings) {
         try{
             URL url = new URL(getRequestUrl());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestMethod("POST");
 
@@ -71,6 +70,8 @@ public class HttpTask extends AsyncTask<String, Void, String> {
 
         } catch (IOException e){
             e.printStackTrace();
+        } finally {
+            conn.disconnect();
         }
         return result;
     }
@@ -78,7 +79,9 @@ public class HttpTask extends AsyncTask<String, Void, String> {
     /*
      * requestUrl 를 반환한다.
      */
-    private String getRequestUrl() { return serverUrl+requestUrl; }
+    private String getRequestUrl() {
+        String serverUrl = "http://13.125.64.135:80/app/";
+        return serverUrl +requestUrl; }
 
     /*
      * 전달 받은 파라미터 리스트를 Key=Value 형식의 String 으로 반환한다.
