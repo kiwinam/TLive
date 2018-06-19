@@ -100,33 +100,36 @@ class LiveFragment : Fragment() , View.OnClickListener{
                 //Glide.get(context!!).clearDiskCache()
                 val httpTask = HttpTask("getBroadcastList.php", ArrayList<Params>())
                 val result = httpTask.execute().get()
-                val array = JSONArray(result)
-                broadcastList.clear()
-                for(i in 0..(array.length()-1)){
-                    val responseObject = array.getJSONObject(i)
-                    broadcastList.add(Broadcast
-                    (responseObject.getString("hostEmail"),
-                            (responseObject.getString("hostName")),
-                            (responseObject.getString("hostProfileUrl")),
-                            (responseObject.getInt("roomNo")),
-                            (responseObject.getInt("roomSessionNo")),
-                            (responseObject.getString("roomName")),
-                            (responseObject.getString("roomTag")),
-                            (responseObject.getInt("likeNum")),
-                            (responseObject.getInt("viewerNum")),
-                            (responseObject.getInt("isLive")),
-                            (responseObject.getString("uploadTime")),
-                            (responseObject.getString("previewSrc")),
-                            (responseObject.getString("vodSrc"))
-                    ))
-                }
-                activity!!.runOnUiThread({
-                    adapter?.setData(broadcastList)
-                    adapter?.notifyDataSetChanged()
-                    if(liveSwipeRefreshLo != null){
-                        liveSwipeRefreshLo.isRefreshing = false
+                if(result != null){
+                    val array = JSONArray(result)
+                    broadcastList.clear()
+                    for(i in 0..(array.length()-1)){
+                        val responseObject = array.getJSONObject(i)
+                        broadcastList.add(Broadcast
+                        (responseObject.getString("hostEmail"),
+                                (responseObject.getString("hostName")),
+                                (responseObject.getString("hostProfileUrl")),
+                                (responseObject.getInt("roomNo")),
+                                (responseObject.getInt("roomSessionNo")),
+                                (responseObject.getString("roomName")),
+                                (responseObject.getString("roomTag")),
+                                (responseObject.getInt("likeNum")),
+                                (responseObject.getInt("viewerNum")),
+                                (responseObject.getInt("isLive")),
+                                (responseObject.getString("uploadTime")),
+                                (responseObject.getString("previewSrc")),
+                                (responseObject.getString("vodSrc"))
+                        ))
                     }
-                })
+                    activity!!.runOnUiThread({
+                        adapter?.setData(broadcastList)
+                        adapter?.notifyDataSetChanged()
+                        if(liveSwipeRefreshLo != null){
+                            liveSwipeRefreshLo.isRefreshing = false
+                        }
+                    })
+                }
+
                 
             } catch (e : Exception){
                 e.printStackTrace()

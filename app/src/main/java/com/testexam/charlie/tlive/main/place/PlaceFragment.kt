@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.main.place
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -8,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +17,7 @@ import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.GPSInfo
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
+import com.testexam.charlie.tlive.main.place.map.MapsActivity
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
 import java.io.IOException
@@ -44,7 +45,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
     private var area = "" // 현재 위치의 행정 구역
     private var lat : Double = 0.0 // 현재 위치의 위도
     private var lon  : Double = 0.0 // 현재 위치의 경도
-    private var limitDistance : Int = 500 // 맛집 검색시 최대 거리
+    private var limitDistance : Float = 500.0f // 맛집 검색시 최대 거리
 
     private var placeList : ArrayList<Place> = ArrayList() // 맛집 리스트들을 담는 ArrayList
     private var placeAdapter : PlaceAdapter? = null // 맛집 RecyclerView 를 설정하는 어댑터
@@ -61,7 +62,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
-
+        setClickListeners()
         setPlaceRecyclerView() // 맛집 RecyclerView 설정
         checkSelfPermission() // 권한 확인
 
@@ -96,7 +97,17 @@ class PlaceFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onClick(v: View?) {
-
+        when(v){
+            placeMapIv->{
+                val mapIntent = Intent(context, MapsActivity::class.java)
+                mapIntent.putParcelableArrayListExtra("placeList",placeList)
+                mapIntent.putExtra("area",area)
+                mapIntent.putExtra("lat",lat)
+                mapIntent.putExtra("lon",lon)
+                mapIntent.putExtra("limit",limitDistance)
+                startActivity(mapIntent)
+            }
+        }
     }
 
     /*
@@ -144,7 +155,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
 
     // 클릭 리스너들 설정
     private fun setClickListeners(){
-
+        placeMapIv.setOnClickListener(this)
     }
 
     /*
@@ -188,8 +199,10 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                     for(i in 0 .. (placeArray.length()-1)){
                         val place = placeArray.getJSONObject(i)
                         placeList.add(Place(
-                                place.getInt("no"),                     // no
+                                (i+1),                                      // no
                                 place.getString("name"),                // name
+                                place.getDouble("lat"),                 // lat
+                                place.getDouble("lon"),                 // lon
                                 place.getString("nearStation"),         // nearStation
                                 place.getDouble("starScore").toFloat(), // starScore
                                 place.getString("category"),            // category

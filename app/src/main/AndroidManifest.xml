@@ -88,7 +88,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name=".main.place.MapsActivity"
+            android:name=".main.place.map.MapsActivity"
             android:label="@string/title_activity_maps"/>
     </application>
 

@@ -28,12 +28,12 @@ class PlaceAdapter (private var placeList : ArrayList<Place>, val context : Cont
     override fun onBindViewHolder(holder: PlaceHolder, position: Int) {
         val place = placeList[position]
 
-        if(place.previewSrc != null){
+        if(place.previewSrc != ""){
             Glide.with(context)
                     .load(reviewImgUrl+place.previewSrc)
                     .into(holder.placePreviewIv)
         }
-        holder.placeNameTv.text = place.name
+        holder.placeNameTv.text = (place.no).toString()+". "+place.name
         holder.placeStationTv.text = place.nearStation+" - "
         holder.placeDistanceTv.text = place.distance.toString()+"m"
         holder.placeViewerTv.text = place.viewNum.toString()
