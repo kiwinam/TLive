@@ -12,4 +12,10 @@
     <color name="colorBackground">#efeef3</color>
     <color name="colorBottomMenu">#706f75</color>
     <color name="colorGray">#838383</color>
+
+    <color name="mapboxPink">#ee4e8b</color>
+    <color name="mapboxYellow">#d9d838</color>
+    <color name="mapboxRed">#b43b71</color>
+    <color name="mapboxWhite">#b43b71</color>
+    <color name="mapboxBlue">#b43b71</color>
 </resources>

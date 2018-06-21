@@ -106,7 +106,7 @@
                     android:layout_height="36dp"
                     android:text="@string/_20"
                     android:textColor="@color/colorPrimary"
-                    android:background="@drawable/sp_midle_line_rect"
+                    android:background="@drawable/sp_middle_line_rect"
                     />
                 <Button
                     android:id="@+id/optAge30Btn"
@@ -115,7 +115,7 @@
                     android:layout_height="36dp"
                     android:text="@string/_30"
                     android:textColor="@color/colorPrimary"
-                    android:background="@drawable/sp_midle_line_rect"
+                    android:background="@drawable/sp_middle_line_rect"
                     />
                 <Button
                     android:id="@+id/optAge40Btn"
@@ -124,7 +124,7 @@
                     android:layout_height="36dp"
                     android:text="@string/_40"
                     android:textColor="@color/colorPrimary"
-                    android:background="@drawable/sp_midle_line_rect"
+                    android:background="@drawable/sp_middle_line_rect"
                     />
                 <Button
                     android:id="@+id/optAge50Btn"

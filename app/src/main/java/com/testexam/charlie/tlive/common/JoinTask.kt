@@ -62,7 +62,7 @@ class JoinTask : AsyncTask<String,Void,Int>() {
         try{
             val response = call.execute()
             resultCode = if(response.isSuccessful){
-                if(response.body().message.toString() == "-1"){
+                if(response.body()!!.message.toString() == "-1"){
                     JOIN_EXSIST // 같은 이메일로 이미 회원가입이 되어있음.
                 }else{
                     JOIN_OK // 회원가입 성공

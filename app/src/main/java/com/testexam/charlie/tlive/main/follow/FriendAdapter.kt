@@ -1,26 +1,20 @@
 package com.testexam.charlie.tlive.main.follow
 
 import android.app.AlertDialog
+import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.support.v4.content.ContextCompat.startActivity
-import android.util.Log
 import android.widget.*
 import com.bumptech.glide.Glide
-
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
-import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
-import com.testexam.charlie.tlive.main.follow.chat.ClickListener
 
-class FriendAdapter(val email : String, private var friendList : ArrayList<User>,  val context : Context) : RecyclerView.Adapter<FriendAdapter.FriendHolder>() {
+@Suppress("NAME_SHADOWING")
+class FriendAdapter(val email : String, private var friendList : ArrayList<User>, val context : Context) : RecyclerView.Adapter<FriendAdapter.FriendHolder>() {
     private val serverUrl = "http://13.125.64.135/profile/" // AWS 의 Elastic IP address
 
 
@@ -41,13 +35,13 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                 val dialog : AlertDialog.Builder = AlertDialog.Builder(context,R.style.myDialog)
                 dialog.setTitle("친구 수락")
                         .setMessage(user.name+"님의 친구 요청을 수락하시겠습니까?")
-                        .setPositiveButton("수락", { dialog, which ->
+                        .setPositiveButton("수락", { dialog, _ ->
                             val params = ArrayList<Params>()
                             params.add(Params("email",email))
                             params.add(Params("requestNo",user.friendNo.toString()))
                             params.add(Params("answer","ok"))
                             val result = HttpTask("procRequestFriend.php",params).execute().get()
-                            Log.d("result accept",result+"..")
+                            Log.d("result accept", "$result..")
                             if(result == "ok"){
                                 Toast.makeText(context,"친구 요청을 수락했습니다.",Toast.LENGTH_SHORT).show()
                             }else{
@@ -55,7 +49,7 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                             }
                             dialog.dismiss()
                         })
-                        .setNegativeButton("취소", { dialog, which -> dialog.cancel() })
+                        .setNegativeButton("취소", { dialog, _ -> dialog.cancel() })
                         .show()
 
             })
@@ -63,13 +57,13 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                 val dialog : AlertDialog.Builder = AlertDialog.Builder(context,R.style.myDialog)
                 dialog.setTitle("거절")
                         .setMessage(user.name+"님의 친구 요청을 거절하시겠습니까?")
-                        .setPositiveButton("거절", { dialog, which ->
+                        .setPositiveButton("거절", { dialog, _ ->
                             val params = ArrayList<Params>()
                             params.add(Params("email",email))
                             params.add(Params("requestNo",user.friendNo.toString()))
                             params.add(Params("answer","no"))
                             val result = HttpTask("procRequestFriend.php",params).execute().get()
-                            Log.d("result decline ",result+"..")
+                            Log.d("result decline ", "$result..")
                             if(result == "ok"){
                                 Toast.makeText(context,"친구 요청을 거절했습니다.",Toast.LENGTH_SHORT).show()
                             }else{
@@ -77,7 +71,7 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                             }
                             dialog.dismiss()
                         })
-                        .setNegativeButton("취소", { dialog, which -> dialog.cancel() })
+                        .setNegativeButton("취소", { dialog, _ -> dialog.cancel() })
                         .show()
 
             })
@@ -115,7 +109,7 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
     class FriendHolder (friendHolder : View) : RecyclerView.ViewHolder(friendHolder){
 
         // 처음 채팅 방으로 이동하기 위해 전체 뷰에 클릭 리스너 달아야함
-        val friendLo = friendHolder.findViewById<RelativeLayout>(R.id.friendLo)
+        val friendLo = friendHolder.findViewById<RelativeLayout>(R.id.friendLo)!!
 
         val friendProfileIv = friendHolder.findViewById<ImageView>(R.id.friendProfileIv)!!
 

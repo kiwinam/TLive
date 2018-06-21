@@ -33,7 +33,7 @@
             android:layout_width="100dp"
             android:layout_height="36dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/sp_midle_line_rect"
+            android:background="@drawable/sp_middle_line_rect"
             android:text="@string/add_friend_ko"
             android:textColor="@color/colorPrimary" />
     </LinearLayout>

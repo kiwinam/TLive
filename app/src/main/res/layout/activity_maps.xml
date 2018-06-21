@@ -9,25 +9,86 @@
         android:layout_width="match_parent"
         android:layout_height="56dp">
         <TextView
-            android:id="@+id/mapAreaTv"
+            android:id="@+id/mapAreaInfoTv"
+            android:text="지금 보고있는 지역은"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/mapAreaTv"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:layout_below="@id/mapAreaInfoTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/mapSearchIv"
+            android:src="@drawable/ic_search_gray_24dp"
+            android:layout_toStartOf="@id/mapCloseIv"
+            android:padding="12dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="4dp"
+            android:layout_centerVertical="true"
+            />
+        <View
+            android:background="@color/colorGray"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/mapCloseIv"
+            android:layout_width="0.75dp"
+            android:layout_height="32dp"/>
+        <ImageView
+            android:id="@+id/mapCloseIv"
+            android:src="@drawable/ic_close_gray_24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:padding="12dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/close" />
+        <View
+            android:background="#83000000"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="#fff"
         >
+        <TextView
+            android:id="@+id/mapSortTv"
+            android:text="@string/star_score_ko"
+            android:textSize="12sp"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+            android:drawablePadding="-4dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            />
         <LinearLayout
             android:id="@+id/mapLocationLo"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/mapFilterLo"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
-            android:paddingStart="8dp"
+            android:paddingStart="4dp"
             android:paddingEnd="8dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/sp_location_back"
+            android:background="@drawable/sp_orange_rounded_box"
             android:clickable="true"
             android:focusable="true"
             >
@@ -40,20 +101,52 @@
                 />
             <TextView
                 android:id="@+id/placeLocationTv"
-                android:text="500m"
+                android:text="@string/_500m"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/mapFilterLo"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/sp_gray_round_box"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            >
+            <ImageView
+                android:id="@+id/mapFilterIv"
+                android:src="@drawable/ic_filter"
+                android:padding="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                />
+            <TextView
+                android:id="@+id/mapFilterTv"
+                android:text="@string/filter_ko"
+                android:textSize="12sp"
+                android:gravity="center_vertical"
+                android:padding="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                />
+        </LinearLayout>
+
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <fragment
             android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             tools:context=".main.place.map.MapsActivity" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mapPlaceRv"

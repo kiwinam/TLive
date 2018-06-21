@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+    <LinearLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:elevation="4dp"
+        >
+        <ImageView
+            android:id="@+id/detailCloseIv"
+            android:src="@drawable/ic_down_white_24dp"
+            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/close" />
+        <TextView
+            android:id="@+id/detailTitleTv"
+            android:text="로리스더프라임립"
+            android:textSize="16sp"
+            android:textColor="@color/colorTextWhite"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            />
+    </LinearLayout>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorBackground"
+            >
+            <include
+                android:id="@+id/detailBasicInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/content_detail_basic_info"
+                />
+            <include
+                android:id="@+id/detailLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/content_detail_location" />
+            <include
+                android:id="@+id/detailInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                layout="@layout/content_detail_info"
+                />
+            <include
+                android:id="@+id/detailReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/content_detail_review" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

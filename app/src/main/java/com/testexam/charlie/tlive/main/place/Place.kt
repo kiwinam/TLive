@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Place(val no : Int,
+                 val placeNo : Int,
                  val name : String,
                  val lat : Double,
                  val lon : Double,
@@ -16,6 +17,7 @@ data class Place(val no : Int,
                  val previewSrc : String) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
+            parcel.readInt(),
             parcel.readString(),
             parcel.readDouble(),
             parcel.readDouble(),
@@ -25,11 +27,11 @@ data class Place(val no : Int,
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readString()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(no)
+        parcel.writeInt(placeNo)
         parcel.writeString(name)
         parcel.writeDouble(lat)
         parcel.writeDouble(lon)

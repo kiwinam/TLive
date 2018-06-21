@@ -38,14 +38,14 @@ class LoginTask(val context : Context) : AsyncTask<String,Void,Boolean>() {
 
             // 로그인이 성공적으로 진행 되었을 때
             if(response.isSuccessful){
-                if(response.body().success){
+                if(response.body()!!.success){
                     Log.d("LoginTask-response","true")
                     result = true
-                    val userNo : Int = response.body().userNo
-                    val name : String = response.body().name
-                    val gender : Int = response.body().gender
-                    val age : Int = response.body().age
-                    val profileUrl : String ?= response.body().profileUrl
+                    val userNo : Int = response.body()!!.userNo
+                    val name : String = response.body()!!.name
+                    val gender : Int = response.body()!!.gender
+                    val age : Int = response.body()!!.age
+                    val profileUrl : String ?= response.body()!!.profileUrl
 
                     val prefs : SharedPreferences? = context.getSharedPreferences("login", Context.MODE_PRIVATE)
                     val editor = prefs!!.edit()

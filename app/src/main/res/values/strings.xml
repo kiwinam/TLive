@@ -54,5 +54,20 @@
     <string name="close">close</string>
     <string name="filter_ko">필터</string>
     <string name="title_activity_maps">Map</string>
+    <string name="_500m">500m</string>
+    <string name="star_score_ko"><u>평점순</u></string>
+    <string name="review_request_ko">이 식당에 대한 솔직한 평점을 들려주세요.</string>
+    <string name="want_to_go_ko">가고싶다</string>
+    <string name="tasty_normal_ko">괜찮다</string>
+    <string name="tasty_good_ko">맛있다!</string>
+    <string name="tasty_bad_ko">별로</string>
+    <string name="copy_addr_ko">주소 복사</string>
+    <string name="calling_ko">전화하기</string>
+    <string name="search_blog_ko">블로그 검색하기</string>
+    <string name="search_review_text_ko">이 식당의 블로그 리뷰가 궁금하신가요?</string>
+    <string name="close_bracket">)</string>
+    <string name="tasty_review_ko">맛깔나는 리뷰 (</string>
+    <string name="more_review_ko">리뷰 더보기</string>
+    <string name="show_more_ko">전체 사진 보기</string>
 
 </resources>

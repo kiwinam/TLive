@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.testexam.charlie.tlive"
     android:installLocation="preferExternal">
 
@@ -28,11 +29,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/backup_descriptor"
+        android:name="android.support.multidex.MultiDexApplication"
+        tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC80okU4GCvWC3YBd7lFN6qZYqzgmvo1Bs" />
-
+            android:value="@string/google_maps_key" />
+            <!--android:value="AIzaSyC80okU4GCvWC3YBd7lFN6qZYqzgmvo1Bs" />-->
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
@@ -69,7 +73,9 @@
             android:screenOrientation="landscape" />
         <activity android:name=".main.follow.FindFriendActivity" />
         <activity android:name=".main.follow.chat.ChatActivity" />
-
+        <activity android:name=".main.place.detail.PlaceDetailActivity"/>
+        <activity android:name=".main.place.detail.TMapPathFinderActivity"/>
+        <activity android:name=".main.place.detail.NavigationActivity"/>
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

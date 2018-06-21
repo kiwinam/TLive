@@ -46,7 +46,7 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
     }
 
     private fun setEditTextSearch(){
-        findSearchEt.setOnEditorActionListener { v, actionId, event ->
+        findSearchEt.setOnEditorActionListener { v, actionId, _ ->
             when (actionId){
                 EditorInfo.IME_ACTION_SEARCH->{
                     Log.d("Editor","IME_ACTION_SEARCH")

@@ -17,6 +17,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseActivity(), View.OnClickListener {
 
 
+
+    companion object {
+        // Used to load the 'native-lib' library on application startup.
+        init {
+            System.loadLibrary("native-lib")
+        }
+    }
+    external fun stringFromJNI(): String
+
     private var prefs : SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +94,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      * MainActivity 에서 클릭 리스너를 담당한다.
      */
     override fun onClick(v: View?) {
-        when(v){
-            /*mainToolbarPersonIv->{
+        /*when(v){
+            *//*mainToolbarPersonIv->{
                 // logout
                 val edit = prefs?.edit()
                 edit?.clear()
@@ -98,11 +107,15 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             mainToolbarSearchIv->{
 
-            }*/
-        }
+            }*//*
+        }*/
     }
 
     override fun onBackPressed() {
         finish()
     }
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
 }

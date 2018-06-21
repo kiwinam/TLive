@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.join
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -71,6 +72,7 @@ class OptionalInfoActivity : BaseActivity(), View.OnClickListener {
     /**
      * 추가 정보를 서버로 제출하는 함수.
      */
+    @SuppressLint("LogNotTimber")
     private fun optInfoSubmit(){
         val getResponse : ConnectionListJava = RetrofitConnJava.getRetrofit().create(ConnectionListJava::class.java)
         val pref : SharedPreferences = getSharedPreferences("login", Context.MODE_PRIVATE)
@@ -78,16 +80,16 @@ class OptionalInfoActivity : BaseActivity(), View.OnClickListener {
 
         // map 에 추가 정보를 (gender, age) 을 넣는다.
         val map : HashMap<String, RequestBody> = HashMap()
-        map.put("email", RequestBody.create(MediaType.parse("multipart/form-data"),email.toString()))
-        map.put("gender", RequestBody.create(MediaType.parse("multipart/form-data"),gender.toString()))
-        map.put("age", RequestBody.create(MediaType.parse("multipart/form-data"),age.toString()))
+        map["email"] = RequestBody.create(MediaType.parse("multipart/form-data"),email.toString())
+        map["gender"] = RequestBody.create(MediaType.parse("multipart/form-data"),gender.toString())
+        map["age"] = RequestBody.create(MediaType.parse("multipart/form-data"),age.toString())
         Thread({
             val call : Call<ResultResponse> = getResponse.requestUpdateInfo(map)
             try{
                 val response = call.execute()
                 if(response.isSuccessful){
                     Log.d("response","success")
-                    Log.d("success",response.body().success.toString())
+                    Log.d("success",response.body()!!.success.toString())
                     startActivity(Intent(applicationContext, MainActivity::class.java))
                     finish()
                 }else{
@@ -135,11 +137,11 @@ class OptionalInfoActivity : BaseActivity(), View.OnClickListener {
         optAge10Btn.setTextColor(Color.parseColor("#FFB300"))
         optAge10Btn.setBackgroundResource(R.drawable.sp_left_line_rect)
         optAge20Btn.setTextColor(Color.parseColor("#FFB300"))
-        optAge20Btn.setBackgroundResource(R.drawable.sp_midle_line_rect)
+        optAge20Btn.setBackgroundResource(R.drawable.sp_middle_line_rect)
         optAge30Btn.setTextColor(Color.parseColor("#FFB300"))
-        optAge30Btn.setBackgroundResource(R.drawable.sp_midle_line_rect)
+        optAge30Btn.setBackgroundResource(R.drawable.sp_middle_line_rect)
         optAge40Btn.setTextColor(Color.parseColor("#FFB300"))
-        optAge40Btn.setBackgroundResource(R.drawable.sp_midle_line_rect)
+        optAge40Btn.setBackgroundResource(R.drawable.sp_middle_line_rect)
         optAge50Btn.setTextColor(Color.parseColor("#FFB300"))
         optAge50Btn.setBackgroundResource(R.drawable.sp_right_line_rect)
 

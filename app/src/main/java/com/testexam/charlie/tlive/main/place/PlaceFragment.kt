@@ -17,6 +17,9 @@ import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.GPSInfo
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
+import com.testexam.charlie.tlive.common.RecyclerItemClickListener
+import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
+import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
@@ -74,21 +77,22 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 lat = gps!!.lat // gps 에서 위도를 가져온다.
                 lon = gps!!.lon // gps 에서 경도를 가져온다.
 
-                Log.e("위경도",lat.toString()+"//"+lon.toString())
-
                 val gCoder = Geocoder(context,Locale.KOREA) // 위경도 변환할 Geo coder 를 생성한다. 지역은 한국으로 국한한다.
 
                 try{
-                    val addr = gCoder.getFromLocation(lat,lon,1)
-                    val address : Address = addr[0]
-                    for(i in 0 .. address.maxAddressLineIndex){
-                        Log.d("주소",address.getAddressLine(i)+"\n")
-                        if(i==2){
-                            area = address.getAddressLine(i)
+                    val addr = gCoder.getFromLocation(lat,lon,1) // lat , lon 으로 가져온 위치를 geo coder 를 이용하여 주소로 만든다.
+                    val address : Address = addr[0] // 첫 번째 주소를 가져온다.
+                    for(i in 0 .. address.maxAddressLineIndex){  // 주소의 최대 길이까지 주소를 가져온다.
+                        val addressSlice = address.getAddressLine(i).split(" ") // 주소를 공백을 기준으로 배열로 만든다.
+                        for(j in 0 until addressSlice.size){
+                            if(addressSlice[j].endsWith("구")) { // 주소 배열에서 끝 글자가 '구' 로 끝나는 배열을 가져와 area 변수에 저장한다.
+                                area = addressSlice[j] // 어느 행정 구역에 있는지 area 에 저장한다.
+                                break
+                            }
                         }
                     }
-                    placeAreaTv.text = area
-                    getPlaceList()
+                    placeAreaTv.text = area // 행정 구역을 TextView 에 표시한다.
+                    getPlaceList()  // 현재 위치를 기준으로 서버에서 맛집 리스트를 가져온다.
                 }catch(e : IOException){
                     e.printStackTrace()
                 }
@@ -168,6 +172,24 @@ class PlaceFragment : Fragment() , View.OnClickListener{
         val layoutManager = GridLayoutManager(context,2)
         placeRv.adapter = placeAdapter
         placeRv.layoutManager = layoutManager
+
+        // 맛집 RecyclerView 에 클릭 리스너 추가.
+        // 맛집 아이템을 클릭하면 PlaceDetailActivity 로 이동하여 추가 정보를 볼 수 있다.
+        placeRv.addOnItemTouchListener(RecyclerItemClickListener(
+                context, placeRv, object : RecyclerItemClickListener.OnItemClickListener{
+            override fun onItemClick(view: View?, position: Int) {
+                val place = placeList[position]
+                Log.d("placeRv", "onItemClick ($position)")
+                val intent = Intent(context, PlaceDetailActivity::class.java)
+                intent.putExtra("place",place)
+                intent.putExtra("lat",lat)
+                intent.putExtra("lon",lon)
+                context!!.startActivity(intent)
+            }
+
+            override fun onLongItemClick(view: View?, position: Int) {
+            }})
+        )
     }
 
     /*
@@ -199,7 +221,8 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                     for(i in 0 .. (placeArray.length()-1)){
                         val place = placeArray.getJSONObject(i)
                         placeList.add(Place(
-                                (i+1),                                      // no
+                                (i+1),                                          // no
+                                place.getInt("placeNo"),                // placeNo
                                 place.getString("name"),                // name
                                 place.getDouble("lat"),                 // lat
                                 place.getDouble("lon"),                 // lon
