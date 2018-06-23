@@ -259,7 +259,6 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
         peerConnectionClient.createPeerConnectionFactory(getApplicationContext(), peerConnectionParameters, this );
 
         peerConnectionClient.setVideoEnabled(true);
-
     }
 
     /*

@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.place.detail
+package com.testexam.charlie.tlive.main.place.detail.pathFinder
 
 import android.graphics.BitmapFactory
 import android.os.Bundle

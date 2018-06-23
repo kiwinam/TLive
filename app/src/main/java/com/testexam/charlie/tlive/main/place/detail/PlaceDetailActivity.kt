@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.main.place.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -15,6 +16,8 @@ import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.main.place.Place
+import com.testexam.charlie.tlive.main.place.detail.pathFinder.NavigationActivity
+import com.testexam.charlie.tlive.main.place.detail.pathFinder.SelectPathFinder
 import kotlinx.android.synthetic.main.activity_place_detail.*
 import kotlinx.android.synthetic.main.content_detail_basic_info.*
 import kotlinx.android.synthetic.main.content_detail_info.*
@@ -91,7 +94,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                 val reviews = jsonObject.getString("reviews")
 
                 if(!reviews.isNullOrBlank()){
-                    reviewArray = JSONArray(reviews)
+//                    reviewArray = JSONArray(reviews)
                 }
             }
         }catch (e : Exception ){
@@ -193,7 +196,12 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                 selectPathFinder.show(supportFragmentManager,"bottomSheet") // 바텀시트를 보여준다.
             }
             detailNavigationLo->{ // 네비게이션 버튼
-
+                val mapBoxIntent = Intent(applicationContext, NavigationActivity::class.java)
+                mapBoxIntent.putExtra("startLat",myLatLng.latitude)
+                mapBoxIntent.putExtra("startLng",myLatLng.longitude)
+                mapBoxIntent.putExtra("endLat",place.lat)
+                mapBoxIntent.putExtra("endLng",place.lon)
+                startActivity(mapBoxIntent)
             }
             detailCallTaxiLo->{ // 택시부르기 버튼
 

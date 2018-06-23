@@ -73,9 +73,14 @@
             android:screenOrientation="landscape" />
         <activity android:name=".main.follow.FindFriendActivity" />
         <activity android:name=".main.follow.chat.ChatActivity" />
-        <activity android:name=".main.place.detail.PlaceDetailActivity"/>
-        <activity android:name=".main.place.detail.TMapPathFinderActivity"/>
-        <activity android:name=".main.place.detail.NavigationActivity"/>
+        <activity android:name=".main.place.detail.PlaceDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".main.place.detail.pathFinder.TMapPathFinderActivity"/>
+        <activity android:name=".main.place.detail.pathFinder.NavigationActivity"/>
+        <activity
+            android:name=".main.place.detail.ar.ARNavigationActivity"
+            android:screenOrientation="portrait"
+            />
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

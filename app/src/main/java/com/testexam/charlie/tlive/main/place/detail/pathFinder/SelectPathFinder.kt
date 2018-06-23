@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.place.detail
+package com.testexam.charlie.tlive.main.place.detail.pathFinder
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.google.android.gms.maps.model.LatLng
 import com.testexam.charlie.tlive.R
+import com.testexam.charlie.tlive.main.place.detail.ar.ARNavigationActivity
 
 
 class SelectPathFinder : BottomSheetDialogFragment(), View.OnClickListener {
@@ -42,18 +43,18 @@ class SelectPathFinder : BottomSheetDialogFragment(), View.OnClickListener {
         when(v){
 
             selectPathMap->{
-                val tMapIntent = Intent(context,TMapPathFinderActivity::class.java)
+                val tMapIntent = Intent(context, TMapPathFinderActivity::class.java)
                 tMapIntent.putExtra("startLatLng",startLatLng)
                 tMapIntent.putExtra("endLatLng",endLatLng)
                 startActivity(tMapIntent)
             }
-            selectPathAr->{
-                val mapBoxIntent = Intent(context, NavigationActivity::class.java)
-                mapBoxIntent.putExtra("startLat",startLatLng.latitude)
-                mapBoxIntent.putExtra("startLng",startLatLng.longitude)
-                mapBoxIntent.putExtra("endLat",endLatLng.latitude)
-                mapBoxIntent.putExtra("endLng",endLatLng.longitude)
-                startActivity(mapBoxIntent)
+            selectPathAr-> {
+                val arIntent = Intent(context, ARNavigationActivity::class.java)
+                arIntent.putExtra("startLat", startLatLng.latitude)
+                arIntent.putExtra("startLng", startLatLng.longitude)
+                arIntent.putExtra("endLat", endLatLng.latitude)
+                arIntent.putExtra("endLng", endLatLng.longitude)
+                startActivity(arIntent)
             }
         }
         dismiss()

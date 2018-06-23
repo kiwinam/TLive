@@ -1,10 +1,13 @@
-package com.testexam.charlie.tlive.main.place.detail;
+package com.testexam.charlie.tlive.main.place.detail.pathFinder;
 import java.util.List;
+import java.util.Objects;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-// classes needed to initialize map
+import com.mapbox.api.directions.v5.models.LegStep;
+
+import com.mapbox.core.constants.Constants;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 
@@ -28,6 +31,9 @@ import com.mapbox.android.core.location.LocationEnginePriority;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
+
+// 맵 박스 폴리라인 디코딩
+import com.mapbox.geojson.utils.PolylineUtils;
 
 // classes needed to add a marker
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -62,10 +68,15 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 // classes needed to launch navigation UI
 
 import com.testexam.charlie.tlive.R;
+import com.testexam.charlie.tlive.main.place.detail.ar.model.EndLocation;
+import com.testexam.charlie.tlive.main.place.detail.ar.model.StartLocation;
+import com.testexam.charlie.tlive.main.place.detail.ar.model.Step;
 
 
 public class NavigationActivity extends AppCompatActivity implements LocationEngineListener, PermissionsListener {
 
+    // AR 길찾기
+    private Step steps[];
 
     private MapView mapView;
 
@@ -114,6 +125,7 @@ public class NavigationActivity extends AppCompatActivity implements LocationEng
             // Call this method with Context from within an Activity
             NavigationLauncher.startNavigation(NavigationActivity.this, options);
         });
+        //MapboxUtils mapboxUtils = new MapboxUtils();
 
         LatLng startLatLng = new LatLng(getIntent().getDoubleExtra("startLat",0.0),getIntent().getDoubleExtra("startLng",0.0));
         LatLng endLatLng = new LatLng(getIntent().getDoubleExtra("endLat",0.0),getIntent().getDoubleExtra("endLng",0.0));
@@ -130,12 +142,11 @@ public class NavigationActivity extends AppCompatActivity implements LocationEng
             mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng,15.0f));
             originCoord = new LatLng(originLocation.getLatitude(), originLocation.getLongitude());
         });
-
-
     }
 
 
     private void getRoute(Point origin, Point destination) {
+
         NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
                 .origin(origin)
@@ -155,6 +166,31 @@ public class NavigationActivity extends AppCompatActivity implements LocationEng
                         }
 
                         currentRoute = response.body().routes().get(0);
+                        //System.out.println(currentRoute.toString());
+
+                        Log.e("duration",currentRoute.legs().get(0).duration().toString());
+                        Log.e("distance",currentRoute.legs().get(0).distance().toString());
+                        Log.e("steps size", String.valueOf(currentRoute.legs().get(0).steps().size()));
+                        Log.e("steps 0", String.valueOf(currentRoute.legs().get(0).steps().get(0)));
+                        int stepSize = currentRoute.legs().get(0).steps().size();
+                        steps=new Step[stepSize];
+
+                        for(int i=0;i<stepSize;i++) {
+                            LegStep step = Objects.requireNonNull(Objects.requireNonNull(currentRoute.legs()).get(0).steps()).get(i);
+                            StartLocation startLocation = new StartLocation(step.maneuver().location().latitude(),step.maneuver().location().longitude());
+                            EndLocation endLocation = new EndLocation(step.intersections().get(0).location().latitude(),step.intersections().get(0).location().longitude());
+                            String geometry = step.geometry();
+                            String type = step.maneuver().type();
+                            String modifier = step.maneuver().modifier();
+
+                            steps[i] = new Step(startLocation,endLocation,geometry,type,modifier);
+
+                            Log.d(TAG, "onResponse: STEP "+i+": "+steps[i].getStartLocation().getLat()+"/"+steps[i].getStartLocation().getLng()+">>"
+                                    +steps[i].getEndLocation().getLat()+"/"+steps[i].getEndLocation().getLng());
+
+                            Log.d("step["+i+"]","geometry :: "+geometry);
+                            Log.d("step["+i+"]","decode :: "+ PolylineUtils.decode(geometry, Constants.PRECISION_6).toString());
+                        }
 
                         // Draw the route on the map
                         if (navigationMapRoute != null) {
