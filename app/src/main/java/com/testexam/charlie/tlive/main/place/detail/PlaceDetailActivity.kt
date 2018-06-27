@@ -1,9 +1,9 @@
 package com.testexam.charlie.tlive.main.place.detail
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.View
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,6 +18,7 @@ import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.main.place.Place
 import com.testexam.charlie.tlive.main.place.detail.pathFinder.NavigationActivity
 import com.testexam.charlie.tlive.main.place.detail.pathFinder.SelectPathFinder
+import com.testexam.charlie.tlive.main.place.write.WriteReviewActivity
 import kotlinx.android.synthetic.main.activity_place_detail.*
 import kotlinx.android.synthetic.main.content_detail_basic_info.*
 import kotlinx.android.synthetic.main.content_detail_info.*
@@ -25,13 +26,18 @@ import kotlinx.android.synthetic.main.content_detail_location.*
 import kotlinx.android.synthetic.main.content_detail_review.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.DecimalFormat
+import android.widget.Toast
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+
 
 /**
+ * 맛집에 대한 상세 정보를 보여주는 Activity
  *
  */
 class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback {
-
-
     private lateinit var photoAdapter: PhotoAdapter
     private lateinit var photoList : ArrayList<PlacePhoto>
 
@@ -48,6 +54,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
     private lateinit var menuArray : JSONArray
     private lateinit var reviewArray : JSONArray
 
+    private val decimalFormat = DecimalFormat("#,###")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +62,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
         // 지도 객체 선언
         val mapFragment = supportFragmentManager.findFragmentById(R.id.detailMap) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        Thread{mapFragment.getMapAsync(this)}.run()
 
         place = intent.getParcelableExtra("place") // 선택한 맛집의 정보가 담겨있는 Place 객체를 Intent 에서 가져온다.
 
@@ -75,38 +82,51 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
      * 서버에서 정보를 불러온 다음 View 에 보여주는 setInformation() 메소드를 호출한다.
      */
     private fun getDetailInfo(placeNo : Int){
-        try{
-            val params = ArrayList<Params>()
-            params.add(Params("placeNo",placeNo.toString()))
-            val result = HttpTask("getDetailPlace.php",params).execute().get()
+        runOnUiThread({
+            detailPb.visibility = View.VISIBLE
+        })
+        Thread{
+            try{
+                val params = ArrayList<Params>()
+                params.add(Params("placeNo",placeNo.toString()))
+                val result = HttpTask("getDetailPlace.php",params).execute().get()
 
-            Log.d("getDetailInfo","result : $result")
+                //Log.d("getDetailInfo","result : $result")
 
-            if(result != null){
-                val jsonObject = JSONObject(result)
-                address = jsonObject.getString("address")
-                favoriteNum = jsonObject.getInt("favoriteNum")
-                workingTime = jsonObject.getString("workingTime")
-                breakTime = jsonObject.getString("breakTime")
-                price = jsonObject.getString("price")
+                if(result != null){
+                    val jsonObject = JSONObject(result)
+                    address = jsonObject.getString("address")
+                    favoriteNum = jsonObject.getInt("favoriteNum")
+                    workingTime = jsonObject.getString("workingTime")
+                    breakTime = jsonObject.getString("breakTime")
+                    price = jsonObject.getString("price")
 
-                menuArray = JSONArray(jsonObject.getString("menu"))
-                val reviews = jsonObject.getString("reviews")
+                    menuArray = JSONArray(jsonObject.getString("menu"))
+                    val reviews = jsonObject.getString("reviews")
 
-                if(!reviews.isNullOrBlank()){
-//                    reviewArray = JSONArray(reviews)
+                    // 리뷰가 있는 경우
+
+                    if(!reviews.equals("null")){ // reviews 가 null 이거나 blank 가 아니라면
+                        /*reviewArray = JSONArray(reviews)
+                        for( i in 0 until reviewArray.length()-1){
+                            val photoObject = reviewArray.getJSONObject(i)
+                            photoList.add(PlacePhoto(photoObject.getString("")))
+                        }*/
+                    }
                 }
+            }catch (e : Exception ){
+                e.printStackTrace()
+            }finally {
+                setInformation()
             }
-        }catch (e : Exception ){
-            e.printStackTrace()
-        }finally {
-            setInformation()
-        }
+        }.start()
+
     }
 
     /*
      * 맛집 정보들을 View 에 설정하는 메소드
      */
+    @SuppressLint("SetTextI18n")
     private fun setInformation(){
         detailTitleTv.text = place.name // 타이틀 바에 맛집 이름 설정
         detailNameTv.text = place.name  // detailNameTv 에 맛집 이름 설정
@@ -128,11 +148,12 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
         detailMenu2Tv.text = menuArray.getJSONObject(1).getString("name")
         detailMenu3Tv.text = menuArray.getJSONObject(2).getString("name")
 
-        detailMenuPrice1Tv.text = menuArray.getJSONObject(0).getString("price")
-        detailMenuPrice2Tv.text = menuArray.getJSONObject(1).getString("price")
-        detailMenuPrice3Tv.text = menuArray.getJSONObject(2).getString("price")
-
-
+        detailMenuPrice1Tv.text = decimalFormat.format(menuArray.getJSONObject(0).getString("price").toInt())+"원"
+        detailMenuPrice2Tv.text = decimalFormat.format(menuArray.getJSONObject(1).getString("price").toInt())+"원"
+        detailMenuPrice3Tv.text = decimalFormat.format(menuArray.getJSONObject(2).getString("price").toInt())+"원"
+        runOnUiThread({
+            detailPb.visibility = View.GONE
+        })
     }
 
     private fun setRecyclerViews(){
@@ -176,19 +197,27 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
             }
             detailWriteReviewLo->{ // 리뷰쓰기 버튼
-
+                val reviewIntent = Intent(this,WriteReviewActivity::class.java)
+                reviewIntent.putExtra("selectPoint",0)
+                startActivity(reviewIntent)
             }
             detailUploadPhotoLo->{ // 사진 올리기 버튼
 
             }
             detailGoodReviewLo->{ // 맛있다 리뷰 버튼
-
+                val reviewIntent = Intent(this,WriteReviewActivity::class.java)
+                reviewIntent.putExtra("selectPoint",30)
+                startActivity(reviewIntent)
             }
             detailNormalReviewLo->{ // 보통 리뷰 버튼
-
+                val reviewIntent = Intent(this,WriteReviewActivity::class.java)
+                reviewIntent.putExtra("selectPoint",20)
+                startActivity(reviewIntent)
             }
             detailBadReviewLo->{ // 별로 리뷰 버튼
-
+                val reviewIntent = Intent(this,WriteReviewActivity::class.java)
+                reviewIntent.putExtra("selectPoint",10)
+                startActivity(reviewIntent)
             }
             detailFindPathLo->{ // 길 찾기 버튼
                 val selectPathFinder = SelectPathFinder.newInstance()
@@ -207,7 +236,10 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
             }
             detailAddrCopyLo->{ // 주소 복사 버튼
-
+                val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText("label", address)
+                clipboardManager.primaryClip = clipData
+                Toast.makeText(applicationContext, "주소가 복사되었습니다.", Toast.LENGTH_SHORT).show()
             }
             detailCallLo->{ // 전화하기 버튼
 

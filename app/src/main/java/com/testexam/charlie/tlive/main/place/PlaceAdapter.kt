@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -14,7 +15,7 @@ import com.testexam.charlie.tlive.R
 
 class PlaceAdapter (private var placeList : ArrayList<Place>, val context : Context) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>(){
     private val reviewImgUrl = "http://13.125.64.135/review/" // AWS 의 Elastic IP address
-
+    private var lastPosition = -1
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaceHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_place,parent,false)
         return PlaceHolder(v)
@@ -39,12 +40,28 @@ class PlaceAdapter (private var placeList : ArrayList<Place>, val context : Cont
         holder.placeViewerTv.text = place.viewNum.toString()
         holder.placeReviewTv.text = place.reviewNum.toString()
         holder.placeStarScoreTv.text = place.starScore.toString()
+        //setAnimation(holder.itemView, position)
+    }
+
+    override fun onViewDetachedFromWindow(holder: PlaceHolder) {
+        holder.clearAnimation()
+        super.onViewDetachedFromWindow(holder)
     }
 
     fun setData(list : ArrayList<Place>){
         placeList = list
         notifyDataSetChanged()
     }
+
+    private fun setAnimation(viewToAnimate : View, position : Int){
+        if(position>lastPosition){
+            val animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left)
+            viewToAnimate.startAnimation(animation)
+            lastPosition = position
+        }
+    }
+
+
 
     class PlaceHolder (placeView : View) : RecyclerView.ViewHolder(placeView){
 
@@ -56,5 +73,9 @@ class PlaceAdapter (private var placeList : ArrayList<Place>, val context : Cont
         val placeViewerTv = placeView.findViewById<TextView>(R.id.placeViewerTv)!!
         val placeReviewTv = placeView.findViewById<TextView>(R.id.placeReviewTv)!!
         val placeStarScoreTv = placeView.findViewById<TextView>(R.id.placeStarScoreTv)!!
+
+        fun clearAnimation(){
+
+        }
     }
 }

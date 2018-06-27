@@ -13,14 +13,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.LatLng
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.common.GPSInfo
-import com.testexam.charlie.tlive.common.HttpTask
-import com.testexam.charlie.tlive.common.Params
-import com.testexam.charlie.tlive.common.RecyclerItemClickListener
+import com.testexam.charlie.tlive.common.*
 import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
 import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
+import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
 import java.io.IOException
@@ -111,6 +112,24 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 mapIntent.putExtra("limit",limitDistance)
                 startActivity(mapIntent)
             }
+            placeLocationLo->{
+                val selectSearchRange = SelectSearchRange.newInstance()
+                selectSearchRange.setData(limitDistance.toDouble())
+                selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
+                    val rangeLimit = arrayOf(100.0,300.0,500.0,1000.0,3000.0)
+                    placeLimitTv.text = range
+                    limitDistance = rangeLimit[rangeIndex].toFloat()
+
+                    // 리스트 삭제
+                    placeList.clear()
+
+                    // 새로운 맛집 리스트 요청
+                    getPlaceList()
+
+                    Log.d("map limit range",range+".."+rangeIndex)
+                })
+                selectSearchRange.show(fragmentManager,"rangeSheet")
+            }
         }
     }
 
@@ -160,6 +179,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
     // 클릭 리스너들 설정
     private fun setClickListeners(){
         placeMapIv.setOnClickListener(this)
+        placeLocationLo.setOnClickListener(this)
     }
 
     /*
@@ -236,7 +256,10 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                         ))
                     }
                     activity!!.runOnUiThread({
+                        val controller = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down)
+                        placeRv.layoutAnimation = controller
                         placeAdapter!!.setData(placeList)
+                        placeRv.scheduleLayoutAnimation()
                     })
 
                 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="210dp"
+    android:background="#fff"
+    >
+    <TextView
+        android:text="내 위치에서 검색 반경 선택"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/rangeTv"
+        android:layout_marginTop="48dp"
+        android:text="1 Km"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <com.appyvet.materialrangebar.RangeBar
+        android:id="@+id/rangeBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/rangeTv"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:mrb_pinMaxFont="10sp"
+        app:mrb_rangeBar="false"
+        app:mrb_tickHeight="6dp"
+        app:mrb_tickColor="#646464"
+
+        app:mrb_pinRadius="0dp"
+
+        app:mrb_selectorColor="#fff"
+        app:mrb_selectorBoundaryColor="@color/colorPrimary"
+        app:mrb_selectorBoundarySize="6dp"
+        app:mrb_selectorSize="10dp"
+        app:mrb_temporaryPins="true"
+
+        app:mrb_connectingLineWeight="0dp"
+
+        app:mrb_tickInterval="1"
+        app:mrb_tickStart="1"
+        app:mrb_tickEnd="5"
+        app:mrb_rangeBar_rounded="true"/>
+    <TextView
+        android:text="내 주변"
+        android:textSize="12sp"
+        android:layout_below="@id/rangeBar"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        />
+    <Button
+        android:id="@+id/rangeSelectBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="160dp"
+        android:text="선택"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/sp_orange_round_8dp_box"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        />
+</RelativeLayout>

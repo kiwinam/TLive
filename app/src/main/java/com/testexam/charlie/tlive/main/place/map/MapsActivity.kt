@@ -26,11 +26,16 @@ import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.testexam.charlie.tlive.R
+import com.testexam.charlie.tlive.common.HttpTask
+import com.testexam.charlie.tlive.common.Params
+import com.testexam.charlie.tlive.common.RangeListener
 import com.testexam.charlie.tlive.common.SnapLayoutManager
 import com.testexam.charlie.tlive.main.place.Place
-
+import com.testexam.charlie.tlive.main.place.SelectSearchRange
 import kotlinx.android.synthetic.main.activity_maps.*
+import org.json.JSONArray
 
+/* RecyclerView 에 클릭하면 디테일로 가야함 */
 
 /**
  * .. recyclerView 돌아갈 때 마다 맵 중앙 변경, 선택되는 효과
@@ -85,7 +90,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
     override fun onClick(v: View?) {
         when(v){
             mapCloseIv->onBackPressed() // mapCloseIv 를 클릭하면 onBackPressed() 를 호출하여 Activity 를 종료한다.
+            mapLocationLo->{ // 지도 검색 범위 설정
+                /*val selectPathFinder = SelectPathFinder.newInstance()
+                selectPathFinder.setLatLng(myLatLng, LatLng(place.lat,place.lon)) // 나의 위치와 맛집의 위치를 설정한다.
+                selectPathFinder.show(supportFragmentManager,"bottomSheet") // 바텀시트를 보여준다.*/
+                val selectSearchRange = SelectSearchRange.newInstance()
+                selectSearchRange.setData(limitDistance)
+                selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
+                    val rangeLimit = arrayOf(100.0,300.0,500.0,1000.0,3000.0)
+                    placeLocationTv.text = range
+                    limitDistance = rangeLimit[rangeIndex]
 
+                    // 리스트 삭제
+                    placeList.clear()
+                    clusterList.clear()
+
+                    // 마커 삭제
+                    markerList.clear()
+
+
+                    // 원 삭제
+                    mMap.clear()
+                    // 원 추가
+                    mMap.addCircle(CircleOptions()
+                            .center(LatLng(lat,lon))
+                            .radius(limitDistance)
+                            .strokeColor(ContextCompat.getColor(applicationContext,R.color.colorCircleLine))
+                            .fillColor(ContextCompat.getColor(applicationContext,R.color.colorCircleFill)))
+
+                    // 새로운 리스트 가져오기
+                    getPlaceList()
+
+                    Log.d("map limit range",range+".."+rangeIndex)
+                })
+
+                selectSearchRange.show(supportFragmentManager, "rangeSheet")
+            }
         }
     }
 
@@ -252,6 +292,75 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
+
+        // 4. RecyclerView 에 있는 아이템을 클릭하면 PlaceDetailActivity 로 이동한다.
+        // Intent 로 전달해 줘야하는 데이터는 Place, myLat, myLon
+
+    }
+
+    private fun getPlaceList(){
+        Thread{
+            try{
+
+                val params : ArrayList<Params> = ArrayList() // 서버에 전송할 파라미터를 설정한다.
+                params.add(Params("lat",lat.toString())) // 파라미터에 lat, 경도 를 설정한다.
+                params.add(Params("lon",lon.toString())) // 파라미터에 lon, 위도 를 설정한다.
+                params.add(Params("limitDistance",limitDistance.toString())) // 파라미터에 limitDistance, 최대 검색 거리 를 설정한다.
+
+                val result = HttpTask("getPlaceList.php",params).execute().get() // 서버에 getPlaceList.php 로 요청을 전송한다. 결과는 result 변수에 저장한다.
+                Log.d("place Result ", "$result..")
+                if(result != "[]"){ // 서버의 처리 결과가 null 이 아닐 경우
+                    val placeArray = JSONArray(result) // 처리 결과를 JSONArray 형식으로 변환한다.
+                    placeList.clear() // 기존의 placeList 를 초기화한다.
+
+                    for(i in 0 .. (placeArray.length()-1)){
+                        val place = placeArray.getJSONObject(i)
+                        placeList.add(Place(
+                                (i+1),                                          // no
+                                place.getInt("placeNo"),                // placeNo
+                                place.getString("name"),                // name
+                                place.getDouble("lat"),                 // lat
+                                place.getDouble("lon"),                 // lon
+                                place.getString("nearStation"),         // nearStation
+                                place.getDouble("starScore").toFloat(), // starScore
+                                place.getString("category"),            // category
+                                place.getInt("viewNum"),                // viewNum
+                                place.getInt("reviewNum"),              // reviewNum
+                                place.getInt("distance"),               // distance
+                                place.getString("previewSrc")           // previewSrc
+                        ))
+                    }
+                    for(i in 0 until placeList.size){
+                        clusterList.add(PositionItem(placeList[i].no,placeList[i].name,placeList[i].lat,placeList[i].lon))
+                    }
+
+                }
+                runOnUiThread({
+                    if(limitDistance >= 2000.0){    // 검색 제한 거리가 2 Km 가 넘을 경우 클러스터링을 사용하고
+                        setCluster()
+                    }else{  // 검색 제한 거리가 2 Km 이하를 경우 클러스터링을 사용하지 않는다.
+                        // placeList 에 있는 맛집 정보를 구글 맵에 marker 로 추가한다.
+
+                        for(i in 0 until placeList.size){
+                            val place = placeList[i]
+                            if(i==0){
+                                addMarker(place,true)   // 첫 번째 마커는 활성화 시킨 마커로 표시한다 (Orange)
+                            }else{
+                                addMarker(place,false)  // 두 번째 마커부턴 비활성화한 마커로 표시한다 (Gray)
+                            }
+
+                        }
+
+                    }
+                })
+
+
+            }catch (e : Exception ){
+                e.printStackTrace()
+            }finally {
+
+            }
+        }.start()
     }
 
     /*
@@ -354,8 +463,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
     }
 
     private fun setCluster(){
+
         clusterManager = ClusterManager(this,mMap)
         clusterManager.renderer = CustomIconRenderer(this,this,mMap, clusterManager)
+        clusterManager.clearItems()
         mMap.setOnCameraIdleListener(clusterManager)
         mMap.setOnMarkerClickListener(clusterManager)
         mMap.setOnInfoWindowClickListener(clusterManager)
@@ -363,8 +474,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
         clusterManager.setOnClusterInfoWindowClickListener(this)
         clusterManager.setOnClusterItemClickListener(this)
 
+
+
         for(i in 0 until clusterList.size){
             clusterManager.addItem(clusterList[i])
+            Log.d("cluster","add")
         }
         clusterManager.cluster()
     }

@@ -88,7 +88,7 @@
             android:paddingStart="4dp"
             android:paddingEnd="8dp"
             android:layout_marginStart="8dp"
-            android:background="@drawable/sp_orange_rounded_box"
+            android:background="@drawable/sp_orange_round_8dp_box"
             android:clickable="true"
             android:focusable="true"
             >

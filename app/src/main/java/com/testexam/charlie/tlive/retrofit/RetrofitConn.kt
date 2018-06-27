@@ -15,7 +15,7 @@ class RetrofitConn {
                     .setLenient()
                     .create()
             return Retrofit.Builder()
-                    .baseUrl("http://13.125.213.175/app/")
+                    .baseUrl("http://13.125.64.135/app/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
         }

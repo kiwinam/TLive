@@ -93,6 +93,16 @@ dependencies {
     implementation('com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.14.0') {
         transitive = true
     }
-    //AR
+
+    // range bar
+    implementation 'com.appyvet:materialrangebar:1.4.2'
+
+    // AR
     implementation files('libs/beyondar-v0.9.3.jar')
+
+    // Custom loader
+    implementation 'com.tuyenmonkey:mkloader:1.4.0'
+
+    // Album
+    implementation 'com.yanzhenjie:album:2.1.2'
 }

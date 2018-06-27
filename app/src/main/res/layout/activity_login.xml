@@ -83,7 +83,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/sp_orange_rounded_box"
+                android:background="@drawable/sp_orange_round_8dp_box"
                 android:elevation="4dp"
                 tools:targetApi="lollipop" />
             <Button

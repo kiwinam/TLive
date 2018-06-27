@@ -97,6 +97,9 @@ class LiveFragment : Fragment() , View.OnClickListener{
 
         Thread(Runnable {
             try{
+                activity!!.runOnUiThread({
+                    livePb.visibility = View.VISIBLE
+                })
                 //Glide.get(context!!).clearDiskCache()
                 val httpTask = HttpTask("getBroadcastList.php", ArrayList<Params>())
                 val result = httpTask.execute().get()
@@ -127,6 +130,7 @@ class LiveFragment : Fragment() , View.OnClickListener{
                         if(liveSwipeRefreshLo != null){
                             liveSwipeRefreshLo.isRefreshing = false
                         }
+                        livePb.visibility = View.GONE
                     })
                 }
 

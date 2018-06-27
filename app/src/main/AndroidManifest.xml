@@ -81,6 +81,10 @@
             android:name=".main.place.detail.ar.ARNavigationActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".main.place.write.WriteReviewActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
+        <activity android:name=".main.place.write.GalleryActivity"/>
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

@@ -6,3 +6,4 @@ data class User(var email : String,
                 val isRequest : Boolean,
                 val friendNo : Int
                 )
+

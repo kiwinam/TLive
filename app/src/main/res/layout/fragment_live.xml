@@ -120,5 +120,13 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-
+    <com.tuyenmonkey.mkloader.MKLoader
+        android:id="@+id/livePb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:mk_type="Whirlpool"
+        app:mk_color="@color/colorPrimary"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        />
 </RelativeLayout>
