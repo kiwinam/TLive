@@ -31,7 +31,6 @@ import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.common.RangeListener
 import com.testexam.charlie.tlive.common.SnapLayoutManager
 import com.testexam.charlie.tlive.main.place.Place
-import com.testexam.charlie.tlive.main.place.SelectSearchRange
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.json.JSONArray
 

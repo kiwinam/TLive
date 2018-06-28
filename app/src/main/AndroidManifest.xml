@@ -84,7 +84,12 @@
         <activity android:name=".main.place.write.WriteReviewActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             />
-        <activity android:name=".main.place.write.GalleryActivity"/>
+        <activity android:name=".main.place.detail.photo.PlacePhotoActivity"/>
+        <activity android:name=".main.place.detail.imageSlide.ImageSlideActivity"/>
+        <activity android:name=".main.place.detail.review.ReviewActivity"/>
+        <activity android:name=".main.place.detail.webview.SearchNaverActivity"/>
+        <activity android:name=".main.profile.ProfileActivity"/>
+        <activity android:name=".main.profile.SettingActivity"/>
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

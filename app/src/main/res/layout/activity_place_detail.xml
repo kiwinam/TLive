@@ -26,7 +26,6 @@
                 android:contentDescription="@string/close" />
             <TextView
                 android:id="@+id/detailTitleTv"
-                android:text="로리스더프라임립"
                 android:textSize="16sp"
                 android:textColor="@color/colorTextWhite"
                 android:layout_gravity="center_vertical"

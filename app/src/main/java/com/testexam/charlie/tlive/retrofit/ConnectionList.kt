@@ -22,4 +22,8 @@ interface ConnectionList {
     @Multipart
     @POST("join.php")
     fun requestJoinMap(@PartMap() partMap: HashMap<String, RequestBody>) : Call<JoinResponse>
+
+    @Multipart
+    @POST("insertReview.php")
+    fun insertReview(@PartMap() partMap : Map<String, @JvmSuppressWildcards RequestBody>) : Call<SimpleResponse>
 }

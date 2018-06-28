@@ -14,14 +14,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.*
-import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
 import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
+import com.testexam.charlie.tlive.main.place.map.SelectSearchRange
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
-import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
 import java.io.IOException
@@ -257,9 +254,9 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                     }
                     activity!!.runOnUiThread({
                         val controller = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down)
-                        placeRv.layoutAnimation = controller
+                        //placeRv.layoutAnimation = controller
                         placeAdapter!!.setData(placeList)
-                        placeRv.scheduleLayoutAnimation()
+                        //placeRv.scheduleLayoutAnimation()
                     })
 
                 }

@@ -17,7 +17,6 @@
         >
         <TextView
             android:id="@+id/detailNameTv"
-            android:text="로리스더프라임립"
             android:textSize="18sp"
             android:textColor="#d6000000"
             android:layout_marginStart="16dp"
@@ -34,7 +33,6 @@
             android:layout_height="14dp" />
         <TextView
             android:id="@+id/detailViewerTv"
-            android:text="12345"
             android:textSize="10sp"
             android:layout_marginTop="4.5dp"
             android:layout_marginStart="2dp"
@@ -87,7 +85,6 @@
             android:id="@+id/detailStarScoreTv"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
-            android:text="4.5"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold"

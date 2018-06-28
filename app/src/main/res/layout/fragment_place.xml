@@ -11,16 +11,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         />-->
-    <com.tuyenmonkey.mkloader.MKLoader
-        android:id="@+id/placePb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:mk_type="Radar"
-        app:mk_color="@color/colorPrimary"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        />
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -146,6 +136,15 @@
             android:layout_marginEnd="4dp"
             android:paddingBottom="56dp"
             android:layoutAnimation="@anim/layout_fall_down"
+            />
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:id="@+id/placePb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mk_type="TwinFishesSpinner"
+            app:mk_color="@color/colorPrimary"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
             />
     </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

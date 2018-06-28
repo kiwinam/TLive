@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/sp_white_box"
+    >
+    <ImageView
+        android:id="@+id/reviewProfileIv"
+        android:src="@drawable/ic_profile_ex1"
+        android:padding="4dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/profile" />
+    <TextView
+        android:id="@+id/reviewNameTv"
+        android:text="박천명"
+        android:textColor="#000"
+        android:layout_toEndOf="@id/reviewProfileIv"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/reviewEditIv"
+        android:layout_below="@id/reviewNameTv"
+        android:src="@drawable/ic_edit_gray_24dp"
+        android:layout_toEndOf="@id/reviewProfileIv"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="20dp"
+        android:layout_height="16dp"
+        android:contentDescription="@string/edit" />
+
+    <TextView
+        android:id="@+id/reviewCountTv"
+        android:text="0"
+        android:textSize="10sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="4dp"
+        android:layout_below="@id/reviewNameTv"
+        android:layout_toEndOf="@id/reviewEditIv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="SmallSp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:ignore="RelativeOverlap,UseCompoundDrawables">
+        <ImageView
+            android:id="@+id/reviewPointIv"
+            android:src="@drawable/ic_emotion_good_orange"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/tasty_good_ko" />
+        <TextView
+            android:id="@+id/reviewPointTv"
+            android:text="@string/tasty_good_ko"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/reviewTextTv"
+        android:textColor="#000"
+        android:ellipsize="end"
+        android:maxLines="5"
+        android:layout_below="@id/reviewProfileIv"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reviewPhotoRv"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@id/reviewTextTv"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+    <TextView
+        android:id="@+id/reviewDateTv"
+        android:text="2016-10-31"
+        android:textSize="12sp"
+        android:layout_below="@id/reviewPhotoRv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+
+        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

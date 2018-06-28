@@ -18,7 +18,6 @@
         />
     <TextView
         android:id="@+id/detailAddressTv"
-        android:text="서울시 서초구 서초동 1317-23 GT 타워 3F"
         android:textSize="12sp"
         android:textColor="#000"
         android:layout_width="wrap_content"

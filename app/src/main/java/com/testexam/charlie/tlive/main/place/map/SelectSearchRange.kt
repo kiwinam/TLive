@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.place
+package com.testexam.charlie.tlive.main.place.map
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment

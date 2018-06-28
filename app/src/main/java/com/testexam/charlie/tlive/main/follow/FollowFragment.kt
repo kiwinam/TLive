@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.main.ProfileFragment
+import com.testexam.charlie.tlive.main.profile.ProfileFragment
 import kotlinx.android.synthetic.main.fragment_follow.*
 
 /**

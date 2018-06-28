@@ -35,18 +35,96 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sp_white_box"
+        android:orientation="horizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        >
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="66dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:src="@drawable/ic_emotion_good_orange"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <TextView
+                android:id="@+id/detailReviewGoodCountTv"
+                android:text="맛있다! (19)"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <View
+            android:background="#EAE9E5"
+            android:layout_width="2dp"
+            android:layout_height="40dp"/>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="66dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:src="@drawable/ic_emotion_normal_orange"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <TextView
+                android:id="@+id/detailReviewNormalCountTv"
+                android:text="괜찮다 (3)"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <View
+            android:background="#EAE9E5"
+            android:layout_width="2dp"
+            android:layout_height="40dp"/>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="66dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:src="@drawable/ic_emotion_bad_orange"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <TextView
+                android:id="@+id/detailReviewBadCountTv"
+                android:text="별로 (0)"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/detailReviewRv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        />
     <TextView
         android:id="@+id/detailMoreReviewTv"
         android:text="@string/more_review_ko"
         android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:drawableEnd="@drawable/ic_arrow_right_orange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

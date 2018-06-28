@@ -73,5 +73,9 @@
     <string name="write_review_hint_ko">주문하신 메뉴는 어떠셨나요? 식당의 분위기나 서비스도 궁금해요!</string>
     <string name="cancel_ko">취소</string>
     <string name="_0_2000">완료 (0/2000)</string>
+    <string name="profile">profile</string>
+    <string name="edit">edit</string>
+    <string name="back">back</string>
+    <string name="all_review_ko">전체 리뷰 보기</string>
 
 </resources>

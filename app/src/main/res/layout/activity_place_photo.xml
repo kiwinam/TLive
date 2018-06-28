@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+        <ImageView
+            android:id="@+id/placePhotoCloseIv"
+            android:src="@drawable/ic_close_white_24dp"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            />
+        <TextView
+            android:text="전체 사진 보기"
+            android:textColor="#fff"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/placePhotoRv"
+        android:layout_marginTop="56dp"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <com.tuyenmonkey.mkloader.MKLoader
+        android:id="@+id/photoPb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:mk_type="TwinFishesSpinner"
+        app:mk_color="@color/colorPrimary"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        />
+</RelativeLayout>

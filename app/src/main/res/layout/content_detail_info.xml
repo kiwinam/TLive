@@ -24,7 +24,6 @@
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailWorkingTimeTv"
-            android:text="11:30 - 22:00"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
@@ -43,7 +42,6 @@
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailBreakTimeTv"
-            android:text="11:30 - 22:00"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
@@ -61,7 +59,6 @@
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailPriceTv"
-            android:text="4만원 이상 / 1인"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
@@ -89,13 +86,11 @@
         android:layout_marginTop="8dp">
         <TextView
             android:id="@+id/detailMenu1Tv"
-            android:text="캘리포니아 컷"
             android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailMenuPrice1Tv"
-            android:text="58,000"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
@@ -108,13 +103,11 @@
         android:layout_marginTop="8dp">
         <TextView
             android:id="@+id/detailMenu2Tv"
-            android:text="잉글리쉬 컷"
             android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailMenuPrice2Tv"
-            android:text="68,000"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
@@ -128,13 +121,11 @@
         android:layout_marginBottom="16dp">
         <TextView
             android:id="@+id/detailMenu3Tv"
-            android:text="로리 컷"
             android:layout_marginStart="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/detailMenuPrice3Tv"
-            android:text="78,000"
             android:textColor="#ce000000"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
