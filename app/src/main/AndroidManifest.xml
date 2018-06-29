@@ -71,7 +71,7 @@
         <activity
             android:name=".main.live.webrtc.broadcaster.BroadCasterActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".main.follow.FindFriendActivity" />
+        <activity android:name=".main.follow.friend.FindFriendActivity" />
         <activity android:name=".main.follow.chat.ChatActivity" />
         <activity android:name=".main.place.detail.PlaceDetailActivity"
             android:screenOrientation="portrait"/>

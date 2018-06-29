@@ -1,9 +1,8 @@
-package com.testexam.charlie.tlive.main.follow
+package com.testexam.charlie.tlive.main.follow.friend
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -17,7 +16,7 @@ import com.testexam.charlie.tlive.common.Params
 /**
  * 친구 찾기 어댑터
  */
-class FindAdapter (private val myEmail : String,private var friendList : ArrayList<User>, val context : Context) : RecyclerView.Adapter<FindAdapter.FindHolder>() {
+class FindAdapter (private val myEmail : String, private var friendList : ArrayList<User>, val context : Context) : RecyclerView.Adapter<FindAdapter.FindHolder>() {
     private val serverUrl = "http://13.125.64.135/profile/" // AWS 의 Elastic IP address
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FindHolder {
@@ -31,7 +30,6 @@ class FindAdapter (private val myEmail : String,private var friendList : ArrayLi
         holder.findFriendNameTv.text = user.name
         holder.findFriendPlusIv.setOnClickListener({
             Thread{
-                Log.d("plus",user.email)
                 val params = ArrayList<Params>()
                 params.add(Params("myEmail",myEmail))
                 params.add(Params("targetEmail",user.email))
@@ -40,7 +38,6 @@ class FindAdapter (private val myEmail : String,private var friendList : ArrayLi
                     Toast.makeText(context,user.name+"님에게 친구 요청을 보냈습니다.",Toast.LENGTH_SHORT).show()
                     holder.findFriendPlusIv.visibility = View.GONE
                 }else{
-                    Log.d("result",requestResult)
                     Toast.makeText(context,"친구 요청이 실패했습니다. 다시 시도해주세요.",Toast.LENGTH_SHORT).show()
                 }
             }.run()

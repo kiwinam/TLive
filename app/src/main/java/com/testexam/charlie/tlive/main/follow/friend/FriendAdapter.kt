@@ -1,9 +1,8 @@
-package com.testexam.charlie.tlive.main.follow
+package com.testexam.charlie.tlive.main.follow.friend
 
 import android.app.AlertDialog
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,6 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                             params.add(Params("requestNo",user.friendNo.toString()))
                             params.add(Params("answer","ok"))
                             val result = HttpTask("procRequestFriend.php",params).execute().get()
-                            Log.d("result accept", "$result..")
                             if(result == "ok"){
                                 Toast.makeText(context,"친구 요청을 수락했습니다.",Toast.LENGTH_SHORT).show()
                             }else{
@@ -63,7 +61,6 @@ class FriendAdapter(val email : String, private var friendList : ArrayList<User>
                             params.add(Params("requestNo",user.friendNo.toString()))
                             params.add(Params("answer","no"))
                             val result = HttpTask("procRequestFriend.php",params).execute().get()
-                            Log.d("result decline ", "$result..")
                             if(result == "ok"){
                                 Toast.makeText(context,"친구 요청을 거절했습니다.",Toast.LENGTH_SHORT).show()
                             }else{

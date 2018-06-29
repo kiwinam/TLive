@@ -14,7 +14,7 @@ import com.testexam.charlie.tlive.main.place.detail.photo.Photo
 import com.testexam.charlie.tlive.main.place.detail.photo.PhotoAdapter
 import org.json.JSONArray
 
-class ReviewAdapter (private var reviewList : ArrayList<Review>, val context : Context, val placeNo : Int) : RecyclerView.Adapter<ReviewAdapter.ReviewHolder>(){
+class ReviewAdapter (private var reviewList : ArrayList<Review>, val context : Context, private val placeNo : Int) : RecyclerView.Adapter<ReviewAdapter.ReviewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_review,parent,false)
         return ReviewHolder(v)
@@ -50,7 +50,6 @@ class ReviewAdapter (private var reviewList : ArrayList<Review>, val context : C
             try{
                 val photoJSONArray = JSONArray(review.photoArray)
                 for(i in 0 until photoJSONArray.length()){
-                    val src =photoJSONArray.getJSONObject(i).getString("src")
                     photoList.add(Photo(photoJSONArray.getJSONObject(i).getString("src")))
                 }
                 val horizontalLayoutManager = LinearLayoutManager(context)

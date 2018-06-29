@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">TLive</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:ignore="PrivateResource">TLive</string>
     <string name="ip_address">13.125.213.175</string>
 
     <string name="start_email">이메일로 시작하기</string>
@@ -39,7 +39,7 @@
     <string name="recommend_ws">양식</string>
     <string name="use_mic_ko">마이크 사용</string>
     <string name="use_camera_ko">카메라 사용</string>
-    <string name="update_ko">업데이트 게시...</string>
+    <string name="update_ko" tools:ignore="TypographyEllipsis">업데이트 게시...</string>
     <string name="start_broadcast_ko">방송 시작하기</string>
     <string name="camera_on_ko">카메라 켜짐</string>
     <string name="mic_on_ko">마이크 켜짐</string>
@@ -77,5 +77,31 @@
     <string name="edit">edit</string>
     <string name="back">back</string>
     <string name="all_review_ko">전체 리뷰 보기</string>
+    <string name="movie_ko">동영상</string>
+    <string name="like_ko">좋아요</string>
+    <string name="chat_room_ko">채팅방</string>
+    <string name="online_ko">온라인</string>
+    <string name="offline_ko">오프라인</string>
+    <string name="islive">isLive</string>
+    <string name="subscribe_ko">구독하기</string>
+    <string name="subscribe_text_ko">님을 구독하시겠습니까?</string>
+    <string name="none_review_ko">아직 내가 올린 리뷰가 없네요?</string>
+    <string name="none_movie_ko">아직 내가 올린 동영상이 없네요?</string>
+    <string name="_0">0</string>
+    <string name="follower_ko">팔로워</string>
+    <string name="viewer_ko">시청자</string>
+    <string name="edit_ko">수정</string>
+    <string name="logout">logout</string>
+    <string name="logout_ko">로그아웃</string>
+    <string name="right">right</string>
+    <string name="preview">preview</string>
+    <string name="vod">VOD</string>
+    <string name="none_want_ko">아직 내가 가고싶은 곳이 없어요!</string>
+    <string name="none_like_ko">아직 내가 좋아하는 글이 없어요!</string>
+    <string name="setting">setting</string>
+    <string name="search">search</string>
+    <string name="person">person</string>
+    <string name="none_follow_ko">팔로우 중인 채널이 없네요!</string>
+
 
 </resources>

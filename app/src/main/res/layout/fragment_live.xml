@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,7 +32,7 @@
                         android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        />
+                        android:contentDescription="@string/search" />
                     <TextView
                         android:text="@string/live_ko"
                         android:textColor="@color/colorTextWhite"
@@ -40,7 +41,8 @@
                         android:layout_toEndOf="@id/liveSearchIv"
                         android:layout_marginStart="20dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        tools:ignore="RelativeOverlap" />
                     <ImageView
                         android:id="@+id/liveProfileIv"
                         android:src="@drawable/ic_person_white_24dp"
@@ -52,7 +54,7 @@
                         android:layout_centerVertical="true"
                         android:clickable="true"
                         android:focusable="true"
-                        />
+                        android:contentDescription="@string/person" />
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
@@ -93,7 +95,8 @@
                             android:layout_centerVertical="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"/>
+                            android:layout_marginStart="4dp"
+                            tools:ignore="RelativeOverlap" />
                         <ImageButton
                             android:id="@+id/liveNewBtn"
                             android:src="@drawable/ic_videocam_white_24dp"
@@ -103,7 +106,7 @@
                             android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="4dp"
-                            />
+                            android:contentDescription="@string/live_ko" />
                     </RelativeLayout>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/liveRv"
@@ -112,6 +115,7 @@
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="8dp"
+                        android:layout_marginBottom="48dp"
                         />
                 </LinearLayout>
 

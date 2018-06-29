@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.main.follow
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -7,7 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.main.profile.ProfileFragment
+import com.testexam.charlie.tlive.main.follow.channel.FollowChannelFragment
+import com.testexam.charlie.tlive.main.follow.chat.FollowChatFragment
+import com.testexam.charlie.tlive.main.follow.friend.FollowFriendFragment
+import com.testexam.charlie.tlive.main.profile.ProfileActivity
 import kotlinx.android.synthetic.main.fragment_follow.*
 
 /**
@@ -27,12 +31,11 @@ class FollowFragment : Fragment() {
         followTabLo.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                var fragment : Fragment
-                when(tab?.position){
-                    0-> fragment = FollowChannelFragment.newInstance()
-                    1-> fragment = FollowFriendFragment.newInstance()
-                    2-> fragment = FollowChatFragment.newInstance()
-                    else->fragment = FollowChannelFragment.newInstance()
+                val fragment : Fragment = when(tab?.position){
+                    0-> FollowChannelFragment.newInstance()
+                    1-> FollowFriendFragment.newInstance()
+                    2-> FollowChatFragment.newInstance()
+                    else-> FollowChannelFragment.newInstance()
                 }
                 openFragment(fragment)
             }
@@ -46,7 +49,8 @@ class FollowFragment : Fragment() {
         openFragment(FollowChannelFragment.newInstance())
 
         followProfileIv.setOnClickListener({
-            openFragment(ProfileFragment.newInstance())
+            //openFragment(ProfileFragment.newInstance())
+            startActivity(Intent(context,ProfileActivity::class.java))
         })
     }
 

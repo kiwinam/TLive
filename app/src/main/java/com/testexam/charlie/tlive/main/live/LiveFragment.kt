@@ -74,7 +74,7 @@ class LiveFragment : Fragment() , View.OnClickListener{
     }
 
     private fun setRecyclerView(){
-        adapter = BroadcastAdapter(broadcastList,context!!)
+        adapter = BroadcastAdapter(broadcastList,context!!,fragmentManager!!)
         liveRv.layoutManager = LinearLayoutManager(context)
         liveRv.adapter = adapter
         liveRv.isNestedScrollingEnabled = false
@@ -121,7 +121,9 @@ class LiveFragment : Fragment() , View.OnClickListener{
                                 (responseObject.getInt("isLive")),
                                 (responseObject.getString("uploadTime")),
                                 (responseObject.getString("previewSrc")),
-                                (responseObject.getString("vodSrc"))
+                                (responseObject.getString("vodSrc")),
+                                false, // 수정해야함
+                                false
                         ))
                     }
                     activity!!.runOnUiThread({

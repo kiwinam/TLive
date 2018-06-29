@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.follow
+package com.testexam.charlie.tlive.main.follow.chat
 
 import android.content.ComponentName
 import android.content.Context
@@ -9,17 +9,12 @@ import android.os.IBinder
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.DBHelper
 import com.testexam.charlie.tlive.common.RecyclerItemClickListener
-import com.testexam.charlie.tlive.main.follow.chat.ChatActivity
-import com.testexam.charlie.tlive.main.follow.chat.ChatService
-import com.testexam.charlie.tlive.main.follow.chat.Room
-import com.testexam.charlie.tlive.main.follow.chat.RoomAdapter
 import kotlinx.android.synthetic.main.fragment_follow_chat.*
 import kotlinx.android.synthetic.main.fragment_follow_friend.*
 
@@ -133,7 +128,6 @@ class FollowChatFragment : Fragment(){
                 context, friendListRv, object : RecyclerItemClickListener.OnItemClickListener{
             override fun onItemClick(view: View?, position: Int) {
                 val room = roomList!![position]
-                Log.d("friend Rv", "onItemClick ($position)")
                 val intent = Intent(context, ChatActivity::class.java)
                 intent.putExtra("targetEmail",room.targetEmail)
                 intent.putExtra("targetName",room.targetName)

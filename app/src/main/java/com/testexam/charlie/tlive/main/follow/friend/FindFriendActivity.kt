@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.follow
+package com.testexam.charlie.tlive.main.follow.friend
 
 import android.content.Context
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.testexam.charlie.tlive.R
@@ -34,7 +33,7 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
 
     private fun setFindListRv(){
 
-        findAdapter = FindAdapter(email, searchList,this)
+        findAdapter = FindAdapter(email, searchList, this)
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.isSmoothScrollbarEnabled = true
 
@@ -49,12 +48,10 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
         findSearchEt.setOnEditorActionListener { v, actionId, _ ->
             when (actionId){
                 EditorInfo.IME_ACTION_SEARCH->{
-                    Log.d("Editor","IME_ACTION_SEARCH")
                     requestFind(v.text.toString())
                     true
                 }
                 else->{
-                    Log.d("Editor","else")
                     false
                 }
             }
@@ -72,7 +69,6 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
     }
 
     private fun requestFind(searchString : String){
-        Log.d("requestFind",searchString)
         if(!searchString.isEmpty()){
             Thread{
                 try{
@@ -89,7 +85,7 @@ class FindFriendActivity : BaseActivity(), View.OnClickListener{
                             searchList.add(User(
                                     friend.getString("email"),
                                     friend.getString("name"),
-                                    friend.getString("profileUrl"),false,0))
+                                    friend.getString("profileUrl"), false, 0))
                         }
                         this.runOnUiThread({
                             findAdapter!!.setDate(searchList)

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_marginBottom="4dp"
+    >
+    <ImageView
+        android:id="@+id/channelProfileIv"
+        android:src="@drawable/ic_profile_ex1"
+        android:padding="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_centerVertical="true"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/profile" />
+    <TextView
+        android:id="@+id/channelNameTv"
+        android:textColor="#000"
+        android:layout_toEndOf="@id/channelProfileIv"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/channelFollowerNumTv"
+        android:layout_below="@id/channelNameTv"
+        android:layout_toEndOf="@id/channelProfileIv"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:layout_marginTop="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/channelIsLiveIv"
+        android:background="@drawable/sp_live_off"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:contentDescription="@string/islive" />
+</RelativeLayout>

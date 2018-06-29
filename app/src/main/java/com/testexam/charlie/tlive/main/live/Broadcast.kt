@@ -14,10 +14,12 @@ data class Broadcast(val hostEmail : String,
                      val roomSessionNo : Int,
                      val roomName : String,
                      val roomTag : String,
-                     val likeNum : Int,
-                     val viewerNum : Int,
-                     val isLive : Int,
+                     var likeNum : Int,
+                     var viewerNum : Int,
+                     var isLive : Int,
                      val uploadTime : String,
                      val previewUrl : String,
-                     val vodUrl : String
+                     val vodUrl : String,
+                     var isLike : Boolean,
+                     var isSubscribe : Boolean
                      )

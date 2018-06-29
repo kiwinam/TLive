@@ -9,16 +9,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.*
 import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
-import com.testexam.charlie.tlive.main.place.map.SelectSearchRange
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
+import com.testexam.charlie.tlive.main.place.map.SelectSearchRange
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
 import java.io.IOException
@@ -122,8 +120,6 @@ class PlaceFragment : Fragment() , View.OnClickListener{
 
                     // 새로운 맛집 리스트 요청
                     getPlaceList()
-
-                    Log.d("map limit range",range+".."+rangeIndex)
                 })
                 selectSearchRange.show(fragmentManager,"rangeSheet")
             }
@@ -145,13 +141,10 @@ class PlaceFragment : Fragment() , View.OnClickListener{
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 ContextCompat.checkSelfPermission(context!!,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             requestPermissions(permissionsLocation,permissionCode)
-            Log.d("callPermission","fine location need")
         }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 ContextCompat.checkSelfPermission(context!!,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             requestPermissions(permissionsCoarseLocation,permissionCoarseCode)
-            Log.d("callPermission","coarse need")
         }else{
-            Log.d("callPermission","true")
             isPermission = true
         }
     }
@@ -196,7 +189,6 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 context, placeRv, object : RecyclerItemClickListener.OnItemClickListener{
             override fun onItemClick(view: View?, position: Int) {
                 val place = placeList[position]
-                Log.d("placeRv", "onItemClick ($position)")
                 val intent = Intent(context, PlaceDetailActivity::class.java)
                 intent.putExtra("place",place)
                 intent.putExtra("lat",lat)
@@ -230,7 +222,6 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 params.add(Params("limitDistance",limitDistance.toString())) // 파라미터에 limitDistance, 최대 검색 거리 를 설정한다.
 
                 val result = HttpTask("getPlaceList.php",params).execute().get() // 서버에 getPlaceList.php 로 요청을 전송한다. 결과는 result 변수에 저장한다.
-                Log.d("place Result ", "$result..")
                 if(result != "[]"){ // 서버의 처리 결과가 null 이 아닐 경우
                     val placeArray = JSONArray(result) // 처리 결과를 JSONArray 형식으로 변환한다.
                     placeList.clear() // 기존의 placeList 를 초기화한다.
@@ -253,7 +244,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                         ))
                     }
                     activity!!.runOnUiThread({
-                        val controller = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down)
+                        //val controller = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down)
                         //placeRv.layoutAnimation = controller
                         placeAdapter!!.setData(placeList)
                         //placeRv.scheduleLayoutAnimation()

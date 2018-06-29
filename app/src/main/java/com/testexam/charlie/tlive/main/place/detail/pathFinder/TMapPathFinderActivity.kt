@@ -18,7 +18,7 @@ class TMapPathFinderActivity : BaseActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tmap_path_finder)
 
-        val startLatLng : LatLng = intent.getParcelableExtra("startLatLng")
+        val startLatLng : LatLng = intent.getParcelableExtra<LatLng>("startLatLng")
         val endLatLng : LatLng  = intent.getParcelableExtra("endLatLng")
 
         //LoadTMap(applicationContext,tMapLayout,startLatLng,endLatLng).execute()
