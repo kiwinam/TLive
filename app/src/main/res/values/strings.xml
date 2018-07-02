@@ -102,6 +102,8 @@
     <string name="search">search</string>
     <string name="person">person</string>
     <string name="none_follow_ko">팔로우 중인 채널이 없네요!</string>
-
+    <string name="review_ko">리뷰</string>
+    <string name="logo">logo</string>
+    <string name="logo_text_ko">함께하는 즐거운 먹방</string>
 
 </resources>

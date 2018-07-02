@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.appyvet.materialrangebar.RangeBar
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.common.RangeListener
 
 class SelectSearchRange : BottomSheetDialogFragment(){
 

@@ -2,10 +2,17 @@ package com.testexam.charlie.tlive.main.place.detail
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,6 +26,12 @@ import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.main.place.Place
 import com.testexam.charlie.tlive.main.place.detail.pathFinder.NavigationActivity
 import com.testexam.charlie.tlive.main.place.detail.pathFinder.SelectPathFinder
+import com.testexam.charlie.tlive.main.place.detail.photo.Photo
+import com.testexam.charlie.tlive.main.place.detail.photo.PhotoAdapter
+import com.testexam.charlie.tlive.main.place.detail.review.Review
+import com.testexam.charlie.tlive.main.place.detail.review.ReviewActivity
+import com.testexam.charlie.tlive.main.place.detail.review.ReviewAdapter
+import com.testexam.charlie.tlive.main.place.detail.webview.SearchNaverActivity
 import com.testexam.charlie.tlive.main.place.write.WriteReviewActivity
 import kotlinx.android.synthetic.main.activity_place_detail.*
 import kotlinx.android.synthetic.main.content_detail_basic_info.*
@@ -27,21 +40,8 @@ import kotlinx.android.synthetic.main.content_detail_location.*
 import kotlinx.android.synthetic.main.content_detail_review.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.text.DecimalFormat
-import android.widget.Toast
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.net.Uri
-import android.util.Log
-import com.testexam.charlie.tlive.main.place.detail.photo.Photo
-import com.testexam.charlie.tlive.main.place.detail.photo.PhotoAdapter
-import com.testexam.charlie.tlive.main.place.detail.review.Review
-import com.testexam.charlie.tlive.main.place.detail.review.ReviewActivity
-import com.testexam.charlie.tlive.main.place.detail.review.ReviewAdapter
-import com.testexam.charlie.tlive.main.place.detail.webview.SearchNaverActivity
 import timber.log.Timber
-import java.net.URLEncoder
+import java.text.DecimalFormat
 
 
 /**
@@ -58,6 +58,8 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
     private lateinit var place : Place
 
+    private var userEmail = ""
+
     private var address = ""
     private var favoriteNum = 0
     private var workingTime = ""
@@ -67,6 +69,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
     private var goodReviewCount = 0
     private var normalReviewCount = 0
     private var badReviewCount = 0
+    private var isFavorite = false
 
     private lateinit var myLatLng: LatLng
 
@@ -78,6 +81,8 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
     private val decimalFormat = DecimalFormat("#,###")
 
+    private lateinit var scaleAnim : Animation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_detail)
@@ -88,6 +93,8 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
         place = intent.getParcelableExtra("place") // 선택한 맛집의 정보가 담겨있는 Place 객체를 Intent 에서 가져온다.
 
+        userEmail = getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none") // 이메일을 가져온다.
+
         val myLat = intent.getDoubleExtra("lat",0.0) // 현재 나의 위도
         val myLon = intent.getDoubleExtra("lon",0.0) // 현재 나의 경도
         myLatLng = LatLng(myLat,myLon)  // 위경도를 이용하여 나의 위치를 나타내는 LatLon 객체를 초기화한다.
@@ -96,6 +103,8 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
 
         setOnClickListeners() // 클릭 리스너 등록
         setRecyclerViews() // RecyclerView 설정
+
+        scaleAnim = AnimationUtils.loadAnimation(applicationContext,R.anim.scale_change_btn)
     }
 
     /*
@@ -111,6 +120,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
             try{
                 val params = ArrayList<Params>()
                 params.add(Params("placeNo",placeNo.toString()))
+                params.add(Params("userEmail",userEmail))
                 val result = HttpTask("getDetailPlace.php",params).execute().get()
 
                 //Log.d("getDetailInfo","result : $result")
@@ -127,6 +137,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                     goodReviewCount = jsonObject.getInt("goodCount")
                     normalReviewCount = jsonObject.getInt("normalCount")
                     badReviewCount = jsonObject.getInt("badCount")
+                    isFavorite = jsonObject.getBoolean("isWant")
 
                     menuArray = JSONArray(jsonObject.getString("menu"))
                     val photoArray = jsonObject.getString("photoArray") // 사진 미리보기 배열의 경로가 담겨있는 photoArray
@@ -139,7 +150,6 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                             val photoObject = photoJSONArray.getJSONObject(i)
                             val src = photoObject.getString("src")
                             photoList.add(Photo(src))
-                            Log.d("detail photo", "add $src")
                         }
                     }
                     // 리뷰가 있는 경우
@@ -272,6 +282,33 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
         when(v){
             detailCloseIv->onBackPressed() // 왼쪽 상단 닫기 버튼을 누르면 Activity 종료
             detailWantToGoLo->{ // 가고싶다 버튼
+                // 새로운 가고싶다를 추가할 때
+                if(!isFavorite){
+                    // 채워진 별로 아이콘 변경
+                    runOnUiThread({
+                        Glide.with(applicationContext)
+                                .load(getDrawable(R.drawable.ic_star_orange24dp))
+                                .into(detailWantToGoIv)
+                    })
+                // 기존 가고싶다를 취소할 때
+                }else{
+                    // 라인만 있는 별로 아이콘 변경
+                    runOnUiThread({
+                        Glide.with(applicationContext)
+                                .load(getDrawable(R.drawable.ic_star_orange_line_24dp))
+                                .into(detailWantToGoIv)
+                    })
+                }
+                isFavorite = !isFavorite // 가고 싶다 상태 변경
+                detailWantToGoIv.startAnimation(scaleAnim) // 애니메이션 시작
+                Thread{
+                    val paramList = ArrayList<Params>()
+                    paramList.add(Params("userEmail",userEmail))                // 유저 이메일
+                    paramList.add(Params("isWant",isFavorite.toString()))       // 가고 싶다 상태
+                    paramList.add(Params("placeNo",place.placeNo.toString()))   // 맛집 번호
+
+                    HttpTask("wantToGo.php",paramList).execute()    // 가고 싶다 상태를 변경하는 php 로 전송한다.
+                }.start()
 
             }
             detailWriteReviewLo->{ // 리뷰쓰기 버튼

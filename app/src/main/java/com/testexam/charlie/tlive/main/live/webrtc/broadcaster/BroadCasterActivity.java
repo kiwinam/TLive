@@ -62,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import timber.log.Timber;
+
 public class BroadCasterActivity extends BaseActivity implements View.OnClickListener,SignalingEvents, PeerConnectionClient.PeerConnectionEvents {
     private static final String TAG = BroadCasterActivity.class.getSimpleName(); // 로그 출력을 위한 태그 설정. 현재 클래스의 이름으로 저장함.
 
@@ -192,7 +194,7 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
         }else{
             viewNum--;
         }
-        Log.d("setViewerNum",viewNum+"..");
+        Timber.tag("setViewerNum").d("%s", viewNum);
         runOnUiThread(()-> liveBroadCountTv.setText("시청자 "+viewNum+"명"));
     }
 
@@ -294,7 +296,7 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
     public void startCall(){
         // rtcClient 가 없다면 에러 로그 발생 후 종료
         if(rtcClient == null){
-            Log.e(TAG,"rtcClient is null");
+            Timber.e("rtcClient is null");
             return;
         }
         rtcClient.connectToRoom(STREAM_HOST, new BaseSocketCallback(){
@@ -323,24 +325,24 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
                             if(serverResponse.getTypeRes() == TypeResponse.REJECTED){
                                 logAndToast(serverResponse.getMessage());
                             }else{
-                                Log.e(TAG+"::presenterResponse",TypeResponse.ACCEPTED.toString());
+                                Timber.tag(TAG + "::presenterResponse").e(TypeResponse.ACCEPTED.toString());
                                 SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, serverResponse.getSdpAnswer());
 
                                 onRemoteDescription(sdp);
-                                Log.e(TAG+"::presenterResponse","onRemoteDescription");
+                                Timber.tag(TAG + "::presenterResponse").e("onRemoteDescription");
                             }
 
                             break;
 
                         case ICE_CANDIDATE:
-                            Log.e(TAG+"::onMessage","ICE_CANDIDATE");
+                            Timber.tag(TAG + "::onMessage").e("ICE_CANDIDATE");
                             CandidateModel candidateModel = serverResponse.getCandidate();
                             onRemoteIceCandidate(
                                     new IceCandidate(candidateModel.getSdpMid(),candidateModel.getSdpMLineIndex(),candidateModel.getSdp()));
                             break;
 
                         case VIEWER_CHANGE:
-                            Log.e(TAG+"::onMessage","VIEWER_CHANGE");
+                            Timber.tag(TAG + "::onMessage").e("VIEWER_CHANGE");
                             boolean isUp = false;
                             if(serverResponse.getMessage().equals("up")){
                                 isUp = true;
@@ -348,7 +350,7 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
                             setViewerNum(isUp);
                             break;
                         case CHAT:
-                            Log.d("chat Sender : "+serverResponse.getSender(), "msg : "+serverResponse.getMessage());
+                            Timber.tag("chat Sender : " + serverResponse.getSender()).d("msg : %s", serverResponse.getMessage());
                             receiveChatMessage(serverResponse.getSender(), serverResponse.getMessage());
                             break;
                     }
@@ -380,9 +382,9 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
         audioManager = RTCAudioManager.create(getApplicationContext());
         // 기존 오디오 설정 저장 및 오디오 모드 변경
         // 가능한 최상의 VoIP 성능을 제공
-        Log.d(TAG,"Starting audio manager");
+        Timber.tag(TAG).d("Starting audio manager");
         audioManager.start((audioDevice, availableAudioDevices) ->
-                Log.d(TAG, "onAudioManagerDevicesChanged: " + availableAudioDevices + ", "
+                Timber.tag(TAG).d("onAudioManagerDevicesChanged: " + availableAudioDevices + ", "
                         + "selected: " + audioDevice));
     }
 

@@ -16,6 +16,7 @@ import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.*
 import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
+import com.testexam.charlie.tlive.main.place.map.RangeListener
 import com.testexam.charlie.tlive.main.place.map.SelectSearchRange
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
@@ -111,7 +112,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 val selectSearchRange = SelectSearchRange.newInstance()
                 selectSearchRange.setData(limitDistance.toDouble())
                 selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
-                    val rangeLimit = arrayOf(100.0,300.0,500.0,1000.0,3000.0)
+                    val rangeLimit = arrayOf(100.0, 300.0, 500.0, 1000.0, 3000.0)
                     placeLimitTv.text = range
                     limitDistance = rangeLimit[rangeIndex].toFloat()
 

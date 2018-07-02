@@ -28,7 +28,6 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
-import com.testexam.charlie.tlive.common.RangeListener
 import com.testexam.charlie.tlive.common.SnapLayoutManager
 import com.testexam.charlie.tlive.main.place.Place
 import kotlinx.android.synthetic.main.activity_maps.*
@@ -96,7 +95,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
                 val selectSearchRange = SelectSearchRange.newInstance()
                 selectSearchRange.setData(limitDistance)
                 selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
-                    val rangeLimit = arrayOf(100.0,300.0,500.0,1000.0,3000.0)
+                    val rangeLimit = arrayOf(100.0, 300.0, 500.0, 1000.0, 3000.0)
                     placeLocationTv.text = range
                     limitDistance = rangeLimit[rangeIndex]
 
@@ -112,15 +111,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
                     mMap.clear()
                     // 원 추가
                     mMap.addCircle(CircleOptions()
-                            .center(LatLng(lat,lon))
+                            .center(LatLng(lat, lon))
                             .radius(limitDistance)
-                            .strokeColor(ContextCompat.getColor(applicationContext,R.color.colorCircleLine))
-                            .fillColor(ContextCompat.getColor(applicationContext,R.color.colorCircleFill)))
+                            .strokeColor(ContextCompat.getColor(applicationContext, R.color.colorCircleLine))
+                            .fillColor(ContextCompat.getColor(applicationContext, R.color.colorCircleFill)))
 
                     // 새로운 리스트 가져오기
                     getPlaceList()
 
-                    Log.d("map limit range",range+".."+rangeIndex)
+                    Log.d("map limit range", range + ".." + rangeIndex)
                 })
 
                 selectSearchRange.show(supportFragmentManager, "rangeSheet")

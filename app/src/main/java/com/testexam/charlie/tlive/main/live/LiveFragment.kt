@@ -2,6 +2,7 @@ package com.testexam.charlie.tlive.main.live
 
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -28,6 +29,8 @@ class LiveFragment : Fragment() , View.OnClickListener{
     private val broadcastList : ArrayList<Broadcast> = ArrayList()
     private var adapter : BroadcastAdapter? = null
 
+    private var userEmail = "";
+
     // LiveFragment 객체를 반환한다.
     companion object {
         fun newInstance(): LiveFragment = LiveFragment()
@@ -38,6 +41,8 @@ class LiveFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        userEmail = context!!.getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none")
+
         setOnClickListeners() // 클릭 리스너 설정
         setRecyclerView() // 리사이클러뷰 설정
         getBroadcastList()
@@ -100,8 +105,10 @@ class LiveFragment : Fragment() , View.OnClickListener{
                 activity!!.runOnUiThread({
                     livePb.visibility = View.VISIBLE
                 })
-                //Glide.get(context!!).clearDiskCache()
-                val httpTask = HttpTask("getBroadcastList.php", ArrayList<Params>())
+                val paramList = ArrayList<Params>()
+                paramList.add(Params("userEmail",userEmail))
+
+                val httpTask = HttpTask("getBroadcastList.php", paramList)
                 val result = httpTask.execute().get()
                 if(result != null){
                     val array = JSONArray(result)
@@ -122,21 +129,20 @@ class LiveFragment : Fragment() , View.OnClickListener{
                                 (responseObject.getString("uploadTime")),
                                 (responseObject.getString("previewSrc")),
                                 (responseObject.getString("vodSrc")),
-                                false, // 수정해야함
-                                false
+                                (responseObject.getBoolean("isLike")),
+                                (responseObject.getBoolean("isSubscribe"))
                         ))
                     }
                     activity!!.runOnUiThread({
                         adapter?.setData(broadcastList)
                         adapter?.notifyDataSetChanged()
+
                         if(liveSwipeRefreshLo != null){
                             liveSwipeRefreshLo.isRefreshing = false
                         }
                         livePb.visibility = View.GONE
                     })
                 }
-
-                
             } catch (e : Exception){
                 e.printStackTrace()
             }

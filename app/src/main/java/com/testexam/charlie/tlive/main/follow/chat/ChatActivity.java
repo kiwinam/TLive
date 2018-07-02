@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,27 +27,34 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import timber.log.Timber;
 
+/**
+ * Netty 를 이용하여 친구와 1:1 대화를 하는 Activity
+ *
+ * ChatService 에 등록되어 있는 소켓을 통해 서버와 연결된다.
+ * 네티 소켓을 통해 채팅 메시지를 주고 받는다.
+ * 주고 받는 메시지들은 SQLite 를 통해 디바이스 내부에 저장된다.
+ * 기존에 있는 채팅방에 들어가게 되면 SQLite 에서 이전 채팅 내역을 불러와 chatRv 에 표시한다.
+ */
 public class ChatActivity extends BaseActivity implements View.OnClickListener{
-    private RecyclerView chatRv;
-    private EditText chatSendEt;
-    private Button chatSendBtn;
-    private ImageView chatCloseIv;
-    private TextView chatTitleTv;
+    private RecyclerView chatRv;    // 채팅 메시지를 보여주는 RecyclerView
+    private EditText chatSendEt;    // 채팅 메시지를 입력하는 EditText
+    private Button chatSendBtn;     // 채팅 보내기 버튼
 
-    private ArrayList<Chat> chatList;
-    private ChatAdapter chatAdapter;
+    private ArrayList<Chat> chatList;   // 채팅 내역을 가지고 있는 ArrayList
+    private ChatAdapter chatAdapter;    // chatRv 의 어댑터
 
-    private ChatService chatService;
+    private ChatService chatService;    // 채팅 서비스 객체
 
-    private boolean isBound;
+    private boolean isBound;    // 채팅 서비스와 바인드 유무를 판단하는 변수
 
     private String myEmail; // 로그인한 유저의 이메일
 
     private String mTargetEmail; // 채팅 상대방 이메일
     private String mTargetName; // 채팅 상대방 이름
 
-    private DBHelper dbHelper;
+    private DBHelper dbHelper;  // 디바이스에 SQLite 를 이용하여 채팅 내역을 저장할 때 사용하는 DBHelper 객체
 
     /**
      * 채팅 서비스와 바인딩.
@@ -56,26 +62,27 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
      */
     private ServiceConnection chatConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
+        public void onServiceConnected(ComponentName name, IBinder service) {   // 서비스에 바인딩 된 경우
             ChatService.ChatBinder chatBinder = (ChatService.ChatBinder) service;
-            chatService = chatBinder.getService();
-            chatService.registerCallback(mCallback);
-            isBound = true;
+            chatService = chatBinder.getService();  // 채팅 서비스 객체를 가져온다.
+            chatService.registerCallback(mCallback);    // 채팅 서비스에 등록해야하는 콜백 메서드를 등록한다.
+            isBound = true;     // 바인드 유무를 판단하는 변수의 값을 true 로 변경한다.
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
+        public void onServiceDisconnected(ComponentName name) { // 서비스에 바인딩 되지 않은 경우
+            isBound = false;    // 바인드 유무를 판단하는 변수의 값을 false 로 변경한다.
         }
     };
 
     /*
-     * ChatService 소켓에서 메시지가 도착한 경우
+     * 채팅 서비스에 등록해야하는 ReceiveCallback
      */
     ChatService.ReceiveCallback mCallback = new ChatService.ReceiveCallback() {
+
         @Override
-        public void receiveMsg(String msg) {
-            Message message = readHandler.obtainMessage();
+        public void receiveMsg(String msg) {    // ChatService 소켓에서 메시지가 도착한 경우
+            Message message = readHandler.obtainMessage();  // 새로운 채팅을 SQLite 에서 읽어오는 핸들러를 실행한다.
             readHandler.sendMessage(message);
         }
 
@@ -88,7 +95,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         }
     };
 
-    // 리드 핸들러
+    // SQLite Read 핸들러
+    // 디바이스에 저장되어 있는 SQLite 에서 새로운 채팅 내역을 읽어온다.
+    // 읽어온 채팅은 ArrayList 에 추가된다.
     private final ReadHandler readHandler = new ReadHandler(this);
     private static class ReadHandler extends Handler{
         private final WeakReference<ChatActivity> mActivity;
@@ -170,7 +179,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         setContentView(R.layout.activity_chat);
 
         myEmail = getSharedPreferences("login",MODE_PRIVATE).getString("email",null);
-        Log.d("ChatActivity myEmail",myEmail+"..");
+        Timber.tag("ChatActivity myEmail").d(myEmail);
         mTargetEmail = getIntent().getStringExtra("targetEmail");
         mTargetName = getIntent().getStringExtra("targetName");
 
@@ -190,8 +199,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         // LayoutManager 를 설정한다.
         // 채팅이 아래에서부터 쌓이도록 reverseLayout 를 true 로 한다.
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-//        linearLayoutManager.setReverseLayout(true);
-//        linearLayoutManager.setStackFromEnd(true);
 
         chatList = new ArrayList<>();
         chatAdapter = new ChatAdapter(myEmail,chatList,getApplicationContext());
@@ -204,8 +211,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         chatRv = findViewById(R.id.chatRv);
         chatSendEt = findViewById(R.id.chatSendEt);
         chatSendBtn = findViewById(R.id.chatSendBtn);
-        chatCloseIv = findViewById(R.id.chatBackIv);
-        chatTitleTv = findViewById(R.id.chatTitleTv);
+        ImageView chatCloseIv = findViewById(R.id.chatBackIv);  // Activity 닫기 버튼
+        TextView chatTitleTv = findViewById(R.id.chatTitleTv);  // Toolbar 에 있는 Title TextView
 
         chatTitleTv.setText(mTargetName);
 
@@ -237,6 +244,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         });
     }
 
+    /*
+     * 메시지를 보내는 메소드
+     *
+     * 연결되어 있는 채팅 서비스를 이용하여 소켓에 메시지를 전달한다.
+     */
     private void sendMsg(String msg){
         chatService.sendSocket(mTargetEmail,msg);
         chatSendEt.setText("");
@@ -248,11 +260,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.chatSendBtn:
-                sendMsg(chatSendEt.getText().toString());
+                sendMsg(chatSendEt.getText().toString());   // 채팅 보내기 버튼을 누를 때 메시지를 보내는 메소드를 호출한다.
                 break;
 
             case R.id.chatBackIv:
-                onBackPressed();
+                onBackPressed();        // chatBackIv 버튼을 눌렀을 때 Activity 를 종료한다.
                 break;
         }
     }

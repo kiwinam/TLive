@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.testexam.charlie.tlive.main.follow.chat.Chat;
 import com.testexam.charlie.tlive.main.follow.chat.Room;
@@ -18,12 +17,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class DBHelper extends SQLiteOpenHelper{
+import timber.log.Timber;
 
+
+/**
+ * Netty 1:1 채팅 데이터를 저장할 SQLite 데이터 베이스 클래스
+ *
+ * 1:1 채팅방의 목록과 채팅 내역을 저장한다.
+ * Created by charlie on 2018. 5. 22
+ */
+public class DBHelper extends SQLiteOpenHelper{
     private Context context;
     private SQLiteDatabase db = null;
 
-    // 현재 시간을 구하기 위해 사용하는 변수들
+    // 현재 시간을 구하기 위해 사용하는 변수
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
@@ -52,12 +59,18 @@ public class DBHelper extends SQLiteOpenHelper{
     private String mEmail;
     private String mName;
 
+    // DBHelper 를 생성할 때 Context 변수를 초기화한다.
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         this.context = context;
     }
 
-
+    /*
+     * DBHelper 생성
+     *
+     * 1. 채팅방 테이블이 없다면 채팅방 목록 테이블을 생성한다
+     * 2. 채팅 내역 테이블이 없다면 채팅 내역 테이블을 생성한다.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         StringBuffer sb;
@@ -72,15 +85,15 @@ public class DBHelper extends SQLiteOpenHelper{
         badgeCount : 읽지 않은 메시지의 개수
          */
         sb = new StringBuffer();
-        sb.append("CREATE TABLE chatRooms (");
-        sb.append("no INTEGER PRIMARY KEY AUTOINCREMENT,");
-        sb.append("targetEmail TEXT,");
-        sb.append("targetName TEXT,");
-        sb.append("currentChat TEXT,");
-        sb.append("currentTime TEXT,");
-        sb.append("badgeCount INTEGER DEFAULT 0 )");
+        sb.append("CREATE TABLE chatRooms (");  // 채팅 방 목록 테이블 생성
+        sb.append("no INTEGER PRIMARY KEY AUTOINCREMENT,"); // no Int , Primary key, 인덱스 자동 증가
+        sb.append("targetEmail TEXT,");     // targetEmail Text, 채팅 방 상대 이메일
+        sb.append("targetName TEXT,");      // targetName Text, 채팅 방 상대 이름
+        sb.append("currentChat TEXT,");     // currentChat Text, 가장 최근 나눈 대화
+        sb.append("currentTime TEXT,");     // currentTime Text, 가장 최근 대화를 나눈 시간
+        sb.append("badgeCount INTEGER DEFAULT 0 )");    // badgeCount Int, 읽지 않은 채팅의 개수
         db.execSQL(sb.toString());
-        Log.e("채팅 방 테이블","생성 완료");
+        Timber.tag("채팅 방 테이블").e("생성 완료");
 
         /*
         채팅 내역 DB 생성
@@ -91,28 +104,29 @@ public class DBHelper extends SQLiteOpenHelper{
         msg : 메시지의 내용
          */
         sb = new StringBuffer();
-        sb.append("CREATE TABLE chatList (");
-        sb.append("no INTEGER PRIMARY KEY AUTOINCREMENT,");
-        sb.append("targetEmail TEXT,");
-        sb.append("senderEmail TEXT,");
-        sb.append("senderName TEXT,");
-        sb.append("msg TEXT )");
+        sb.append("CREATE TABLE chatList (");   // 채팅 내역 테이블 생성
+        sb.append("no INTEGER PRIMARY KEY AUTOINCREMENT,"); // no Int, Primary key, 인덱스 자동 증가
+        sb.append("targetEmail TEXT,");     // targetEmail Text, 채팅 내역 받는 사람 이메일
+        sb.append("senderEmail TEXT,");     // targetName Text, 채팅 내역 보낸 사람 이메일
+        sb.append("senderName TEXT,");      // senderName Text, 채팅 보낸 사람 이름
+        sb.append("msg TEXT )");        // msg Text, 채팅 메시지
         db.execSQL(sb.toString());
-        Log.e("채팅 내역 테이블","생성 완료");
+        Timber.tag("채팅 내역 테이블").e("생성 완료");
 
-        SharedPreferences sp = context.getSharedPreferences("login",Context.MODE_PRIVATE);
-        mEmail = sp.getString("email",null);
-        mName = sp.getString("name",null);
+        SharedPreferences sp = context.getSharedPreferences("login",Context.MODE_PRIVATE);  // SharedPreference 에서 로그인된 사용자의 정보를 불러온다.
+        mEmail = sp.getString("email",null);    // 사용자의 이메일을 저장
+        mName = sp.getString("name",null);      // 사용자의 이름을 저장
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.e("채팅 테이블","버전 업그레이드");
+        Timber.tag("채팅 테이블").e("버전 업그레이드");
     }
 
+    // DBHelper 에 있는 db 변수를 초기화하는 메소드
     public void chatDB(){
-        if(db == null){
-            db = getWritableDatabase();
+        if(db == null){ // db 변수가 아직 초기화 되지 않았다면
+            db = getWritableDatabase(); // db 변수를 초기화한다.
         }
     }
 
@@ -126,22 +140,22 @@ public class DBHelper extends SQLiteOpenHelper{
      * @param msg : 소켓으로 부터 받은 메시지
      */
     public void receiveChat(String msg){
-        Log.e("receiveChat", msg);
+        Timber.tag("receiveChat").e(msg);
         try {
             //  1. 들어온 메시지를 JSON 형식으로 파싱한다.
             JSONObject msgObject = new JSONObject(msg);
 
-            targetEmail = msgObject.getString("targetEmail");
-            senderEmail = msgObject.getString("senderEmail");
-            senderName = msgObject.getString("senderName");
-            currentChat = msgObject.getString("msg");
+            targetEmail = msgObject.getString("targetEmail");   // 채팅을 받는 사람의 이메일
+            senderEmail = msgObject.getString("senderEmail");   // 채팅 보낸 사람의 이메일
+            senderName = msgObject.getString("senderName");     // 채팅 보낸 사람의 이름
+            currentChat = msgObject.getString("msg");           // 가장 최근 받은 메시지에 채팅 메시지를 넣는다.
 
             isReceive = msgObject.getBoolean("isReceive");
 
-            Date mDate = new Date(System.currentTimeMillis());
-            currentTime = mFormat.format(mDate);
+            Date mDate = new Date(System.currentTimeMillis());          // 현재 시간을 가져온다
+            currentTime = mFormat.format(mDate);        // yyyy-MM-dd hh:mm:ss 형식으로 변환한다.
 
-            receiveMsg = msgObject.getString("msg");
+            receiveMsg = msgObject.getString("msg");        // 채팅 메시지
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -296,7 +310,7 @@ public class DBHelper extends SQLiteOpenHelper{
                 cursor.close();
             }
         }else{
-            Log.d("getChatList","cursor count 0");
+            Timber.tag("getChatList").d("cursor count 0");
             return new ArrayList<>();
         }
         if(!cursor.isClosed()){
@@ -305,7 +319,7 @@ public class DBHelper extends SQLiteOpenHelper{
         sb = new StringBuffer();
         sb.append("UPDATE chatRooms SET badgeCount = 0 WHERE targetEmail = ? ");
         db.execSQL(sb.toString(),new String[]{targetEmail});
-        Log.d("getChatList","cursor count "+chatArray.size());
+        Timber.tag("getChatList").d("cursor count %s", chatArray.size());
         return chatArray;
     }
 

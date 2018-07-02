@@ -53,6 +53,30 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>, val con
         holder.broadRoomTagTv.text = broadcast.roomTag
         holder.broadHostIv.setImageDrawable(context.getDrawable(R.drawable.ic_profile_ex1))
 
+        // 좋아요를 아이콘을 초기화한다.
+        // 좋아요가 눌렸다면 오렌지색의 하트를, 눌리지 않았다면 회색 선만 있는 하트를 broadLikeIv 에 넣는다.
+        if(broadcast.isLike){
+            Glide.with(context)
+                    .load(context.getDrawable(R.drawable.ic_favorite_orange_24dp))
+                    .into(holder.broadLikeIv)
+        }else{
+            Glide.with(context)
+                    .load(context.getDrawable(R.drawable.ic_favorite_border_gray))
+                    .into(holder.broadLikeIv)
+        }
+
+        // 구독 아이콘을 초기화한다.
+        // 구독이 되어 있다면 오렌지 색의 구독 아이콘을, 되어 있지 않다면 회색 아이콘을 broadSubscribeIv 에 넣는다.
+        if(broadcast.isSubscribe){
+            Glide.with(context)
+                    .load(context.getDrawable(R.drawable.ic_subscriptions_orange_24dp))
+                    .into(holder.broadSubscriptIv)
+        }else{
+            Glide.with(context)
+                    .load(context.getDrawable(R.drawable.ic_subscriptions_gray_24dp))
+                    .into(holder.broadSubscriptIv)
+        }
+
         /*
          * 라이브 스트리밍 방송일 경우,
          * 라이브 방송이라는 것을 알려주는 '생방송' 문구가 나오게 되고
@@ -104,18 +128,6 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>, val con
             }
             holder.broadLiveNumTv.visibility = View.GONE
             holder.broadLiveCircle.visibility = View.GONE
-
-            // 좋아요를 아이콘을 초기화한다.
-            // 좋아요가 눌렸다면 오렌지색의 하트를, 눌리지 않았다면 회색 선만 있는 하트를 broadLikeIv 에 넣는다.
-            if(broadcast.isLike){
-                Glide.with(context)
-                        .load(context.getDrawable(R.drawable.ic_favorite_orange_24dp))
-                        .into(holder.broadLikeIv)
-            }else{
-                Glide.with(context)
-                        .load(context.getDrawable(R.drawable.ic_favorite_border_gray))
-                        .into(holder.broadLikeIv)
-            }
         }
 
         holder.broadLikeNumTv.text = broadcast.likeNum.toString()

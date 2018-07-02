@@ -15,24 +15,25 @@ import android.os.IBinder
 import android.support.v4.content.ContextCompat
 import android.util.Log
 
+
+/**
+ * 디바이스의 GPS 를 이용하여 현재 나의 위도와 경도를 찾는 클래스
+ */
 @SuppressLint("Registered")
 class GPSInfo(val context: Context) : Service(), LocationListener{
-    var isGPSEnabled = false // 현재 GPS 사용 유무
+    private var isGPSEnabled = false // 현재 GPS 사용 유무
+    private var isNetworkEnabled = false // 네트워크 사용 유무
+    var isGetLocation = false // 위치를 가져올 수 있는지 저장하는 변수
 
-    var isNetworkEnabled = false // 네트워크 사용 유무
+    private var location : Location? = null
 
-    var isGetLocation = false // GPS 상태값
+    var lat : Double = 0.0  // 위도
+    var lon : Double = 0.0  // 경도
 
-    var location : Location? = null
+    private val updateMinDistance : Float = 10.0f // 최소 GPS 정보 업데이트 거리 10미터
+    private val updateMinTime : Long = 1000 * 60 * 1 // 최소 GPS 정보 업데이트 시간 (1분)
 
-    var lat : Double = 0.0
-
-    var lon : Double = 0.0
-
-    private final val updateMinDistance : Float = 10.0f // 최소 GPS 정보 업데이트 거리 10미터
-    private final val updateMinTime : Long = 1000 * 60 * 1 // 최소 GPS 정보 업데이트 시간 (1분)
-
-    protected var locationManager : LocationManager? = null
+    private var locationManager : LocationManager? = null
 
 
     /*
@@ -45,13 +46,14 @@ class GPSInfo(val context: Context) : Service(), LocationListener{
     /*
      * 현재 사용자의 위치를 가져오는 메소드
      */
+    @SuppressLint("LogNotTimber")
     @TargetApi(23)
     private fun getCurrentLocation(): Location? {
         // 빌드 버전이 23 이상이고, ACCESS_FINE_LOCATION , ACCESS_COARSE_LOCATION 의 권한이 부여되지 않은 경우
         if(Build.VERSION.SDK_INT >= 23 &&
             ContextCompat.checkSelfPermission(context,android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(context,android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return null
+            return null // 위치 가져오는걸 종료한다.
         }
         try{
             locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager? // Location Manager 설정
@@ -61,18 +63,19 @@ class GPSInfo(val context: Context) : Service(), LocationListener{
             if(!isGPSEnabled && !isNetworkEnabled){
                 // GPS 와 네트워크 사용이 불가능할 때 알림
             }else{
-                isGetLocation = true
+                isGetLocation = true    // 위치 가져올 수 있는지 여부를 저장하는 변수에 true 값을 저장한다.
 
                 // 네트워크 정보로 부터 위치 값 가져오기
-                if(isNetworkEnabled){
-                    locationManager!!.requestLocationUpdates(
+                if(isNetworkEnabled){   // 네트워크를 사용할 수 있다면
+                    locationManager!!.requestLocationUpdates(   // 네트워크를 사용하여서 위치 갱신을 요청한다.
                             LocationManager.NETWORK_PROVIDER,
                             updateMinTime,
                             updateMinDistance,this
                     )
-                    if(locationManager != null){
-                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                        if(location != null){
+                    if(locationManager != null){    // locationManager 가 초기화 되어 있다면
+                        location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) // locationManager 에서 네트워크를 사용하여 현재 위치를 가져온다.
+                        if(location != null){   // 가져온 위치가 null 이 아니라면
+                            // 가져온 위치에서 위도와 경도를 lat, lon 변수에 저장한다.
                             lat = location!!.latitude
                             lon = location!!.longitude
 

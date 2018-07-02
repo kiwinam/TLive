@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.common
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PointF
 import android.support.v7.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import android.util.Log
  * getHorizontalSnapPreference 를 override 하고 리턴 값을 SNAP_TO_START 변경하여 스크롤에 스냅이 걸릴 수 있게 한다.
  */
 class SnapLayoutManager(val context : Context) : LinearLayoutManager(context) {
+    @SuppressLint("LogNotTimber")
     override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
         val smoothScroller = object : LinearSmoothScroller(context){
             override fun getHorizontalSnapPreference(): Int {

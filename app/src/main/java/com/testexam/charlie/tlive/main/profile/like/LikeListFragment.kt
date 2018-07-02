@@ -28,7 +28,8 @@ class LikeListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userEmail = context!!.getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none") // 유저의 이메일을 shared preference 에서 가져온다.
+        // 유저의 이메일을 shared preference 에서 가져온다.
+        userEmail = context!!.getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none")
 
         setRecyclerView()
         getLikeList()
@@ -84,8 +85,8 @@ class LikeListFragment : Fragment() {
                                 (responseObject.getString("uploadTime")),
                                 (responseObject.getString("previewSrc")),
                                 (responseObject.getString("vodSrc")),
-                                true, // 좋아요 누른 리스트라 무조건 true 로 가져온다.
-                                false
+                                (responseObject.getBoolean("isLike")),
+                                (responseObject.getBoolean("isSubscribe"))
                         ))
                     }
                     activity!!.runOnUiThread({

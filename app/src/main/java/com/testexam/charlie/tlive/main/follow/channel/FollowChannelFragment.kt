@@ -21,17 +21,18 @@ import org.json.JSONArray
 class FollowChannelFragment : Fragment(){
     private lateinit var onlineList : ArrayList<Channel>    // 온라인 채널 리스트
     private lateinit var offlineList : ArrayList<Channel>   // 오프라인 채널 리스트
-
     private lateinit var onlineAdapter: ChannelAdapter      // 온라인 채널 어댑터
     private lateinit var offlineAdapter: ChannelAdapter     // 오프라인 채널 어댑터
-
     private var userEmail = ""      // 현재 사용자의 이메일
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_follow_channel,container,false)
-    }
+
     companion object {
         fun newInstance(): FollowChannelFragment = FollowChannelFragment()
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_follow_channel,container,false)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userEmail = context!!.getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none") // 현재 사용자의 이메일을 SharedPreference 에서 가져온다.
@@ -123,7 +124,7 @@ class FollowChannelFragment : Fragment(){
                         channelOfflineLo.visibility = View.VISIBLE // 오프라인 레이아웃을 보이게한다.
                         offlineAdapter.updateChannel(offlineList) // RecyclerView 를 갱신한다.
                     }else{  // 오프라인 채널이 없는 경우
-                        channelOfflineLo.visibility = View.VISIBLE // 오프라인 레이아웃을 숨긴다.
+                        channelOfflineLo.visibility = View.GONE // 오프라인 레이아웃을 숨긴다.
                     }
 
                     // 팔로우 리스트가 존재하지 않는 경우, 팔로우 한 채널이 없다는 메시지를 보여준다.

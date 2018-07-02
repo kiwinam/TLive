@@ -19,6 +19,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /**
+ * 내 친구 목록을 보여주는 Fragment
+ *
  * Created by charlie on 2018. 5. 24..
  */
 class FollowFriendFragment : Fragment() , View.OnClickListener{

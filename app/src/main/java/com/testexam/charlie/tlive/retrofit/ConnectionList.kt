@@ -11,17 +11,6 @@ import retrofit2.http.Query
  * Created by charlie on 2018. 5. 23
  */
 interface ConnectionList {
-    @Multipart
-    @POST("join.php")
-    fun requestJoin(@Query("name") name : String,
-                    @Query("email") email : String,
-                    @Query("password") password : String)
-        : Call<JoinResponse>
-
-
-    @Multipart
-    @POST("join.php")
-    fun requestJoinMap(@PartMap() partMap: HashMap<String, RequestBody>) : Call<JoinResponse>
 
     @Multipart
     @POST("insertReview.php")

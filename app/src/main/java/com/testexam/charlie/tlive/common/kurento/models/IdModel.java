@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
+ * 서버에서 리턴해주는 id 값을 저장하는 IdModel 객체
+ *
  * Created by charlie on 2018. 5. 28..
  */
 

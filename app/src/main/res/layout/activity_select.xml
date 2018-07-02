@@ -22,7 +22,7 @@
         android:layout_marginTop="100dp"
         android:layout_width="170dp"
         android:layout_height="170dp"
-        />
+        android:contentDescription="@string/logo" />
     <TextView
         android:id="@+id/selectTitleTv"
         android:text="@string/tasty_live"
@@ -36,10 +36,9 @@
         android:layout_marginTop="8dp"
         />
     <TextView
-        android:text="함께하는 즐거운 먹방"
+        android:text="@string/logo_text_ko"
         android:textSize="16sp"
         android:textColor="@color/colorTextWhite"
-
         android:layout_below="@id/selectTitleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +59,7 @@
             android:text="@string/start_email"
             android:textColor="@color/colorTextWhite"
             android:textStyle="bold"
-            android:drawableLeft="@drawable/ic_email_white_14dp"
+            android:drawableStart="@drawable/ic_email_white_14dp"
             android:drawablePadding="8dp"
             android:gravity="center"
             android:layout_centerInParent="true"
@@ -93,7 +92,7 @@
             android:text="@string/start_naver"
             android:textColor="@color/colorTextWhite"
             android:textStyle="bold"
-            android:drawableLeft="@drawable/ic_naver_logo_white_12dp"
+            android:drawableStart="@drawable/ic_naver_logo_white_12dp"
             android:drawablePadding="8dp"
             android:gravity="center"
             android:layout_centerInParent="true"
