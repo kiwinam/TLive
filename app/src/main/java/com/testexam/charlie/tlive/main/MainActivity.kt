@@ -14,10 +14,12 @@ import com.testexam.charlie.tlive.main.live.LiveFragment
 import com.testexam.charlie.tlive.main.place.PlaceFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+/**
+ * 팔로우, 라이브, 맛집 Fragment 가 있는 MainActivity
+ *
+ * 탭 레이아웃을 통해 각 Fragment 를 선택할 수 있다.
+ */
 class MainActivity : BaseActivity(), View.OnClickListener {
-
-
-
     companion object {
         // Used to load the 'native-lib' library on application startup.
         init {

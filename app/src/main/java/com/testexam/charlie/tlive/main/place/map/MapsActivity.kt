@@ -33,7 +33,11 @@ import com.testexam.charlie.tlive.main.place.Place
 import kotlinx.android.synthetic.main.activity_maps.*
 import org.json.JSONArray
 
-/* RecyclerView 에 클릭하면 디테일로 가야함 */
+/*  추가적으로 필요한 작업
+
+    1. RecyclerView 에 클릭하면 디테일로 가야함 -> 295 줄 :: 2018.06.28 박천명 (Charlie Park)
+
+*/
 
 /**
  * .. recyclerView 돌아갈 때 마다 맵 중앙 변경, 선택되는 효과
@@ -89,11 +93,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
         when(v){
             mapCloseIv->onBackPressed() // mapCloseIv 를 클릭하면 onBackPressed() 를 호출하여 Activity 를 종료한다.
             mapLocationLo->{ // 지도 검색 범위 설정
-                /*val selectPathFinder = SelectPathFinder.newInstance()
+                /*val selectPathFinder = SelectPathFinderBottomSheet.newInstance()
                 selectPathFinder.setLatLng(myLatLng, LatLng(place.lat,place.lon)) // 나의 위치와 맛집의 위치를 설정한다.
                 selectPathFinder.show(supportFragmentManager,"bottomSheet") // 바텀시트를 보여준다.*/
-                val selectSearchRange = SelectSearchRange.newInstance()
-                selectSearchRange.setData(limitDistance)
+                val selectSearchRange = SearchRangeBottomSheet.newInstance()
+                selectSearchRange.setBeforeRange(limitDistance)
                 selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
                     val rangeLimit = arrayOf(100.0, 300.0, 500.0, 1000.0, 3000.0)
                     placeLocationTv.text = range
@@ -202,18 +206,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
     }
 
     /*
-     *
+     * 클러스터가 클릭 됐을 때 호출되는 메소드
      */
-    override fun onClusterClick(cluster : Cluster<PositionItem>?): Boolean {
-        return true
-    }
+    override fun onClusterClick(cluster : Cluster<PositionItem>?): Boolean { return true }
 
     /*
-     *
+     * 클러스터에 정보 윈도우가 클릭 됐을 때 호출되는 메소드
      */
-    override fun onClusterInfoWindowClick(p0: Cluster<PositionItem>?) {
-
-    }
+    override fun onClusterInfoWindowClick(p0: Cluster<PositionItem>?) {}
 
     /*
      * 클러스터링 된 마커를 클릭 했을 때 이벤트를 처리하는 메소드
@@ -296,10 +296,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
 
     }
 
+    /*
+     * 서버에 맛집 리스트를 요청한다.
+     */
     private fun getPlaceList(){
         Thread{
             try{
-
                 val params : ArrayList<Params> = ArrayList() // 서버에 전송할 파라미터를 설정한다.
                 params.add(Params("lat",lat.toString())) // 파라미터에 lat, 경도 를 설정한다.
                 params.add(Params("lon",lon.toString())) // 파라미터에 lon, 위도 를 설정한다.
@@ -313,7 +315,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
 
                     for(i in 0 .. (placeArray.length()-1)){
                         val place = placeArray.getJSONObject(i)
-                        placeList.add(Place(
+                        placeList.add(Place(    // 맛집 리스트에 추가한다.
                                 (i+1),                                          // no
                                 place.getInt("placeNo"),                // placeNo
                                 place.getString("name"),                // name
@@ -328,17 +330,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
                                 place.getString("previewSrc")           // previewSrc
                         ))
                     }
-                    for(i in 0 until placeList.size){
+                    for(i in 0 until placeList.size){   // 클러스터 리스트에 추가한다.
                         clusterList.add(PositionItem(placeList[i].no,placeList[i].name,placeList[i].lat,placeList[i].lon))
                     }
 
                 }
                 runOnUiThread({
                     if(limitDistance >= 2000.0){    // 검색 제한 거리가 2 Km 가 넘을 경우 클러스터링을 사용하고
-                        setCluster()
+                        setCluster()    // 클러스터링 설정을 한다.
                     }else{  // 검색 제한 거리가 2 Km 이하를 경우 클러스터링을 사용하지 않는다.
                         // placeList 에 있는 맛집 정보를 구글 맵에 marker 로 추가한다.
-
                         for(i in 0 until placeList.size){
                             val place = placeList[i]
                             if(i==0){
@@ -351,8 +352,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
 
                     }
                 })
-
-
             }catch (e : Exception ){
                 e.printStackTrace()
             }finally {
@@ -366,24 +365,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
      */
     @SuppressLint("InflateParams")
     private fun addMarker (place : Place, isSelected : Boolean) : Marker {
-        val marker: View = (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.marker_selected,null)
-        val numTv : TextView = marker.findViewById(R.id.markerNumTv)
-        val markerIv = marker.findViewById<ImageView>(R.id.markerIv)
-        numTv.text = place.no.toString()
-        if(isSelected){
-            numTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.colorPrimary))
-            markerIv.setImageDrawable(getDrawable(R.drawable.ic_location_orange))
-        } else {
-            numTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.colorGray))
-            markerIv.setImageDrawable(getDrawable(R.drawable.ic_location_gray))
+        val marker: View = (this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.marker_selected,null)    // 마커 뷰를 가져온다.
+        val numTv : TextView = marker.findViewById(R.id.markerNumTv)    // 마커의 numTv
+        val markerIv = marker.findViewById<ImageView>(R.id.markerIv)    // 마커의 markerIv
+        numTv.text = place.no.toString()    // numTv 에 숫자를 표시한다.
+        if(isSelected){ // 마커가 클릭 혹은 RecyclerView 에 의해 선택된 상태라면
+            numTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.colorPrimary)) // numTv 의 텍스트 색상을 오렌지로 변경한다.
+            markerIv.setImageDrawable(getDrawable(R.drawable.ic_location_orange))   // markerIv 를 오렌지 배경으로 변경한다.
+        } else {    // 마커가 선택되지 않았다면
+            numTv.setTextColor(ContextCompat.getColor(applicationContext,R.color.colorGray))    // numTv 의 텍스트 색상을 회색으로 변경한다.
+            markerIv.setImageDrawable(getDrawable(R.drawable.ic_location_gray)) // markerIv 를 회색 배경으로 변경한다.
         }
-        val markers = mMap.addMarker(
+        val markers = mMap.addMarker(   // 맵에 마커를 추가한다.
                 MarkerOptions()
                         .position(LatLng(place.lat,place.lon))
                         .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(marker)))
                         .title(place.name))
-        markerList.add(markers)
-        return markers
+        markerList.add(markers) // 마커 리스트에 추가한다.
+        return markers  // 마커를 리턴한다.
     }
 
     /*
@@ -443,40 +442,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback
         lastMarkerPosition = newPosition // 새로 선택한 위치를 lastMarkerPosition 으로 설정한다.
     }
 
+    /*
+     * View 를 매개변수로 전달받아 Bitmap 으로 리턴해준다
+     */
     private fun createDrawableFromView(view : View) : Bitmap{
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        //view.layoutParams = ViewGroup.LayoutParams(36, 36)
-        view.measure(displayMetrics.widthPixels,displayMetrics.heightPixels)
+        view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)    // view 의 크기를 지정한다.
+
+        view.measure(displayMetrics.widthPixels,displayMetrics.heightPixels)    // 픽셀을 계산한다.
         view.layout(0,0,displayMetrics.widthPixels,displayMetrics.heightPixels)
-        view.buildDrawingCache()
-        val bitmap = Bitmap.createBitmap(view.measuredWidth,view.measuredHeight, Bitmap.Config.ARGB_8888)
+        view.buildDrawingCache()    // 캐시를 사용하여 뷰를 비트맵으로 그린다.
+        val bitmap = Bitmap.createBitmap(view.measuredWidth,view.measuredHeight, Bitmap.Config.ARGB_8888)   // 비트맵 객체 생성
 
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
+        val canvas = Canvas(bitmap) // 캔버스 초기화, 비트맵 객체와 연결한다.
+        view.draw(canvas)   // 캔버스에 뷰를 그린다.
 
-        return bitmap
+        return bitmap   // 비트맵을 리턴한다.
     }
 
+    /*
+     *  구글 맵에 클러스터링을 설정한다.
+     */
     private fun setCluster(){
-
-        clusterManager = ClusterManager(this,mMap)
+        clusterManager = ClusterManager(this,mMap)  // 클러스터 매니저 초기화
         clusterManager.renderer = CustomIconRenderer(this,this,mMap, clusterManager)
-        clusterManager.clearItems()
+        clusterManager.clearItems() // 클러스터 아이템을 초기화한다.
+
         mMap.setOnCameraIdleListener(clusterManager)
         mMap.setOnMarkerClickListener(clusterManager)
         mMap.setOnInfoWindowClickListener(clusterManager)
-        clusterManager.setOnClusterClickListener(this)
-        clusterManager.setOnClusterInfoWindowClickListener(this)
-        clusterManager.setOnClusterItemClickListener(this)
-
-
+        clusterManager.setOnClusterClickListener(this)  // 클러스터 클릭 리스너 설정
+        clusterManager.setOnClusterInfoWindowClickListener(this)    // 클러스터 인포 윈도우 클릭 리스너 설정
+        clusterManager.setOnClusterItemClickListener(this)  // 클러스터 아이템 클릭 리스너 설정
 
         for(i in 0 until clusterList.size){
-            clusterManager.addItem(clusterList[i])
-            Log.d("cluster","add")
+            clusterManager.addItem(clusterList[i])  // 클러스터 매니저에 클러스터 리스트에 있는 아이템을 추가한다.
         }
         clusterManager.cluster()
     }

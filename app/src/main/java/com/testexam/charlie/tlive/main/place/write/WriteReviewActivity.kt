@@ -38,15 +38,15 @@ import kotlin.collections.ArrayList
  * 맛집에 대한 평가를 선택하고 (맛있다, 괜찮다, 별로) 리뷰를 작성하는 Activity
  */
 
-private const val GOOD = 5
-private const val NORMAL = 3
-private const val BAD = 1
-private const val WRITE_CODE = 1000
+private const val GOOD = 5          // 좋아요 평점
+private const val NORMAL = 3        // 괜찮다 평점
+private const val BAD = 1           // 별로 평점
+private const val WRITE_CODE = 1000 // startActivity 의 응답 코드
 
 class WriteReviewActivity : BaseActivity() , View.OnClickListener{
-    private var selectPoint = 0 // 선택한 평점을 저장하는 변수. 맛있다 = 30, 괜찮다 = 20, 별로 = 10, 없음 = 0
-    private var albumList : ArrayList<AlbumFile> = ArrayList()
-    private var placeNo = -1
+    private var selectPoint = 0     // 선택한 평점을 저장하는 변수. 맛있다 = 30, 괜찮다 = 20, 별로 = 10, 없음 = 0
+    private var albumList : ArrayList<AlbumFile> = ArrayList()  // 리뷰 작성시 같이 업로드할 사진을 저장하는 ArrayList
+    private var placeNo = -1    // 맛집 번호
     private var isTextOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

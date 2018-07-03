@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.testexam.charlie.tlive.main.place.detail.ar.util;
+package com.testexam.charlie.tlive.main.place.detail.ar.model.util;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -58,7 +58,6 @@ public class ArBeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondar
 	public ArBeyondarGLSurfaceView(Context context) {
 		super(context);
 		init(context);
-
 	}
 
 	public ArBeyondarGLSurfaceView(Context context, AttributeSet attrs) {

@@ -1,8 +1,4 @@
-package com.testexam.charlie.tlive.main.place.detail.ar.util;
-
-/**
- * Created by Amal Krishnan on 27-01-2017.
- */
+package com.testexam.charlie.tlive.main.place.detail.ar.model.util;
 
 import android.content.Context;
 import android.hardware.Camera;

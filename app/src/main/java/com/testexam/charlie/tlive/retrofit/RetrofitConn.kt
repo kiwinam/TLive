@@ -6,6 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
+ * 레트로핏 초기화 객체
  * Created by charlie on 2018. 5. 23
  */
 class RetrofitConn {

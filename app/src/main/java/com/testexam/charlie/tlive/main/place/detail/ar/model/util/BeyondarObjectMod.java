@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.testexam.charlie.tlive.main.place.detail.ar.util;
+package com.testexam.charlie.tlive.main.place.detail.ar.model.util;
 
 import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.opengl.colision.SquareMeshCollider;
@@ -676,7 +676,7 @@ public class BeyondarObjectMod implements Plugable<BeyondarObjectPlugin> {
 	 *
 	 * @return Bottom right 3D.
 	 */
-	public Point3 getBottomRight() {
+	private Point3 getBottomRight() {
 		mBottomRight.x = mPosition.x + mTexture.getVertices()[6];
 		mBottomRight.y = mPosition.y + mTexture.getVertices()[7];
 		mBottomRight.z = mPosition.z + mTexture.getVertices()[8];

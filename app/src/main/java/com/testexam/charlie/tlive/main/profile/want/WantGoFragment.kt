@@ -2,6 +2,7 @@ package com.testexam.charlie.tlive.main.profile.want
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -16,22 +17,26 @@ import com.testexam.charlie.tlive.main.place.PlaceAdapter
 import kotlinx.android.synthetic.main.fragment_want_to_go.*
 import org.json.JSONArray
 
+/**
+ * 유저가 가고싶다 누른 맛집의 리스트를 보여주는 Fragment
+ */
 class WantGoFragment : Fragment() {
-    private lateinit var wantList : ArrayList<Place>
-    private lateinit var wantAdapter : PlaceAdapter
+    private lateinit var wantList : ArrayList<Place>    // 가고싶은 맛집의 리스트
+    private lateinit var wantAdapter : PlaceAdapter     // 맛집 어댑터
 
-    private var userEmail = ""
+    private var userEmail = ""      // 현재 로그인한 유저의 이메일
     @SuppressLint("InflateParams")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_want_to_go, null)
     }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setRecyclerView()
+        // SharedPreference 에서 현재 로그인한 유저의 이메일을 가져온다.
+        userEmail = context!!.getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none")
+        setRecyclerView()   // RecyclerView 를 설정한다.
 
+        // 스와이프 레이아웃에 리프레시 리스너를 설정한다.
         wantSwipeLo.setOnRefreshListener {
-            getWantList()
+            getWantList()   // 스와이프 리프레시가 발생하면 유저가 가고싶다 누른 리스트를 다시 요청한다.
         }
     }
 
@@ -39,16 +44,16 @@ class WantGoFragment : Fragment() {
      * WantToGo RecyclerView 설정 하는 메소드
      */
     private fun setRecyclerView(){
-        wantList = ArrayList()
-        wantAdapter = PlaceAdapter(wantList,context!!)
+        wantList = ArrayList()      // 가고싶은 리스트를 초기화한다.
+        wantAdapter = PlaceAdapter(wantList,context!!)      // 맛집 어댑터를 초기화한다.
 
-        val gridManager = GridLayoutManager(context!!,2)
+        val gridManager = GridLayoutManager(context!!,2)    // 그리드 레이아웃 매니저를 초기화한다.
 
         wantRv.adapter = wantAdapter
         wantRv.layoutManager = gridManager
         wantRv.isNestedScrollingEnabled = false
 
-        getWantList()
+        getWantList()   // 가고싶은 맛집 리스트를 받아오는 메소드를 호출한다.
     }
 
     /*
@@ -85,7 +90,7 @@ class WantGoFragment : Fragment() {
                     }
                 }
                 activity!!.runOnUiThread({
-                    wantAdapter.setData(wantList)       // 어댑터를 이용해 맛집 리스트를 갱신한다.
+                    wantAdapter.setPlaceList(wantList)       // 어댑터를 이용해 맛집 리스트를 갱신한다.
                     if(wantList.size > 0){
                         wantNoneTv.visibility = View.GONE
                     }else{

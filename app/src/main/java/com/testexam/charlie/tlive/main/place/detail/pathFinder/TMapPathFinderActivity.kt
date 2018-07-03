@@ -12,14 +12,17 @@ import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
 import kotlinx.android.synthetic.main.activity_tmap_path_finder.*
 
+/**
+ * 티맵을 이용하여 현재 위치에서 맛집 위치까지 경로를 찾는 Activity
+ */
 class TMapPathFinderActivity : BaseActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tmap_path_finder)
 
-        val startLatLng : LatLng = intent.getParcelableExtra<LatLng>("startLatLng")
-        val endLatLng : LatLng  = intent.getParcelableExtra("endLatLng")
+        val startLatLng : LatLng = intent.getParcelableExtra<LatLng>("startLatLng") // 인텐트에서 시작 위경도를 가져온다.
+        val endLatLng : LatLng  = intent.getParcelableExtra("endLatLng")    // 인텐트에서 도착 위경도를 가져온다.
 
         //LoadTMap(applicationContext,tMapLayout,startLatLng,endLatLng).execute()
 

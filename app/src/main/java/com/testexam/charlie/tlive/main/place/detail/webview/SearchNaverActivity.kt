@@ -19,26 +19,22 @@ class SearchNaverActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_naver)
 
-        val placeName = intent.getStringExtra("placeName")
-        val query = URLEncoder.encode(placeName,"UTF-8")
-        naverUrl = "https://search.naver.com/search.naver?where=post&sm=tab_jum&query=$query"
+        val placeName = intent.getStringExtra("placeName")  // 맛집의 이름을 인텐트로 전달받는다.
+        val query = URLEncoder.encode(placeName,"UTF-8")    // 맛집의 이름을 UTF-8 형식으로 인코딩한다.
+        naverUrl = "https://search.naver.com/search.naver?where=post&sm=tab_jum&query=$query"   // 네이버에 검색할 url 를 만든다.
 
         runOnUiThread({
-            naverTitleTv.text = placeName
-            naverPb.visibility = View.VISIBLE
+            naverTitleTv.text = placeName   // 타이틀을 맛집 이름으로 설정한다.
+            naverPb.visibility = View.VISIBLE   // 프로그레스 바를 표시한다.
         })
 
-        naverWebView.webViewClient = WebViewClient()
-        naverWebView.loadUrl(naverUrl)
-        naverWebView.settings.javaScriptEnabled = true
+        naverWebView.webViewClient = WebViewClient()    // 웹뷰 클라이언트를 초기화한다.
+        naverWebView.loadUrl(naverUrl)  // 검색 url 를 로드한다.
+        naverWebView.settings.javaScriptEnabled = true  // 웹뷰에 자바스크립트를 허용한다.
         runOnUiThread({
-            naverPb.visibility = View.GONE
+            naverPb.visibility = View.GONE  // 프로그레스 바를 보이지 않게 한다.
         })
-
-
-        naverCloseIv.setOnClickListener({
-            finish()
-        })
+        naverCloseIv.setOnClickListener({ finish() })   // 닫기 버튼을 누르면 액티비티를 종료한다.
     }
 
 }

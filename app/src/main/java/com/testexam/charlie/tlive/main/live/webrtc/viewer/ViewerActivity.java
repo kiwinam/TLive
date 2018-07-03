@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import timber.log.Timber;
+
 
 /**
  * WebRTC SFU 방식으로 라이브 스트리밍을 시청하는 Activity.
@@ -64,27 +66,27 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
     private SocketService socketService;    // 서버와 통신하기 위한 WebSocket
     private Gson gson;                      // 서버와 통신할 때 JSON 형식을 사용해서 통신하는데 이 때 JSON 형태를 다루기 위해 사용하는 GSON 객체
 
-    private PeerConnectionClient peerConnectionClient;
-    private KurentoViewerRTCClient rtcClient;
-    private PeerConnectionParameters peerConnectionParameters;
-    private RTCAudioManager audioManager;
-    private SignalingParameters signalingParameters;
-    private boolean iceConnected;
+    private PeerConnectionClient peerConnectionClient;  // Peer 연결을 하기 위한 Client 객체
+    private KurentoViewerRTCClient rtcClient;   // Kurento 에 시청자 연결하기 위한
+    private PeerConnectionParameters peerConnectionParameters;  // Peer 연결시 사용할 파라미터 객체
+    private RTCAudioManager audioManager;   //  WebRtc 에서 사운드 설정을 변경하기 위해 사용하는 오디오 매니저
+    private SignalingParameters signalingParameters;     // 시그널링 때 사용하는 파라미터 객체
+    private boolean iceConnected;       // ICE 가 연결 되었는지 저장하는 변수
 
-    private EglBase rootEglBase;
-    private ProxyRenderer remoteProxyRenderer;
-    private Toast logToast;
+    private EglBase rootEglBase;    // EGL 상태를 저장하는 EglBase, EGL -> Embedded-system Graphics Library, 크로스 렌더링 api (OpenGL) 과 윈도우 시스템 간의 인터페이스
+    private ProxyRenderer remoteProxyRenderer;  // SurfaceView 에 장면을 렌더링하는 객체
+    private Toast logToast; // 토스트 객체
 
-    private SurfaceViewRenderer vGLSurfaceViewCall;
+    private SurfaceViewRenderer vGLSurfaceViewCall; // Layout 에서 화면을 표시하는 SurfaceViewRenderer
 
-    private int presenterSessionId;
+    private int presenterSessionId; // BJ 의 Node.js 상 세션 아이디
 
-    private String name;
+    private String name;    // 시청자의 이름
 
     private ChatAdapter chatAdapter; // 채팅 recycler view 와 연결하는 어댑터
-    private RecyclerView chatRecyclerView;
-    private EditText viewerChatEt;
-    private Button viewerChatSendBtn;
+    private RecyclerView chatRecyclerView; // 채팅 RecyclerView
+    private EditText viewerChatEt;  // 채팅 내용을 입력하는 EditText
+    private Button viewerChatSendBtn;   // 채팅 전송 버튼
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,28 +94,31 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
         setContentView(R.layout.activity_viewer);
         name = getSharedPreferences("login",MODE_PRIVATE).getString("name",null);
         presenterSessionId = getIntent().getIntExtra("presenterSessionId",-1);
-        init();
+        init(); // 변수 및 뷰 초기화
     }
 
     /*
+     * 변수 및 뷰 초기화
      *
+     * 뷰를 연결하고 클릭 리스너를 설정하고 채팅 리사이클러 뷰를 설정한다.
+     * surfaceView 를 설정한다.
      */
     private void init() {
         //config peer
-        vGLSurfaceViewCall = findViewById(R.id.vGLSurfaceViewCall);
-        socketService = new DefaultSocketService(getApplication());
+        vGLSurfaceViewCall = findViewById(R.id.vGLSurfaceViewCall); // 서페이스 뷰 객체에 뷰 연결
+        socketService = new DefaultSocketService(getApplication()); // 소켓 연결
         gson = new Gson();
-        remoteProxyRenderer = new ProxyRenderer();
-        rootEglBase = EglBase.create();
+        remoteProxyRenderer = new ProxyRenderer();  // 프록시 렌더러 초기화
+        rootEglBase = EglBase.create(); // EglBase 객체 생성
 
-        vGLSurfaceViewCall.init(rootEglBase.getEglBaseContext(), null);
-        vGLSurfaceViewCall.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
-        vGLSurfaceViewCall.setEnableHardwareScaler(true);
-        vGLSurfaceViewCall.setMirror(true);
-        remoteProxyRenderer.setTarget(vGLSurfaceViewCall);
+        vGLSurfaceViewCall.init(rootEglBase.getEglBaseContext(), null);     // 서페이스 뷰 초기화
+        vGLSurfaceViewCall.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);    // 서페이스 뷰의 크기를 화면 전체로 설정한다.
+        vGLSurfaceViewCall.setEnableHardwareScaler(true);       // 서페이스 뷰의 크기를 하드웨어 크기에 맞게 설정한다.
+        vGLSurfaceViewCall.setMirror(true);     // 서페이스 뷰를 반전한다.
+        remoteProxyRenderer.setTarget(vGLSurfaceViewCall);      // remoteProxyRenderer 의 타겟을 서페이스 뷰로 설저한다.
 
-        viewerChatEt = findViewById(R.id.viewerChatEt);
-        viewerChatSendBtn = findViewById(R.id.viewerChatSendBtn);
+        viewerChatEt = findViewById(R.id.viewerChatEt);     // 채팅 내용을 입력하는 EditText
+        viewerChatSendBtn = findViewById(R.id.viewerChatSendBtn);   // 채팅 전송 버튼
 
         /*
          * 채팅 전송 버튼 리스너
@@ -129,7 +134,7 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
                 chatObj.put("message",viewerChatEt.getText().toString());
                 socketService.sendMessage(chatObj.toString());
                 runOnUiThread(()->{
-                    chatAdapter.setData(new Chat(name,viewerChatEt.getText().toString(),0));
+                    chatAdapter.addChatItem(new Chat(name,viewerChatEt.getText().toString(),0));
                     viewerChatEt.setText("");
                 });
             } catch (JSONException e){
@@ -162,10 +167,11 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
             public void afterTextChanged(Editable s) { }
         });
 
-        initPeerConfig();
-        setChatRecyclerView();
+        initPeerConfig();   // 피어 설정
+        setChatRecyclerView();  // 채팅 리사이클러뷰 설정
     }
 
+    /* 채팅 리사이클러뷰를 설정하는 메소드 */
     private void setChatRecyclerView(){
         chatAdapter = new ChatAdapter(new ArrayList<>(), getApplicationContext(),0);
 
@@ -174,82 +180,92 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(linearLayoutManager);
-
     }
 
+    /*
+     *
+     * WebRTC 소켓으로부터 새로운 채팅을 받았을 때 호출되는 메소드
+     *
+     * 새로운 채팅을 전달 받았을 경우 chatAdapter 에 새로운 채팅 객체를 생성하여 전달한다.
+     * chatRecyclerView 를 항상 최근 메시지를 보여주기 위해 스크롤을 가장 아래로 한다.
+     */
     private void receiveChatMessage(String sender, String message){
         runOnUiThread(() ->{
-            chatAdapter.setData(new Chat(sender, message,0));
+            chatAdapter.addChatItem(new Chat(sender, message,0));
             chatRecyclerView.scrollToPosition(chatAdapter.getItemCount()-1);
         });
     }
 
-    public EglBase.Context getEglBaseContext() {
-        return rootEglBase.getEglBaseContext();
-    }
+    public EglBase.Context getEglBaseContext() { return rootEglBase.getEglBaseContext(); }   // EglBase 컨텍스트를 리턴한다.
 
-    public VideoRenderer.Callbacks getRemoteProxyRenderer() {
-        return remoteProxyRenderer;
-    }
+    public VideoRenderer.Callbacks getRemoteProxyRenderer() { return remoteProxyRenderer; } // 리모트 렌더러를 리턴한다.
 
+    /*
+     * PeerConfig 를 초기화한다.
+     */
     public void initPeerConfig() {
-        rtcClient = new KurentoViewerRTCClient(socketService);
-        DefaultConfig defaultConfig = new DefaultConfig();
-        peerConnectionParameters = defaultConfig.createPeerConnectionParams(StreamMode.RECV_ONLY);
-        peerConnectionClient = PeerConnectionClient.getInstance();
-        peerConnectionClient.createPeerConnectionFactory(getApplicationContext(), peerConnectionParameters, this);
-        rtcClient.setPresenterSID(presenterSessionId);
-        startCall();
+        rtcClient = new KurentoViewerRTCClient(socketService);  // 소켓 서비스를 매개 변수로 방송 송출자용 RTC Client 객체를 생성한다.
+        DefaultConfig defaultConfig = new DefaultConfig();   // 디폴트 설정을 초기화한다.
+        peerConnectionParameters = defaultConfig.createPeerConnectionParams(StreamMode.RECV_ONLY);  // PeerConnectionParameter 에 스트림 모드를 받기 전용으로 변경한다.
+        peerConnectionClient = PeerConnectionClient.getInstance();  // PeerConnection 객체를 초기화한다.
+        peerConnectionClient.createPeerConnectionFactory(getApplicationContext(), peerConnectionParameters, this);   // PeerConnection 을 생성한다.
+        rtcClient.setPresenterSID(presenterSessionId);  // 방송 송출자의 세션 아이디를 설정한다.
+        startCall();    // Peer 연결을 시작한다.
     }
 
+    /*
+     * 서버와 PeerConnection 을 연결하는 메소드
+     */
     public void startCall() {
-        if (rtcClient == null) {
-            Log.e(TAG, "AppRTC client is not allocated for a call.");
+        if (rtcClient == null) {    // rtcClient 가 없다면 에러 로그 발생 후 종료
+            Timber.tag(TAG).e("AppRTC client is not allocated for a call.");
             return;
         }
 
+        // Kurento-media-server 와 소켓 연결을 시작한다.
         rtcClient.connectToRoom(STREAM_HOST, new BaseSocketCallback() {
             @Override
-            public void onOpen(ServerHandshake serverHandshake) {
+            public void onOpen(ServerHandshake serverHandshake) {   // 소켓이 연결 되었을 때
                 super.onOpen(serverHandshake);
 
                 logAndToast("Socket connected");
-                SignalingParameters parameters = new SignalingParameters(
+                SignalingParameters parameters = new SignalingParameters(    // Ice 서버리스트를 추가한다.
                         new LinkedList<PeerConnection.IceServer>() {
                             {
-                                add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
+                                add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));  // 구글에서 제공하는 STUN 서버를 추가한다
                                 //add(new PeerConnection.IceServer("kurento:kurentopw@turn:13.125.64.135"));
                             }
                         }, true, null, null, null, null, null);
-                onSignalConnected(parameters);
+                onSignalConnected(parameters);    // 신호가 연결되었다면 카메라를 SurfaceView 에 연결한다.
             }
 
             @Override
-            public void onMessage(String serverResponse_) {
+            public void onMessage(String serverResponse_) { // 소켓에서 메시지를 받은 경우
                 super.onMessage(serverResponse_);
                 try {
-                    ServerResponse serverResponse = gson.fromJson(serverResponse_, ServerResponse.class);
+                    ServerResponse serverResponse = gson.fromJson(serverResponse_, ServerResponse.class);   // 메시지의 JSON 형식을 풀어 ServerResponse 객체로 만든다.
 
-                    switch (serverResponse.getIdRes()) {
-                        case VIEWER_RESPONSE:
-                            if (serverResponse.getTypeRes() == TypeResponse.REJECTED) {
-                                logAndToast(serverResponse.getMessage());
-                            } else {
+                    switch (serverResponse.getIdRes()) {    // serverResponse id
+                        case VIEWER_RESPONSE:   // 방송 연결 응답
+                            if (serverResponse.getTypeRes() == TypeResponse.REJECTED) { // 연결이 거절 되었으면
+                                logAndToast(serverResponse.getMessage());   // 토스트 메시지를 띄운다.
+                            } else {    // 방송 시청자로 연결이 성공 했다면
+                                // 서버에서 받은 SDP 를 서버 SDP 에 등록한다.
                                 SessionDescription sdp = new SessionDescription(SessionDescription.Type.ANSWER, serverResponse.getSdpAnswer());
-                                onRemoteDescription(sdp);
+                                onRemoteDescription(sdp);   // 서버 sdp 를 등록한다.
                             }
                             break;
-                        case ICE_CANDIDATE:
-                            CandidateModel candidateModel = serverResponse.getCandidate();
-                            onRemoteIceCandidate(
+                        case ICE_CANDIDATE:  // 원격 ice 후보지를 받은 경우
+                            CandidateModel candidateModel = serverResponse.getCandidate();  // CandidateModel 객체를 가져온다.
+                            onRemoteIceCandidate(   // 원격 후보지를 추가한다.
                                     new IceCandidate(candidateModel.getSdpMid(), candidateModel.getSdpMLineIndex(), candidateModel.getSdp()));
                             break;
-                        case STOP_COMMUNICATION:
-                            stopCommunication();
+                        case STOP_COMMUNICATION:    // 방송 종료 메시지를 받은 경우
+                            stopCommunication();    // 방송 시청을 종료한다.
                             break;
-                        case CHAT:
-                            Log.d("chat Sender : "+serverResponse.getSender(), "msg : "+serverResponse.getMessage());
-                            receiveChatMessage(serverResponse.getSender(), serverResponse.getMessage());
+                        case CHAT:      // 채팅 메시지를 전달 받은 경우
+                            Timber.tag("chat Sender : " + serverResponse.getSender()).d("msg : %s", serverResponse.getMessage());
+                            receiveChatMessage(serverResponse.getSender(), serverResponse.getMessage());    // 채팅 메시지를 표시한다.
                             break;
                     }
                 } catch (JsonSyntaxException e) {
@@ -258,9 +274,9 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
             }
 
             @Override
-            public void onClose(int i, String s, boolean b) {
+            public void onClose(int i, String s, boolean b) {   // 소켓 연결이 종료된 경우
                 super.onClose(i, s, b);
-                logAndToast("Socket closed");
+                logAndToast("Socket closed");   // 소켓 연결이 끊어졌다는 메시지를 띄운다.
             }
 
             @Override
@@ -271,106 +287,105 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
 
         });
 
-        // Create and audio manager that will take care of audio routing,
-        // audio modes, audio device enumeration etc.
+        // 오디오 라우팅 (오디오 모드, 오디오 장치 열거 등)을 처리할 오디오 관리자 만듬.
         audioManager = RTCAudioManager.create(getApplicationContext());
-        // Store existing audio settings and change audio mode to
-        // MODE_IN_COMMUNICATION for best possible VoIP performance.
-        Log.d(TAG, "Starting the audio manager...");
+        // 기존 오디오 설정 저장 및 오디오 모드 변경
+        // 가능한 최상의 VoIP 성능을 제공
+        Timber.tag(TAG).d("Starting the audio manager...");
         audioManager.start((audioDevice, availableAudioDevices) ->
-                Log.d(TAG, "onAudioManagerDevicesChanged: " + availableAudioDevices + ", "
+                Timber.tag(TAG).d("onAudioManagerDevicesChanged: " + availableAudioDevices + ", "
                         + "selected: " + audioDevice));
     }
 
-//    public DefaultConfig getDefaultConfig() {
-//        return defaultConfig;
-//    }
-
     private void callConnected() {
         if (peerConnectionClient == null) {
-            Log.w(TAG, "Call is connected in closed or error state");
+            Timber.w("Call is connected in closed or error state");
             return;
         }
-        // Enable statistics callback.
+        // 통계 콜백 활성화
         peerConnectionClient.enableStatsEvents(true, 1000);
     }
 
-
+    /*
+     * 서버와 소켓 연결이 되었을 때
+     */
     @Override
     public void onSignalConnected(SignalingParameters params) {
         runOnUiThread(()->{
             signalingParameters = params;
             peerConnectionClient
-                    .createPeerConnection(getEglBaseContext(), null,
-                            getRemoteProxyRenderer(), null,
+                    .createPeerConnection(getEglBaseContext(), null,    // peerConnection 를 생성한다.
+                            getRemoteProxyRenderer(), null, // PeerConnection 에서 받아온 데이터를 proxy 렌더러에 연결한다.
                             signalingParameters);
 
+            // 매개변수로 전달받은 파라미터에 initiator 가 존재한다면
             if (signalingParameters.initiator) {
                 // Offer 를 생성한다.
                 // Offer SDP 는 PeerConnectionEvent 에서 클라이언트에 응답하기 위해 SDP 가 전송된다.
                 logAndToast("Creating OFFER...");
                 peerConnectionClient.createOffer();
             } else {
-                if (params.offerSdp != null) {
-                    peerConnectionClient.setRemoteDescription(params.offerSdp);
-                    //if (isViewAttached()) getView().logAndToast("Creating ANSWER...");
-                    // Create answer. Answer SDP will be sent to offering client in
-                    // PeerConnectionEvents.onLocalDescription event.
-                    peerConnectionClient.createAnswer();
+                if (params.offerSdp != null) { // 매개변수로 전달받은 시그널 파라미터에 offerSdp 를 전달 받았다면
+                    peerConnectionClient.setRemoteDescription(params.offerSdp); // 원격지 SDP 에 offerSDP 정보를 넣는다.
+                    peerConnectionClient.createAnswer();  // sdp 응답을 생성한다.
                 }
-                if (params.iceCandidates != null) {
-                    // Add remote ICE candidates from room.
+                if (params.iceCandidates != null) { // 매개변수로 전달받은 시그널 파라미터에 IceCandidates 가 존재한다면
+                    // 방에서 원격 ICE 참가자를 추가한다
                     for (IceCandidate iceCandidate : params.iceCandidates) {
-                        peerConnectionClient.addRemoteIceCandidate(iceCandidate);
+                        peerConnectionClient.addRemoteIceCandidate(iceCandidate);  // 원격 ice 후보지를 추가한다.
                     }
                 }
             }
         });
     }
 
-
-
+    /*
+     * WebSocket 연결 해제
+     */
     public void disconnect(boolean isFinish) {
         runOnUiThread(()->{
-            remoteProxyRenderer.setTarget(null);
+            remoteProxyRenderer.setTarget(null);    // 렌더러 타겟 초기화
             if (vGLSurfaceViewCall != null) {
-                vGLSurfaceViewCall.release();
-                vGLSurfaceViewCall = null;
+                vGLSurfaceViewCall.release(); // 피어 연결을 끊는다.
+                vGLSurfaceViewCall = null; // 피어 연결 초기화
             }
             if (rtcClient != null) {
-                rtcClient = null;
+                rtcClient = null;   // rtcClient 초기화
             }
             if (peerConnectionClient != null) {
-                peerConnectionClient.close();
-                peerConnectionClient = null;
+                peerConnectionClient.close();   // 서페이스 뷰에서 렌더러를 release 한다.
+                peerConnectionClient = null;    // 서페이스 뷰를 초기화한다.
             }
 
             if (audioManager != null) {
-                audioManager.stop();
-                audioManager = null;
+                audioManager.stop();    // 오디오 매니저를 중지한다.
+                audioManager = null;    // 오디오 매니저 초기화
             }
 
             if (socketService != null) {
-                socketService.close();
+                socketService.close();  // 소켓 연결을 종료한다.
             }
             if(isFinish){
-                finish();
+                finish();   // 액티비티를 종료한다.
             }
         });
     }
 
+    /* 뒤로가기 버튼을 누르면 disconnect() 메소드를 호출한다. */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         disconnect(true);
     }
 
+    /* 방송 송출자가 방송을 종료하면 onBackPressed() 메소드를 호출한다. */
     public void stopCommunication() {
         onBackPressed();
     }
 
+    /* 로그와 토스트를 띄우는 메소드 */
     public void logAndToast(String msg) {
-        Log.d(TAG, msg);
+        Timber.tag(TAG).d(msg);
         if (logToast != null) {
             logToast.cancel();
         }
@@ -380,84 +395,98 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
         });
     }
 
+    /*
+     * 서버에서 받은 SDP 를 등록한다.
+     */
     @Override
     public void onRemoteDescription(SessionDescription sdp) {
         runOnUiThread(()->{
-            if (peerConnectionClient == null) {
-                Log.e(TAG, "Received remote SDP for non-initilized peer connection.");
+            if (peerConnectionClient == null) { // PeerConnectionClient 객체가 없다면 메소드를 종료한다.
+                Timber.tag(TAG).e("Received remote SDP for non-initialized peer connection.");
                 return;
             }
-            peerConnectionClient.setRemoteDescription(sdp);
-            if (!signalingParameters.initiator) {
+            peerConnectionClient.setRemoteDescription(sdp); // 서버에서 받은 SDP 를 원격지 sdp 로 등록한다.
+            if (!signalingParameters.initiator) {   // 서버에서 받은 sdp 가 offer 를 새로 시작하는게 아니였다면
                 logAndToast("Creating ANSWER...");
-                peerConnectionClient.createAnswer();
-                Log.e(TAG + "::onRemoteDescription", "createAnswer");
+                peerConnectionClient.createAnswer();    // answer SDF 를 생성한다.
+                Timber.tag(TAG + "::onRemoteDescription").e("createAnswer");
             }
         });
     }
 
+    /*
+     * 서버에서 응답받은 Ice candidate 를 peerConnectionClient ice 에 추가한다.
+     */
     @Override
     public void onRemoteIceCandidate(IceCandidate candidate) {
         runOnUiThread(()->{
             if (peerConnectionClient == null) {
-                Log.e(TAG, "Received ICE candidate for a non-initialized peer connection.");
+                Timber.tag(TAG).e("Received ICE candidate for a non-initialized peer connection.");
                 return;
             }
-            peerConnectionClient.addRemoteIceCandidate(candidate);
+            peerConnectionClient.addRemoteIceCandidate(candidate);  // peerConnectionClient ice 에 추가한다.
         });
     }
 
+    /*
+     * ICE Candidate 가 삭제 됐을 때 호출되는 메소드
+     */
     @Override
     public void onRemoteIceCandidatesRemoved(IceCandidate[] candidates) {
         runOnUiThread(()->{
             if (peerConnectionClient == null) {
-                Log.e(TAG, "Received ICE candidate removals for a non-initialized peer connection.");
+                Timber.tag(TAG).e("Received ICE candidate removals for a non-initialized peer connection.");
                 return;
             }
-            peerConnectionClient.removeRemoteIceCandidates(candidates);
+            peerConnectionClient.removeRemoteIceCandidates(candidates); // peerConnectionClient 에서 ice candidate 를 삭제한다.
         });
     }
 
+    /* WebRTC 채널이 닫혔을 때 호출되는 메소드 */
     @Override
-    public void onChannelClose() {
-        disconnect(true);
-    }
+    public void onChannelClose() { disconnect(true); }  // WebSocket 연결을 닫는다.
 
     @Override
-    public void onChannelError(String description) {
-        Log.e(TAG, "onChannelError: " + description);
-    }
+    public void onChannelError(String description) { Timber.tag(TAG).e("onChannelError: %s", description); }    // WebRTC 채널 에러 발생 시 로그 출력
 
+    /*
+     * 디바이스의 SDP 를 서버로 전송한다.
+     *
+     * signalingParameters.initiator 가 true 라면 나의 sdp 로 offer 를 생성하고,
+     * false 라면 answer 를 생성하여 전송한다.
+     */
     @Override
     public void onLocalDescription(SessionDescription sdp) {
         if (rtcClient != null) {
             if (signalingParameters.initiator) {
-                rtcClient.sendOfferSdp(sdp);
+                rtcClient.sendOfferSdp(sdp);    // 나의 sdp 로 offer 생성 후 전송
             } else {
-                rtcClient.sendAnswerSdp(sdp);
+                rtcClient.sendAnswerSdp(sdp);    // 나의 sdp 로 answer 생성 후 전송
             }
         }
-        if (peerConnectionParameters.videoMaxBitrate > 0) {
-            Log.d(TAG, "Set video maximum bitrate: " + peerConnectionParameters.videoMaxBitrate);
-            peerConnectionClient.setVideoMaxBitrate(peerConnectionParameters.videoMaxBitrate);
+        if (peerConnectionParameters.videoMaxBitrate > 0) { // SDP 에 비트레이트가 명시 되어 있는 경우
+            Timber.tag(TAG).d("Set video maximum bitrate: %s", peerConnectionParameters.videoMaxBitrate);
+            peerConnectionClient.setVideoMaxBitrate(peerConnectionParameters.videoMaxBitrate);  // 비디오 비트레이트를 설정한다.
         }
     }
 
+    /* WebRTC 소켓 채널로 디바이스의 iceCandidate 를 전송한다. */
     @Override
     public void onIceCandidate(IceCandidate candidate) {
-        Log.e(TAG, "onIceCandidate");
+        Timber.tag(TAG).e("onIceCandidate");
         runOnUiThread(()->{
             if (rtcClient != null) {
-                rtcClient.sendLocalIceCandidate(candidate);
+                rtcClient.sendLocalIceCandidate(candidate); // WebRTC 소켓 채널로 디바이스의 iceCandidate 를 전송한다.
             }
         });
     }
 
+    /* IceCandidate 삭제 */
     @Override
     public void onIceCandidatesRemoved(IceCandidate[] candidates) {
         runOnUiThread(()->{
             if (rtcClient != null) {
-                rtcClient.sendLocalIceCandidateRemovals(candidates);
+                rtcClient.sendLocalIceCandidateRemovals(candidates);    // IceCandidate 삭제
             }
         });
     }
@@ -487,14 +516,13 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
     }
 
     @Override
-    public void onPeerConnectionClosed() {
-        Log.e(TAG, "onPeerConnectionClosed: ");
-    }
+    public void onPeerConnectionClosed() { Timber.tag(TAG).e("onPeerConnectionClosed: "); }   // 피어 연결이 끊킨 경우 로그를 출력한다.
 
+    /* Ice Server 와 연결 상태를 출력하는 메소드 */
     @Override
     public void onPeerConnectionStatsReady(StatsReport[] reports) {
-        if (iceConnected) {
-            Log.e(TAG, "run: " + Arrays.toString(reports));
+        if (iceConnected) { // Ice 와 연결 되어 있는 경우
+            Timber.tag(TAG).e("run: %s", Arrays.toString(reports)); // ICE 연결 상태를 출력한다.
         }
     }
 
@@ -503,9 +531,7 @@ public class ViewerActivity extends BaseActivity implements SignalingEvents, Pee
      * 로그를 출력하여 로그 메시지를 확인한다.
      */
     @Override
-    public void onPeerConnectionError(String description) {
-        Log.e(TAG, "onPeerConnectionError: " + description);
-    }
+    public void onPeerConnectionError(String description) { Timber.tag(TAG).e("onPeerConnectionError: %s", description); }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

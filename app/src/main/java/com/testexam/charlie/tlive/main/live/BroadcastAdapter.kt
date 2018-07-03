@@ -211,8 +211,10 @@ class BroadcastAdapter(private var broadcastList : ArrayList<Broadcast>, val con
         return broadcastList.size
     }
 
-    fun setData(list : ArrayList<Broadcast>){
+    /* 방송 리스트 데이터를 갱신한다 */
+    fun setBroadcastList(list : ArrayList<Broadcast>){
         broadcastList = list
+        notifyDataSetChanged()
     }
 
     class ViewHolder (broadView : View) : RecyclerView.ViewHolder(broadView){

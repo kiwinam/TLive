@@ -17,7 +17,7 @@ import com.testexam.charlie.tlive.common.*
 import com.testexam.charlie.tlive.main.place.detail.PlaceDetailActivity
 import com.testexam.charlie.tlive.main.place.map.MapsActivity
 import com.testexam.charlie.tlive.main.place.map.RangeListener
-import com.testexam.charlie.tlive.main.place.map.SelectSearchRange
+import com.testexam.charlie.tlive.main.place.map.SearchRangeBottomSheet
 import kotlinx.android.synthetic.main.fragment_place.*
 import org.json.JSONArray
 import java.io.IOException
@@ -109,8 +109,8 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                 startActivity(mapIntent)
             }
             placeLocationLo->{
-                val selectSearchRange = SelectSearchRange.newInstance()
-                selectSearchRange.setData(limitDistance.toDouble())
+                val selectSearchRange = SearchRangeBottomSheet.newInstance()
+                selectSearchRange.setBeforeRange(limitDistance.toDouble())
                 selectSearchRange.setRangeListener(RangeListener { range, rangeIndex ->
                     val rangeLimit = arrayOf(100.0, 300.0, 500.0, 1000.0, 3000.0)
                     placeLimitTv.text = range
@@ -247,7 +247,7 @@ class PlaceFragment : Fragment() , View.OnClickListener{
                     activity!!.runOnUiThread({
                         //val controller = AnimationUtils.loadLayoutAnimation(context,R.anim.layout_fall_down)
                         //placeRv.layoutAnimation = controller
-                        placeAdapter!!.setData(placeList)
+                        placeAdapter!!.setPlaceList(placeList)
                         //placeRv.scheduleLayoutAnimation()
                     })
 

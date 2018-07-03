@@ -30,10 +30,8 @@ class FindFriendActivity : BaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_friend)
-
         findCloseIb.setOnClickListener({ onBackPressed() }) // 닫기 버튼을 누르면 onBackPressed 메소드를 호출해서 Activity 를 종료한다.
         email = getSharedPreferences("login", Context.MODE_PRIVATE).getString("email","none")   // SharedPreference 에서 로그인한 유저의 이메일을 가져온다.
-
         setFindListRv()         // 친구 검색 결과가 표시되는 RecyclerView 설정
         setEditTextSearch()     // 검색 EditText 의 IME 버튼을 SEARCH 로 설정
     }
@@ -70,7 +68,7 @@ class FindFriendActivity : BaseActivity(){
             }
         }
 
-        findSearchEt.addTextChangedListener(object : TextWatcher{
+        findSearchEt.addTextChangedListener(object : TextWatcher{   // findSearchEt 에 텍스트 변경을 감지하는 리스너를 추가한다.
             override fun afterTextChanged(s: Editable?) {
                 if(!s.isNullOrEmpty()){
                     if (s!![(s.length- 1)] == '\n') requestFind(s.toString())   // 사용자가 엔터키를 입력하면 서버에 친구 검색 결과를 요청하는 requestFind 메소드를 호출한다.

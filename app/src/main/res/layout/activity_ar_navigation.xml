@@ -8,7 +8,7 @@
         android:id="@+id/ar_cam_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.testexam.charlie.tlive.main.place.detail.ar.util.ArFragmentSupport">
+        android:name="com.testexam.charlie.tlive.main.place.detail.ar.model.util.ArFragmentSupport">
     </fragment>
 
     <RelativeLayout

@@ -25,7 +25,7 @@ import com.testexam.charlie.tlive.common.HttpTask
 import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.main.place.Place
 import com.testexam.charlie.tlive.main.place.detail.pathFinder.NavigationActivity
-import com.testexam.charlie.tlive.main.place.detail.pathFinder.SelectPathFinder
+import com.testexam.charlie.tlive.main.place.detail.pathFinder.SelectPathFinderBottomSheet
 import com.testexam.charlie.tlive.main.place.detail.photo.Photo
 import com.testexam.charlie.tlive.main.place.detail.photo.PhotoAdapter
 import com.testexam.charlie.tlive.main.place.detail.review.Review
@@ -46,42 +46,40 @@ import java.text.DecimalFormat
 
 /**
  * 맛집에 대한 상세 정보를 보여주는 Activity
- *
  */
-private const val WRITE_CODE = 1000
+private const val WRITE_CODE = 1000 // startActivityForResult 에서 사용하는 쓰기 코드
 class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback {
-    private lateinit var photoAdapter: PhotoAdapter
-    private lateinit var photoList : ArrayList<Photo>
+    private lateinit var photoAdapter: PhotoAdapter     // 미리보기 사진의 어댑터
+    private lateinit var photoList : ArrayList<Photo>   // 미리보기 사진 리스트
 
-    private lateinit var reviewAdapter: ReviewAdapter
-    private lateinit var reviewList : ArrayList<Review>
+    private lateinit var reviewAdapter: ReviewAdapter   // 리뷰 어댑터
+    private lateinit var reviewList : ArrayList<Review> // 리뷰 리스트
 
-    private lateinit var place : Place
+    private lateinit var place : Place  // 맛집 정보를 가지고 있는 Place 객체
 
-    private var userEmail = ""
+    private var userEmail = "" // 현재 로그인한 사용자의 이메일
 
-    private var address = ""
-    private var favoriteNum = 0
-    private var workingTime = ""
-    private var breakTime = ""
-    private var price = ""
-    private var reviewCount = 0
-    private var goodReviewCount = 0
-    private var normalReviewCount = 0
-    private var badReviewCount = 0
-    private var isFavorite = false
+    private var address = ""        // 맛집의 주소
+    private var favoriteNum = 0     // 맛집의 가고싶다 개수
+    private var workingTime = ""    // 맛집의 근무 시간
+    private var breakTime = ""      // 맛집의 휴게 시간
+    private var price = ""          // 맛집의 대략적인 가격대
+    private var reviewCount = 0     // 총 리뷰의 개수
+    private var goodReviewCount = 0     // 좋아요 리뷰의 개수
+    private var normalReviewCount = 0   // 괜찮다 리뷰의 개수
+    private var badReviewCount = 0      // 별로 리뷰의 개수
+    private var isFavorite = false      // 내가 현재 보고 있는 맛집을 가고싶다 했는지 여부를 저장하는 변수
 
-    private lateinit var myLatLng: LatLng
+    private lateinit var myLatLng: LatLng       // 나의 위경도 정보
+    private lateinit var menuArray : JSONArray  // 메뉴 리스트
 
-    private lateinit var menuArray : JSONArray
-
-    private lateinit var photoJSONArray : JSONArray
+    private lateinit var photoJSONArray : JSONArray //
 
     private lateinit var reviewJSONArray : JSONArray
 
     private val decimalFormat = DecimalFormat("#,###")
 
-    private lateinit var scaleAnim : Animation
+    private lateinit var scaleAnim : Animation      // 가고싶다 버튼을 누를때 커졌다 작아지는 애니메이션
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +102,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
         setOnClickListeners() // 클릭 리스너 등록
         setRecyclerViews() // RecyclerView 설정
 
-        scaleAnim = AnimationUtils.loadAnimation(applicationContext,R.anim.scale_change_btn)
+        scaleAnim = AnimationUtils.loadAnimation(applicationContext,R.anim.scale_change_btn)    // 애니메이션 초기화
     }
 
     /*
@@ -114,42 +112,39 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
      */
     private fun getDetailInfo(placeNo : Int){
         runOnUiThread({
-            detailPb.visibility = View.VISIBLE
+            detailPb.visibility = View.VISIBLE      // 프로그레스 바를 표시한다.
         })
         Thread{
             try{
-                val params = ArrayList<Params>()
-                params.add(Params("placeNo",placeNo.toString()))
-                params.add(Params("userEmail",userEmail))
-                val result = HttpTask("getDetailPlace.php",params).execute().get()
+                val params = ArrayList<Params>()    // 파라미터를 담고 있는 ArrayList
+                params.add(Params("placeNo",placeNo.toString()))    // placeNo 를 파라미터에 추가한다.
+                params.add(Params("userEmail",userEmail))       // userEmail 를 파라미터에 추가한다.
+                val result = HttpTask("getDetailPlace.php",params).execute().get()  // 현재 맛집에 대한 상세 정보를 서버에 요청한다. 결과 값은 result 에 저장한다.
 
-                //Log.d("getDetailInfo","result : $result")
+                if(result != null){ // 결과 값이 존재하는 경우
+                    val jsonObject = JSONObject(result) // JSONObject 로 result를 변환한다.
+                    address = jsonObject.getString("address")               // 맛집의 주소
+                    favoriteNum = jsonObject.getInt("favoriteNum")          // 좋아요 개수
+                    workingTime = jsonObject.getString("workingTime")       // 근무 시간
+                    breakTime = jsonObject.getString("breakTime")           // 휴게 시간
+                    price = jsonObject.getString("price")                   // 가격대
+                    reviewCount = jsonObject.getInt("reviewCount")          // 리뷰의 총 개수
+                    goodReviewCount = jsonObject.getInt("goodCount")        // 좋아요 리뷰의 개수
+                    normalReviewCount = jsonObject.getInt("normalCount")    // 괜찮다 리뷰의 개수
+                    badReviewCount = jsonObject.getInt("badCount")          // 별로 리뷰의 개수
+                    isFavorite = jsonObject.getBoolean("isWant")            // 내가 현재 보고 있는 맛집을 가고싶다 했는지 여부를 저장하는 변수
 
-                if(result != null){
-                    val jsonObject = JSONObject(result)
-                    address = jsonObject.getString("address")
-                    favoriteNum = jsonObject.getInt("favoriteNum")
-                    workingTime = jsonObject.getString("workingTime")
-                    breakTime = jsonObject.getString("breakTime")
-                    price = jsonObject.getString("price")
-
-                    reviewCount = jsonObject.getInt("reviewCount")
-                    goodReviewCount = jsonObject.getInt("goodCount")
-                    normalReviewCount = jsonObject.getInt("normalCount")
-                    badReviewCount = jsonObject.getInt("badCount")
-                    isFavorite = jsonObject.getBoolean("isWant")
-
-                    menuArray = JSONArray(jsonObject.getString("menu"))
+                    menuArray = JSONArray(jsonObject.getString("menu"))     // 메뉴
                     val photoArray = jsonObject.getString("photoArray") // 사진 미리보기 배열의 경로가 담겨있는 photoArray
                     Timber.d("detail photoArray $photoArray")
                     // 표시할 사진이 있는 경우
                     if(photoArray != "null"){
-                        photoList.clear()
+                        photoList.clear()       // 미리보기 사진 리스트를 초기화한다.
                         photoJSONArray = JSONArray(photoArray)
                         for(i in 0 until photoJSONArray.length()){
                             val photoObject = photoJSONArray.getJSONObject(i)
                             val src = photoObject.getString("src")
-                            photoList.add(Photo(src))
+                            photoList.add(Photo(src))   // 사진 리스트에 Photo 객체를 추가한다.
                         }
                     }
                     // 리뷰가 있는 경우
@@ -203,7 +198,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                 detailBreakTimeTv.visibility = View.GONE
                 detailBreakTv.visibility = View.GONE
             }
-            detailPriceTv.text = price // 가격
+            detailPriceTv.text = price // 가격대 정보를 설정한다.
             detailMenu1Tv.text = menuArray.getJSONObject(0).getString("name")
             detailMenu2Tv.text = menuArray.getJSONObject(1).getString("name")
             detailMenu3Tv.text = menuArray.getJSONObject(2).getString("name")
@@ -327,7 +322,7 @@ class PlaceDetailActivity : BaseActivity(), View.OnClickListener, OnMapReadyCall
                 startWriteReviewActivity(1)
             }
             detailFindPathLo->{ // 길 찾기 버튼
-                val selectPathFinder = SelectPathFinder.newInstance()
+                val selectPathFinder = SelectPathFinderBottomSheet.newInstance()
                 selectPathFinder.setLatLng(myLatLng, LatLng(place.lat,place.lon)) // 나의 위치와 맛집의 위치를 설정한다.
                 selectPathFinder.show(supportFragmentManager,"bottomSheet") // 바텀시트를 보여준다.
             }

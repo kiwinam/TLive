@@ -1,4 +1,4 @@
-package com.testexam.charlie.tlive.main.place.detail.ar.util;
+package com.testexam.charlie.tlive.main.place.detail.ar.model.util;
 
 import com.testexam.charlie.tlive.main.place.detail.ar.model.LatLng;
 
