@@ -19,11 +19,11 @@ class ProfileFragmentAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm
             2-> return LikeListFragment()   // 좋아요 프레그먼트
             3-> return ReviewListFragment() // 리뷰 프레그먼트
         }
-        return MovieFragment()
+        return MovieFragment()  // 현재 포지션에 맞는 프레그먼트를 반환한다.
     }
 
+    // 프레그먼트들의 개수를 리턴하는 메소드
     override fun getCount(): Int {
-        return 4
+        return 4    // 4를 리턴한다.
     }
-
 }

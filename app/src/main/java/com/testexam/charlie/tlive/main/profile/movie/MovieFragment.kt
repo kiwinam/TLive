@@ -74,26 +74,26 @@ class MovieFragment : Fragment() {
                     for(i in 0 until array.length()){
                         val responseObject = array.getJSONObject(i)
                         myBroadcastList.add(Broadcast   // 내 방송 리스트에 새로운 Broadcast 객체를 추가한다.
-                                (responseObject.getString("hostEmail"),
-                                (responseObject.getString("hostName")),
-                                (responseObject.getString("hostProfileUrl")),
-                                (responseObject.getInt("roomNo")),
-                                (responseObject.getInt("roomSessionNo")),
-                                (responseObject.getString("roomName")),
-                                (responseObject.getString("roomTag")),
-                                (responseObject.getInt("likeNum")),
-                                (responseObject.getInt("viewerNum")),
-                                (responseObject.getInt("isLive")),
-                                (responseObject.getString("uploadTime")),
-                                (responseObject.getString("previewSrc")),
-                                (responseObject.getString("vodSrc")),
-                                (responseObject.getBoolean("isLike")),
-                                (responseObject.getBoolean("isSubscribe"))
+                                (responseObject.getString("hostEmail"),         // BJ 이메일
+                                (responseObject.getString("hostName")),         // BJ 이름
+                                (responseObject.getString("hostProfileUrl")),   // BJ 프로필 경로
+                                (responseObject.getInt("roomNo")),      // 방 번호
+                                (responseObject.getInt("roomSessionNo")),   // WebRTC Node.js 상 세션 번호
+                                (responseObject.getString("roomName")),     // 방 이름
+                                (responseObject.getString("roomTag")),      // 방 태그
+                                (responseObject.getInt("likeNum")),         // 좋아요 개수
+                                (responseObject.getInt("viewerNum")),       // 시청자 수
+                                (responseObject.getInt("isLive")),          // 현재 라이브 방송인지 아닌지 확인하는 변수, 1 = 라이브,  0 = VOD
+                                (responseObject.getString("uploadTime")),   // 방송을 올린 시간
+                                (responseObject.getString("previewSrc")),   // 미리보기 경로
+                                (responseObject.getString("vodSrc")),       // VOD 경로
+                                (responseObject.getBoolean("isLike")),      // 내가 이 방송을 좋아요 클릭했는지   // 0 = no, 1 = yes
+                                (responseObject.getBoolean("isSubscribe"))  // 내가 이 방송의 BJ 를 구독 중인지   // 0 = no, 1 = yse
                         ))
                     }
                     activity!!.runOnUiThread({
                         myBroadcastAdapter.setBroadcastList(myBroadcastList)    // 방송 리스트를 업데이트한다.
-                        if(myBroadcastList.size > 0){
+                        if(myBroadcastList.size > 0){   // 내가 올린 방송이 하나라도 있으면
                             movieNoneTv.visibility = View.GONE
                             movieRvTextTv.visibility = View.VISIBLE
                         }else{
@@ -102,7 +102,7 @@ class MovieFragment : Fragment() {
                         }
 
                         if(movieSwipeLo != null){
-                            movieSwipeLo.isRefreshing = false
+                            movieSwipeLo.isRefreshing = false   // 방송 정보를 가져오는 작업이 끝나면 스와이프 레이아웃을 안보이게한다.
                         }
                         moviePb.visibility = View.GONE
                     })

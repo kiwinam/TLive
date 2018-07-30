@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.testexam.charlie.tlive.R
@@ -87,6 +88,7 @@ class OptionalInfoActivity : BaseActivity(), View.OnClickListener {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
             }else{
+                Log.e("opt result",result)
                 Toast.makeText(applicationContext,"추가 정보 기입 중 에러가 발생하였습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
             }
         }catch (e:Exception){

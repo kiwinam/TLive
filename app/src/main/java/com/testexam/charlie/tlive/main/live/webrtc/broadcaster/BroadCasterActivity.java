@@ -519,6 +519,7 @@ public class BroadCasterActivity extends BaseActivity implements View.OnClickLis
                 Timber.tag(TAG).e("Received ICE candidate removals for a non-initialized peer connection.");
                 return;
             }
+            //peerConnectionClient.switchCamera(); - 스위치 카메라
             peerConnectionClient.removeRemoteIceCandidates(iceCandidates);  // peerConnectionClient 에서 ice candidate 를 삭제한다.
         });
     }
