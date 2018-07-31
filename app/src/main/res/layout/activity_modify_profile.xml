@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/modifyToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        >
+        <ImageView
+            android:id="@+id/modifyCloseIv"
+            android:src="@drawable/ic_close_white_24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="4dp"
+            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+        <TextView
+            android:text="프로필 수정"
+            android:textSize="18sp"
+            android:textColor="@color/colorTextWhite"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/modifyCloseIv"
+            android:layout_marginStart="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/modifyConfirmIv"
+            android:src="@drawable/ic_check_white_24dp"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/modifyProfileIv"
+        android:src="@drawable/ic_profile_ex1"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/modifyToolbar"
+        android:layout_marginTop="32dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
+    <EditText
+        android:id="@+id/modifyNameEt"
+        android:layout_below="@id/modifyProfileIv"
+        android:textSize="18sp"
+        android:hint="name"
+        android:paddingStart="4dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/modifyEmailTv"
+        android:layout_below="@id/modifyNameEt"
+        android:textSize="18sp"
+        android:hint="email"
+        android:paddingStart="4dp"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

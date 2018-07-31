@@ -37,6 +37,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
             <!--android:value="AIzaSyC80okU4GCvWC3YBd7lFN6qZYqzgmvo1Bs" />-->
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="face" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
@@ -90,6 +93,7 @@
         <activity android:name=".main.place.detail.webview.SearchNaverActivity"/>
         <activity android:name=".main.profile.ProfileActivity"/>
         <activity android:name=".main.profile.SettingActivity"/>
+        <activity android:name=".main.profile.modify.ModifyProfileActivity"/>
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

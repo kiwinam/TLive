@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.login.SelectActivity
+import com.testexam.charlie.tlive.main.profile.modify.ModifyProfileActivity
 
 import kotlinx.android.synthetic.main.activity_setting.*
 
@@ -42,6 +43,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private fun setClickListeners(){
         settingLogoutLo.setOnClickListener(this)
         settingCloseIv.setOnClickListener(this)
+        settingModifyLo.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -54,6 +56,12 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                 Toast.makeText(applicationContext,"로그아웃 되었습니다.",Toast.LENGTH_SHORT).show()
                 startActivity(Intent(applicationContext, SelectActivity::class.java))   // SelectActivity 로 이동한다.
                 finish()
+            }
+            settingModifyLo->{  // 수정 버튼
+                val modifyIntent = Intent(applicationContext,ModifyProfileActivity::class.java)
+                modifyIntent.putExtra("email",email)
+                modifyIntent.putExtra("name",name)
+                startActivity(modifyIntent)
             }
         }
     }

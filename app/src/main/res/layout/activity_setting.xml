@@ -103,6 +103,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/settingModifyLo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -110,7 +111,10 @@
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="4dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:background="@drawable/sp_gray_round_box"
                 tools:ignore="RelativeOverlap">
                 <ImageView
