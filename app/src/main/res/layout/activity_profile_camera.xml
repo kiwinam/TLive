@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/captureFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/capturePreviewIv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/captureOverlayIv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/cameraFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:persistentDrawingCache="all"
+        >
+        <com.testexam.charlie.tlive.main.profile.modify.camera.ui.CameraSourcePreview
+            android:id="@+id/cameraPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <com.testexam.charlie.tlive.main.profile.modify.camera.ui.GraphicOverlay
+                android:id="@+id/faceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.testexam.charlie.tlive.main.profile.modify.camera.ui.CameraSourcePreview>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/cameraTopLo"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_above="@id/cameraBottomLo"
+        android:background="#69000000"
+        >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cameraMaskRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/cameraBottomLo"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#000"
+        android:layout_alignParentBottom="true">
+        <ImageView
+            android:id="@+id/cameraCloseIv"
+            android:layout_marginStart="4dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_close_white_24dp"
+            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            />
+        <ImageView
+            android:id="@+id/cameraCaptureIv"
+            android:src="@drawable/ic_camera_white_24dp"
+            android:layout_centerInParent="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+        <ImageView
+            android:id="@+id/cameraSwitchIv"
+            android:src="@drawable/ic_switch_camera_white_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:padding="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </RelativeLayout>
+</RelativeLayout>

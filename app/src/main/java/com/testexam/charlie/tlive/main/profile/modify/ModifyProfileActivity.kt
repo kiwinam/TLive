@@ -1,10 +1,10 @@
 package com.testexam.charlie.tlive.main.profile.modify
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.testexam.charlie.tlive.R
-import com.testexam.charlie.tlive.R.string.email
 import kotlinx.android.synthetic.main.activity_modify_profile.*
 
 /**
@@ -37,7 +37,8 @@ class ModifyProfileActivity : AppCompatActivity() , View.OnClickListener{
         when(v){
             modifyCloseIv->onBackPressed()  // 닫기 버튼을 누르면 액티비티를 종료한다.
             modifyProfileIv->{  // 프로필 사진을 누르면 프로필 사진을 변경할 수 있게한다.
-
+                val profileIntent = Intent(applicationContext, ProfileCameraActivity::class.java)
+                startActivity(profileIntent)
             }
             modifyConfirmIv->{  // 확인 버튼을 누르면 변경된 사항을 저장한다.
 

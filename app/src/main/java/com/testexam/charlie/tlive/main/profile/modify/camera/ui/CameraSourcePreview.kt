@@ -1,7 +1,8 @@
-package com.testexam.charlie.tlive.main.profile.modify.camera
+package com.testexam.charlie.tlive.main.profile.modify.camera.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -15,12 +16,12 @@ import com.google.android.gms.vision.CameraSource
 import java.io.IOException
 
 class CameraSourcePreview(private val mContext : Context, attrs : AttributeSet) : ViewGroup(mContext,attrs) {
-    private lateinit var mSurfaceView : SurfaceView
+    private var mSurfaceView : SurfaceView
     private var mStartRequested = false
     private var mSurfaceAvailable = false
     private var mCameraSource : CameraSource? = null
     private var mOverlay : GraphicOverlay? = null
-
+    private var activity : Activity? = null
     private val isPortraitMode : Boolean
         get(){
             val orientation = mContext.resources.configuration.orientation
@@ -153,5 +154,13 @@ class CameraSourcePreview(private val mContext : Context, attrs : AttributeSet) 
         }catch (e:IOException){
             Log.e("onLayout","Camera source fail ${e.printStackTrace()}")
         }
+    }
+
+    fun takeImage(){
+        //mCameraSource.take
+    }
+
+    val callbackPicture = CameraSource.PictureCallback {
+
     }
 }

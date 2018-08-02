@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="56dp"
+    android:layout_height="56dp"
+    android:padding="2dp">
+    <TextView
+        android:id="@+id/maskNoneTv"
+        android:text="None"
+        android:textColor="@color/colorTextWhite"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/maskIv"
+        android:src="@drawable/cat"
+        android:padding="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:id="@+id/maskSelectedRo"
+        android:background="@drawable/sp_mask_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

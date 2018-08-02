@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.testexam.charlie.tlive.main.profile.modify.camera;
+package com.testexam.charlie.tlive.main.profile.modify.camera.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

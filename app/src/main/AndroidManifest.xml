@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -37,9 +37,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
             <!--android:value="AIzaSyC80okU4GCvWC3YBd7lFN6qZYqzgmvo1Bs" />-->
-        <meta-data
+        <!--<meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="face" />
+            android:value="face" />-->
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
@@ -94,6 +94,7 @@
         <activity android:name=".main.profile.ProfileActivity"/>
         <activity android:name=".main.profile.SettingActivity"/>
         <activity android:name=".main.profile.modify.ModifyProfileActivity"/>
+        <activity android:name=".main.profile.modify.ProfileCameraActivity"/>
         <!-- 채팅 관련 Receiver 와 service -->
         <receiver
             android:name=".main.follow.chat.ChatReceiver"

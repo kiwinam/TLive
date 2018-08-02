@@ -83,7 +83,7 @@ class ProfileActivity : BaseActivity() , View.OnClickListener{
                 val result = HttpTask("getFollowNumbers.php",params).execute().get()    // 서버 getFollowNumbers.php 으로 팔로우와 시청자 수를 요청한다.
                 if(result != null){
                     val resultObject = JSONObject(result)   // 결과 값을 JSON 형식으로 파싱한다.
-                    followNumber = resultObject.getInt("followNumber")  // JSON 에서 팔로우 숫자를 가져온다.
+                    followNumber = resultObject.getInt("followerNumber")  // JSON 에서 팔로우 숫자를 가져온다.
                     viewerNumber = resultObject.getInt("viewerNumber")  // JSON 에서 시청자 숫자를 가져온다.
 
                     profileFollowNumTv.text = followNumber.toString()   // 팔로우 텍스트 뷰에 팔로우 숫자를 설정한다.
