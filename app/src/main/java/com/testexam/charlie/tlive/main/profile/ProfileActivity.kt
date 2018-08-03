@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.util.Log
 import android.view.View
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
@@ -88,8 +87,6 @@ class ProfileActivity : BaseActivity() , View.OnClickListener{
 
                     profileFollowNumTv.text = followNumber.toString()   // 팔로우 텍스트 뷰에 팔로우 숫자를 설정한다.
                     profileViewerNumTv.text = viewerNumber.toString()   // 시청자 텍스트 뷰에 시청자 숫자를 설정한다.
-
-                    Log.d("numbers",followNumber.toString()+":"+viewerNumber)
                 }
             }).start()  // HTTP 스레드 시작.
         }catch (e:Exception){

@@ -71,7 +71,7 @@ class LoginActivity : BaseActivity() {
                 val editor = prefs!!.edit()     // login preference 를 수정할 수 있도록 editor 객체를 선언하고 초기화한다.
                 editor.putInt("userNo",loginObject.getInt("userNo"))        // userNo 을 editor 객체에 넣는다
                 editor.putString("name",loginObject.getString("name"))      // name 을 editor 객체에 넣는다
-                editor.putString("email",loginObject.getString("email"))    // email 을 editor 객체에 넣는다
+                editor.putString("email",email)    // email 을 editor 객체에 넣는다
                 editor.putInt("gender",loginObject.getInt("gender"))        // gender 을 editor 객체에 넣는다
                 editor.putInt("age",loginObject.getInt("age"))              // age 을 editor 객체에 넣는다
                 editor.putString("profileUrl",loginObject.getString("profileUrl"))  // profileUrl 을 editor 객체에 넣는다
@@ -87,7 +87,7 @@ class LoginActivity : BaseActivity() {
             }
         }catch (e:Exception){   // 에러 발생시
             e.printStackTrace() // 에러 메시지를 로그로 표시한다.
+            Toast.makeText(applicationContext,"일시적인 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
         }
-
     }
 }

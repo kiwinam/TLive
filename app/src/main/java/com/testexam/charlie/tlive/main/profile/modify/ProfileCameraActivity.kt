@@ -3,21 +3,22 @@ package com.testexam.charlie.tlive.main.profile.modify
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.CameraSource
@@ -26,20 +27,22 @@ import com.google.android.gms.vision.face.Face
 import com.google.android.gms.vision.face.FaceDetector
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.RecyclerItemClickListener
-import com.testexam.charlie.tlive.main.profile.modify.camera.ui.CameraSourcePreview
 import com.testexam.charlie.tlive.main.profile.modify.camera.GraphicFaceTrackerFactory
 import com.testexam.charlie.tlive.main.profile.modify.camera.mask.Mask
 import com.testexam.charlie.tlive.main.profile.modify.camera.mask.MaskAdapter
+import com.testexam.charlie.tlive.main.profile.modify.camera.ui.CameraSourcePreview
 import com.testexam.charlie.tlive.main.profile.modify.camera.ui.GraphicOverlay
-import java.io.IOException
 import kotlinx.android.synthetic.main.activity_profile_camera.*
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * 프로필 사진을 촬영하기 위한 Activity
+ *
+ */
 @Suppress("NAME_SHADOWING")
 class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
     companion object {
@@ -68,8 +71,9 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
 
         setOnClickListeners()
         setMaskRecyclerView()
-        val rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-        if(rc == PackageManager.PERMISSION_GRANTED){
+        val cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        val writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if(cameraPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED){
             createCameraSource()
         }else{
             requestCameraPermission()
@@ -113,41 +117,16 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         maskList.add(Mask("spider",true,false))
         maskList.add(Mask("batman",true,false))
         maskList.add(Mask("annony",true,false))
-        //maskList.add(Mask("tokyo",true,false))
         maskList.add(Mask("submarine",true,false))
     }
 
+    /*
+     * 클릭 리스너 설정
+     */
     private fun setOnClickListeners(){
         cameraCloseIv.setOnClickListener(this)
         cameraCaptureIv.setOnClickListener(this)
         cameraSwitchIv.setOnClickListener(this)
-    }
-
-    private fun createCap(){
-
-    }
-
-
-    private fun resize(image: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
-        var image = image
-        if (maxHeight > 0 && maxWidth > 0) {
-            val width = image.width
-            val height = image.height
-            val ratioBitmap = width.toFloat() / height.toFloat()
-            val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
-
-            var finalWidth = maxWidth
-            var finalHeight = maxHeight
-            if (ratioMax > 1) {
-                finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
-            } else {
-                finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
-            }
-            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true)
-            return image
-        } else {
-            return image
-        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -155,16 +134,20 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         when(v){
             cameraCloseIv->onBackPressed()  // 닫기 버튼
             cameraSwitchIv->{   // 카메라 전환 버튼
-                mIsFrontFacing = !mIsFrontFacing
+                mIsFrontFacing = !mIsFrontFacing    // 카메라 방향을 저장한다.
                 if(mCameraSource != null){
-                    mCameraSource!!.release()
+                    mCameraSource!!.release()       // 카메라 리소스를 해제한다.
                     mCameraSource = null
                 }
 
+                // 전환된 방향으로 새로운 카메라 리소스를 가져온다.
                 createCameraSource()
                 startCameraSource()
             }
+
             cameraCaptureIv->{  // 카메라 촬영 버튼
+                val saveImageDialog = SaveImageDialog(this,"wait")   // 이미지 저장 다이얼로그 생성
+                saveImageDialog.show()      // 이미지 저장 다이얼로그 보여주기
                 mCameraSource!!.takePicture(null, CameraSource.PictureCallback {    // 카메라 캡쳐
                     val frameBitmap = BitmapFactory.decodeByteArray(it,0, it.size)  // 카메라 소스에서 가져온 바이트 배열을 비트맵으로 변경한다.
                     mGraphicOverlay.isDrawingCacheEnabled = true    // 그래픽 오버레이의 드로잉 캐시를 가능하게 한다.
@@ -178,19 +161,33 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
                     captureFrame.buildDrawingCache(true)    // 캡쳐할 프레임의 오토 스케일을 킨다.
                     val captureBitmap = Bitmap.createBitmap(captureFrame.drawingCache)  // 캡쳐할 프레임에서 비트맵을 가져온다.
 
-                    lateinit var out : FileOutputStream     // 이미지 파일을 작성할 아웃풋 스트림
+                    var out : FileOutputStream? = null   // 이미지 파일을 작성할 아웃풋 스트림
+                    var imageUrl = ""       // 결과 인텐트로 전달할 저장된 이미지 파일의 절대 경로
                     try{
                         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())  // 이미지 파일의 유니크한 이름을 위해 현재 시간을 가져온다.
                         val imageFileName = "tlive_$timeStamp.png"  // 이미지 파일 이름
 
                         val file = File(Environment.getExternalStorageDirectory().absoluteFile,imageFileName)   // 파일 저장 경로
                         out = FileOutputStream(file)
-                        captureBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)     // 파일을 저장한다.
+                        imageUrl = file.absolutePath
+                        captureBitmap.compress(Bitmap.CompressFormat.PNG, 50, out)     // 파일을 저장한다.
                     }catch (e:IOException){
                         e.printStackTrace()
                     }finally {
-                        out.close()
+                        try{
+                            if(out != null){
+                                out.close()
+                            }
+                        }catch (e:IOException){
+                            e.printStackTrace()
+                        }
                     }
+                    saveImageDialog.dismiss()   // 이미지 저장 다이얼로그 종료
+
+                    val resultIntent = Intent()     // ModifyProfileActivity 로 결과 값을 전달해줄 인텐트
+                    resultIntent.putExtra("imageUrl",imageUrl)  // 이미지 파일의 경로를 인텐트에 담는다.
+
+                    setResult(Activity.RESULT_OK, resultIntent)       // 결과 코드와 결과 인텐트를 설정한다.
                     finish()    // 현재 액티비티 종료
                 })
 
@@ -198,9 +195,13 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         }
     }
 
+    /*
+     * 카메라 권한을 요청한다.
+     */
     private fun requestCameraPermission(){
-        val permission = arrayOf(Manifest.permission.CAMERA)
-        if(!ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)){
+        val permission = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if(!ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)
+                && !ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             ActivityCompat.requestPermissions(this, permission, CAMERA_CODE)
             return
         }
@@ -215,12 +216,20 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
                 .show()
     }
 
+    /*
+     * 마스크를 변경하는 메소드.
+     *
+     * 디텍터 객체에 새로운 마스크 위치를 정의한다.
+     */
     private fun changeMask(){
         detector.setProcessor(
                 MultiProcessor.Builder<Face>(mGraphicOverlay.let { GraphicFaceTrackerFactory(it,maskPosition,applicationContext,mIsFrontFacing) })
                         .build())
     }
 
+    /*
+     * 카메라 리소스를 생성하는 메소드
+     */
     private fun createCameraSource(){
         val context = applicationContext
         detector = crateFaceDetector(applicationContext)
@@ -238,9 +247,12 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
                 .build()
     }
 
+    /*
+     * 얼굴 디텍터를 생성하는 메소드
+     */
     private fun crateFaceDetector(context : Context) : FaceDetector{
         val detector = FaceDetector.Builder(context)
-                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                //.setLandmarkType(FaceDetector.ALL_LANDMARKS)
                 .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
                 .setTrackingEnabled(true)
                 .setMode(FaceDetector.ACCURATE_MODE)
@@ -264,7 +276,6 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
             val hasLowStorage = registerReceiver(null, lowStorageFilter) != null
 
             if (hasLowStorage) {
-                Log.w(TAG, "error")
                 val listener = DialogInterface.OnClickListener { _, _ -> finish() }
                 val builder = android.app.AlertDialog.Builder(this)
                 builder.setTitle(R.string.app_name)

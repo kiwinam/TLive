@@ -17,4 +17,9 @@ interface ConnectionList {
     @Multipart
     @POST("insertReview.php")
     fun insertReview(@PartMap() partMap : Map<String, @JvmSuppressWildcards RequestBody>) : Call<SimpleResponse>
+
+    // 프로필 사진 변경하기
+    @Multipart
+    @POST("updateProfile.php")
+    fun updateProfile(@PartMap() partMap : Map<String, @JvmSuppressWildcards RequestBody>) : Call<SimpleResponse>
 }

@@ -18,78 +18,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ *  얼굴 인식 후 얼굴 위에 그래픽을 그리는 클래스
+ *
+ *  모바일 비전을 통해 인식된 얼굴의 위치에 마스크를 그린다.
+ *  마스크는 총 7가지 종류가 있다.
+ */
 class FaceGraphic extends GraphicOverlay.Graphic {
-    private static final float FACE_POSITION_RADIUS = 10.0f;
-    private static final float ID_TEXT_SIZE = 40.0f;
-    private static final float ID_Y_OFFSET = 50.0f;
-    private static final float ID_X_OFFSET = -50.0f;
-    private static final float BOX_STROKE_WIDTH = 5.0f;
+    private volatile Face mFace;    // 인식된 얼굴 객체
 
-    private static final int COLOR_CHOICES[] = {
-            Color.BLUE,
-            Color.CYAN,
-            Color.GREEN,
-            Color.MAGENTA,
-            Color.RED,
-            Color.WHITE,
-            Color.YELLOW
-    };
-    private static int mCurrentColorIndex = 0;
-
-    private Paint mFacePositionPaint;
-    private Paint mIdPaint;
-    private Paint mBoxPaint;
-
-    private volatile Face mFace;
-    private int mFaceId;
-    private float mFaceHappiness;
-
-    private int maskPosition = 0;
-    private int[] maskDrawable;
+    private int maskPosition;       // 사용자가 선택한 마스크의 위치
+    private int[] maskDrawable;     // 마스크 드로워블의 id 값을 저장하고 있는 int 배열
     private Context context;
-    private boolean mIsFrontFacing;
+    private boolean mIsFrontFacing; // 현재 카메라가 전면을 향해 있는지 확인하는 변수
 
+    // 생성자를 통해 필요한 값을 초기화한다.
     FaceGraphic(GraphicOverlay overlay, int maskPosition, Context context, boolean mIsFrontFacing) {
         super(overlay);
-
         this.maskPosition = maskPosition;
         this.context = context;
         maskDrawable = new int[]{R.drawable.dog, R.drawable.cat, R.drawable.iron, R.drawable.spider, R.drawable.batman, R.drawable.annony, R.drawable.submarine};
         this.mIsFrontFacing = mIsFrontFacing;
 
-
-        mCurrentColorIndex = (mCurrentColorIndex + 1) % COLOR_CHOICES.length;
-        final int selectedColor = COLOR_CHOICES[mCurrentColorIndex];
-
-        mFacePositionPaint = new Paint();
-        mFacePositionPaint.setColor(selectedColor);
-
-        mIdPaint = new Paint();
-        mIdPaint.setColor(selectedColor);
-        mIdPaint.setTextSize(ID_TEXT_SIZE);
-
-        mBoxPaint = new Paint();
-        mBoxPaint.setColor(selectedColor);
-        mBoxPaint.setStyle(Paint.Style.STROKE);
-        mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
     }
 
-    void setId(int id) {
-        mFaceId = id;
-    }
-
-
-    /**
-     * Updates the face instance from the detection of the most recent frame.  Invalidates the
-     * relevant portions of the overlay to trigger a redraw.
+    /*
+     * 가장 최근 프레임에서 감지한 얼굴의 위치를 업데이트한다.
+     * 감지된 위치로 오버레이를 다시 그린다.
      */
     void updateFace(Face face) {
         mFace = face;
         postInvalidate();
     }
 
-    /**
-     * Draws the face annotations for position on the supplied canvas.
+    /*
+     * 얼굴 위치에 Canvas 를 통해 오버레이를 그린다.
      */
     @Override
     public void draw(Canvas canvas) {
@@ -97,33 +60,28 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         if (face == null) {
             return;
         }
-        /*List<Landmark> landmarks =  face.getLandmarks();
-        Log.e("landmarks size",landmarks.size()+"..");*/
-        // Draws a circle at the position of the detected face, with the face's track id below.
+        // 현재 얼굴의 중심점 (x,y) 를 찾는다.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
 
-        /*canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
-        canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-        canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
-        canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
-        canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);*/
-
-        // Draws a bounding box around the face.
+        // 좌우상하 위치를 찾는다.
         float xOffset = scaleX(face.getWidth() / 2.0f);
         float yOffset = scaleY(face.getHeight() / 2.0f);
         float left = x - xOffset;
         float top = y - yOffset;
         float right = x + xOffset;
         float bottom = y + yOffset;
-        //canvas.drawRect(left, top, right, bottom, mBoxPaint);
 
-        if(maskPosition != 0){
-            Drawable d = ContextCompat.getDrawable(context, maskDrawable[maskPosition-1]);
+        if(maskPosition != 0){  // 사용자가 선택한 마스크가 "None" 이 아니라면 마스크를 그린다.
+            Drawable d = ContextCompat.getDrawable(context, maskDrawable[maskPosition-1]);  // 선택된 마스크 드로워블을 가져온다.
+
+            // 좌우상하 위치값을 int 형으로 변환한다.
             int l = (int) left;
             int t = (int) top;
             int r = (int) right;
             int b = (int) bottom;
+
+            // 마스크의 위치를 조정할 필요가 있는 경우 조정한다.
             switch (maskPosition){
                 case 1:     // 강아지
                     break;
@@ -140,15 +98,16 @@ class FaceGraphic extends GraphicOverlay.Graphic {
                     l -= 10;
                     r += 10;
                     break;
-
-
             }
+
+            // 카메라가 전면을 향해있다면 좌우를 반전시킨다.
+
             if(mIsFrontFacing){
-                Objects.requireNonNull(d).setBounds(l,t,r,b);
+                Objects.requireNonNull(d).setAutoMirrored(true);
             }else{
-                Objects.requireNonNull(d).setBounds(r,t,l,b);
+                Objects.requireNonNull(d).setAutoMirrored(false);
             }
-
+            Objects.requireNonNull(d).setBounds(l,t,r,b);
             d.draw(canvas);
         }
     }

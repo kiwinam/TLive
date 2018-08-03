@@ -9,9 +9,7 @@ import com.testexam.charlie.tlive.main.profile.modify.camera.ui.GraphicOverlay
 class GraphicFaceTracker internal constructor(private val mOverlay: GraphicOverlay, val position : Int, val context : Context, val mIsFrontFacing: Boolean) : Tracker<Face>() {
     private val mFaceGraphic : FaceGraphic = FaceGraphic(mOverlay, position, context,mIsFrontFacing)
 
-    override fun onNewItem(faceId : Int, item : Face?) {
-        mFaceGraphic.setId(faceId)
-    }
+    override fun onNewItem(faceId : Int, item : Face?) { }
 
     override fun onUpdate(p0: Detector.Detections<Face>?, face : Face?) {
         mOverlay.add(mFaceGraphic)

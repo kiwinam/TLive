@@ -35,8 +35,8 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private fun getIntentData(){
         email = intent.getStringExtra("email")  // 이메일을 가져온다.
         name = intent.getStringExtra("name")    // 이름을 가져온다.
-        followNumber = intent.getIntExtra("followNumber",0)  //
-        viewerNumber = intent.getIntExtra("viewerNubmer",0)
+        followNumber = intent.getIntExtra("followNumber",0)
+        viewerNumber = intent.getIntExtra("viewerNumber",0)
     }
 
     // 클릭 리스너를 설정하는 메소드

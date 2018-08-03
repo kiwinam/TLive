@@ -36,7 +36,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp" />
     </RelativeLayout>
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/modifyProfileIv"
         android:src="@drawable/ic_profile_ex1"
         android:layout_centerHorizontal="true"
@@ -44,6 +44,14 @@
         android:layout_marginTop="32dp"
         android:layout_width="150dp"
         android:layout_height="150dp" />
+    <ImageView
+        android:src="@drawable/ic_edit_white_24dp"
+        android:padding="6dp"
+        android:layout_alignEnd="@id/modifyProfileIv"
+        android:layout_alignBottom="@id/modifyProfileIv"
+        android:background="@drawable/sp_orange_circle"
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
     <EditText
         android:id="@+id/modifyNameEt"
         android:layout_below="@id/modifyProfileIv"
@@ -53,7 +61,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
