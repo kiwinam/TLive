@@ -22,7 +22,7 @@ import java.io.File
  */
 class ModifyProfileActivity : AppCompatActivity() , View.OnClickListener{
     companion object {
-        private const val CAMERA_REQUEST = 5005
+        private const val CAMERA_REQUEST = 5005     // startActivityForResult 시 카메라 요청을 하기 위한 상수
     }
 
     private var email = ""      // 유저의 이메일
@@ -37,31 +37,36 @@ class ModifyProfileActivity : AppCompatActivity() , View.OnClickListener{
         setClickListeners() // 클릭 리스너 설정
     }
 
+    /*
+     * ProfileActivity 에서 전달받은 데이터를 해당하는 변수에 저장하는 메소드.
+     *
+     * 저장한 뒤 이메일과 이름 뷰에 데이터를 보여준다.
+     */
     private fun getIntentData(){
-        email  = intent.getStringExtra("email")
-        name = intent.getStringExtra("name")
-        modifyNameEt.setText(name)
-        modifyEmailTv.text = email
+        email  = intent.getStringExtra("email")     // 인텐트에서 이메일을 가져온다.
+        name = intent.getStringExtra("name")        // 인텐트에서 이름을 가져온다.
+        modifyNameEt.setText(name)      // 이름을 뷰에 설정한다.
+        modifyEmailTv.text = email      // 이메일을 뷰에 설정한다.
     }
 
+    /*
+     * 클릭 리스너를 설정하는 메소드
+     */
     private fun setClickListeners(){
         modifyCloseIv.setOnClickListener(this)
         modifyConfirmIv.setOnClickListener(this)
         modifyProfileIv.setOnClickListener(this)
     }
 
-
-
     override fun onClick(v: View?) {
         when(v){
             modifyCloseIv->onBackPressed()  // 닫기 버튼을 누르면 액티비티를 종료한다.
             modifyProfileIv->{  // 프로필 사진을 누르면 프로필 사진을 변경할 수 있게한다.
                 val profileIntent = Intent(applicationContext, ProfileCameraActivity::class.java)
-
                 startActivityForResult(profileIntent, CAMERA_REQUEST)
             }
             modifyConfirmIv->{  // 확인 버튼을 누르면 변경된 사항을 저장한다.
-                updateProfile()
+                updateProfile() // 프로필 업데이트 실행한다.
             }
         }
     }
@@ -76,7 +81,7 @@ class ModifyProfileActivity : AppCompatActivity() , View.OnClickListener{
         paramMap["name"] = RequestBody.create(MediaType.parse("multipart/form-data"),modifyNameEt.text.toString())    // 파라미터에 이름 추가
 
         try{
-            val file = File(profileImagePath)
+            val file = File(profileImagePath)       // ProfileCameraActivity 에서 저장한 마스크 프로필 이미지 사진의 경로로 파일 객체를 만든다.
             val img = RequestBody.create(MediaType.parse("image/*"),file)
             paramMap["img\"; filename=\"profile_$email.png\""] = img // 파라미터에 이미지 파일 추가
         }catch (e:Exception){
@@ -85,7 +90,7 @@ class ModifyProfileActivity : AppCompatActivity() , View.OnClickListener{
 
         val conn = RetrofitConn.getRetrofit().create(ConnectionList::class.java) // 레트로핏 커넥션 초기화
         val call = conn.updateProfile(paramMap)
-
+        
         call.enqueue(object : retrofit2.Callback<SimpleResponse>{
             override fun onResponse(call: Call<SimpleResponse>?, response: Response<SimpleResponse>?) {
 

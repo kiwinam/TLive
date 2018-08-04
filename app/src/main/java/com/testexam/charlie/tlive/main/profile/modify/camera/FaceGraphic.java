@@ -37,9 +37,9 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         super(overlay);
         this.maskPosition = maskPosition;
         this.context = context;
+        // 마스크 Drawable 의 ID 값을 배열로 저장한 변수
         maskDrawable = new int[]{R.drawable.dog, R.drawable.cat, R.drawable.iron, R.drawable.spider, R.drawable.batman, R.drawable.annony, R.drawable.submarine};
         this.mIsFrontFacing = mIsFrontFacing;
-
     }
 
     /*
@@ -101,7 +101,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             }
 
             // 카메라가 전면을 향해있다면 좌우를 반전시킨다.
-
             if(mIsFrontFacing){
                 Objects.requireNonNull(d).setAutoMirrored(true);
             }else{

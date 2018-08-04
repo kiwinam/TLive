@@ -42,6 +42,11 @@ import java.util.*
 /**
  * 프로필 사진을 촬영하기 위한 Activity
  *
+ * 카메라에서 프리뷰 데이터를 가져와 SurfaceView 에 보여준다.
+ * 얼굴 인식 후 마스크를 보여준다.
+ *
+ * 선택할 수 있는 마스크의 개수는 7개이며 리사이클러 뷰를 통해 원하는 마스크를 선택할 수 있다.
+ * 촬영 버튼을 누르면 마스크와 함께 촬영이 된다.
  */
 @Suppress("NAME_SHADOWING")
 class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
@@ -51,16 +56,16 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         private const val CAMERA_CODE = 2
     }
 
-    private var mCameraSource : CameraSource? = null
-    private lateinit var mPreview : CameraSourcePreview
-    private lateinit var mGraphicOverlay: GraphicOverlay
+    private var mCameraSource : CameraSource? = null       // 카메라 소스 객체
+    private lateinit var mPreview : CameraSourcePreview     // 카메라 프리뷰 객체
+    private lateinit var mGraphicOverlay: GraphicOverlay    // 마스크를 보여주는 그래픽 오버레이 객체
 
-    private var mIsFrontFacing = true
+    private var mIsFrontFacing = true   // 카메라 소스가 전면 카메라에서 오는지 확인하는 변수
 
-    private lateinit var maskAdapter: MaskAdapter
-    private lateinit var maskList : ArrayList<Mask>
-    private lateinit var detector: FaceDetector
-    private var maskPosition = 0
+    private lateinit var maskAdapter: MaskAdapter   // 마스크 RecyclerView 에 사용하는 어댑터
+    private lateinit var maskList : ArrayList<Mask> // 마스크 리스트
+    private lateinit var detector: FaceDetector     // 얼굴 인식 디텍터
+    private var maskPosition = 0    // 마스크 리스트 중 현재 선택한 마스크의 위치를 저장하고 있는 변수
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,14 +74,17 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         mPreview = findViewById<View>(R.id.cameraPreview) as CameraSourcePreview
         mGraphicOverlay = findViewById<View>(R.id.faceOverlay) as GraphicOverlay
 
-        setOnClickListeners()
-        setMaskRecyclerView()
-        val cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-        val writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        setOnClickListeners()   // 클릭 리스너를 설정한다.
+        setMaskRecyclerView()   // 마스크 리사이클러 뷰를 설정한다.
+        val cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)     // 카메라 권한
+        val writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)  // 쓰기 권한
+
+        // 카메라 권한과 쓰기 권한이 승인된 경우 카메라 소스를 생성한다.
+        // 승인되지 않은 경우 권한을 요청한다.
         if(cameraPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED){
-            createCameraSource()
+            createCameraSource()    // 카메라 소스 생성
         }else{
-            requestCameraPermission()
+            requestCameraPermission()   // 권한 요청
         }
     }
 
@@ -110,14 +118,14 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
      * 마스크 아이템 초기화
      */
     private fun setMaskItems(){
-        maskList.add(Mask("none",false,true))
-        maskList.add(Mask("dog",true,false))
-        maskList.add(Mask("cat",true,false))
-        maskList.add(Mask("iron",true,false))
-        maskList.add(Mask("spider",true,false))
-        maskList.add(Mask("batman",true,false))
-        maskList.add(Mask("annony",true,false))
-        maskList.add(Mask("submarine",true,false))
+        maskList.add(Mask("none",false,true))   // none 마스크 객체 추가
+        maskList.add(Mask("dog",true,false))   // 강아지 마스크 객체 추가
+        maskList.add(Mask("cat",true,false))   // 고양이 마스크 객체 추가
+        maskList.add(Mask("iron",true,false))   // 아이언맨 마스크 객체 추가
+        maskList.add(Mask("spider",true,false))   // 스파이더맨 마스크 객체 추가
+        maskList.add(Mask("batman",true,false))   // 배트맨 마스크 객체 추가
+        maskList.add(Mask("annony",true,false))   // 어나니머스 마스크 객체 추가
+        maskList.add(Mask("submarine",true,false))   // 잠수부 마스크 객체 추가
     }
 
     /*
@@ -248,11 +256,10 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
     }
 
     /*
-     * 얼굴 디텍터를 생성하는 메소드
+     * 얼굴 인식 디텍터를 생성하는 메소드
      */
     private fun crateFaceDetector(context : Context) : FaceDetector{
         val detector = FaceDetector.Builder(context)
-                //.setLandmarkType(FaceDetector.ALL_LANDMARKS)
                 .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
                 .setTrackingEnabled(true)
                 .setMode(FaceDetector.ACCURATE_MODE)
@@ -266,27 +273,27 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         detector.setProcessor(
                 MultiProcessor.Builder<Face>(mGraphicOverlay.let { GraphicFaceTrackerFactory(it,maskPosition,context,mIsFrontFacing) })
                         .build())
-        if (!detector.isOperational) {
-            Log.w(TAG, "Face detector dependencies are not yet available.")
-
-            // Check the device's storage.  If there's little available storage, the native
-            // face detection library will not be downloaded, and the app won't work,
-            // so notify the user.
+        if (!detector.isOperational) {  // 얼굴 인식이 작동되지 않는 경우
+            // 디바이스의 스토리지를 확인한다.
+            // 사용 가능한 스토리지가 부족하면 필요한 얼굴 인식 라이브러리가 다운로드 되지 않는다.
             val lowStorageFilter = IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW)
             val hasLowStorage = registerReceiver(null, lowStorageFilter) != null
 
-            if (hasLowStorage) {
+            if (hasLowStorage) {    // 디바이스 저장 용량이 부족한 경우.
                 val listener = DialogInterface.OnClickListener { _, _ -> finish() }
                 val builder = android.app.AlertDialog.Builder(this)
                 builder.setTitle(R.string.app_name)
                         .setMessage("error")
                         .setPositiveButton("ok", listener)
-                        .show()
+                        .show() // 앱이 작동하지 않는 것을 사용자에게 알려준다.
             }
         }
         return detector
     }
 
+    /*
+     * 카메라 소스를 시작한다.
+     */
     private fun startCameraSource(){
         val code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(applicationContext)
         if(code != ConnectionResult.SUCCESS){
@@ -305,21 +312,21 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
         }
     }
 
+    /*
+     * 권한 요청 후 요청에 대한 결과를 처리하는 메소드
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if(requestCode != CAMERA_CODE){
-            Log.d(TAG, "unexpected permission result : $requestCode")
+        if(requestCode != CAMERA_CODE){     // 요청 코드가 카메라 코드가 아니면 종료한다.
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             return
         }
 
-        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "Camera permission granted - initialize the camera source")
-            createCameraSource()
+        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){  // 권한 요청이 수락 된 경우
+            createCameraSource()    // 카메라 소스를 생성한다.
             return
         }
 
-        Log.e(TAG, "Permission not granted ")
-
+        // 권한 요청이 거절된 경우 다이얼로그로 권한 요청이 거절되었다는 메시지를 보여준다.
         val listener = DialogInterface.OnClickListener{ dialog, id -> finish() }
 
         val builder = AlertDialog.Builder(this)
@@ -329,16 +336,25 @@ class ProfileCameraActivity : AppCompatActivity(), View.OnClickListener{
                 .show()
     }
 
+    /*
+     * onResume 시 카메라 소스를 시작한다.
+     */
     override fun onResume() {
         super.onResume()
         startCameraSource()
     }
 
+    /*
+     * onPause 시 프리뷰를 멈춘다.
+     */
     override fun onPause() {
         mPreview.stop()
         super.onPause()
     }
 
+    /*
+     * onDestroy 시 카메라 소스의 할당을 해제한다.
+     */
     override fun onDestroy() {
         if(mCameraSource != null){
             mCameraSource!!.release()

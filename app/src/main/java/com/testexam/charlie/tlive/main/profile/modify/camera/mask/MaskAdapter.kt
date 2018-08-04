@@ -12,21 +12,27 @@ import android.widget.TextView
 import com.testexam.charlie.tlive.R
 
 /**
- * 마스크 어댑터
+ * 얼굴인식 마스크 어댑터
+ *
+ * 마스크 리사이클러 뷰에서 다른 마스크들을 선택할 수 있도록 하는 어댑터
  */
 class MaskAdapter (private var maskList : ArrayList<Mask>, val context: Context) : RecyclerView.Adapter<MaskAdapter.MaskHolder>() {
+    // 선택 가능한 마스크 리스트
     private var maskDrawable = intArrayOf(R.drawable.dog, R.drawable.cat, R.drawable.iron, R.drawable.spider, R.drawable.batman, R.drawable.annony, R.drawable.submarine)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MaskHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_mask,parent,false)
         return MaskHolder(v)
     }
 
+    /*
+     * 마스크의 개수를 리턴하는 메소드
+     */
     override fun getItemCount(): Int {
         return maskList.size
     }
 
     override fun onBindViewHolder(holder: MaskHolder, position: Int) {
-        val mask = maskList[position]
+        val mask = maskList[position]   // 현재 위치의 마스크 객체를 가져온다.
         if(mask.isMask){    // 마스크를 선택했다면
             holder.maskNoneTv.visibility = View.GONE    // None 텍스트뷰를 안보이게한다.
             holder.maskIv.visibility = View.VISIBLE     // 마스크 이미지뷰를 보이게한다.
@@ -54,6 +60,7 @@ class MaskAdapter (private var maskList : ArrayList<Mask>, val context: Context)
         notifyDataSetChanged()  // 리사이클러 뷰에 변경된 사항에 대해 알림
     }
 
+    // 마스크 아이템 홀더
     class MaskHolder (maskHolder : View) : RecyclerView.ViewHolder(maskHolder){
         val maskNoneTv = maskHolder.findViewById<TextView>(R.id.maskNoneTv)!!
 
