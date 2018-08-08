@@ -40,6 +40,7 @@ class FindFriendActivity : BaseActivity(){
      * 친구 검색 결과 RecyclerView 를 설정하는 메소드
      */
     private fun setFindListRv(){
+        searchList = ArrayList()
         findAdapter = FindAdapter(email, searchList, this)      // 친구 검색 어댑터 초기화
         val linearLayoutManager = LinearLayoutManager(this)     // Linear 레이아웃 매니저 초기화
         linearLayoutManager.isSmoothScrollbarEnabled = true     // 부드럽게 스크롤 되는 옵션 true

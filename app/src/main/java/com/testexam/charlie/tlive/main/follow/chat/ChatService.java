@@ -1,5 +1,7 @@
 package com.testexam.charlie.tlive.main.follow.chat;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -9,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +29,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -33,10 +37,12 @@ import timber.log.Timber;
  * 네티 채팅 서버와 TCP 통신하는 소켓 채널 서비스
  * 채팅 메시지의 send, receive 를 담당한다.
  */
+@SuppressLint("LogNotTimber")
 public class ChatService extends Service {
     // TCP 통신을 위한 서버의 IP 주소와 포트 번호
     private static final String IP = "13.125.64.135";   // 서버 ip 주소
     private static final int PORT = 7777;       // 네티 포트 번호
+    private static final int SERVICE_ID = 8888; // 포그라운드 서비스 아이디
     private SocketChannel socketChannel;        // 소켓 채널 객체
 
     private JSONObject msgObject;   // 채팅을 주고 받을 때 사용하는 JSONObject
@@ -83,21 +89,29 @@ public class ChatService extends Service {
      */
     @Override
     public void onCreate() {
-        super.onCreate();
-        Timber.tag("ChatService").e("onCreate");
-        SharedPreferences sp = getSharedPreferences("login",MODE_PRIVATE);  // SharedPreference 에서 사용자의 정보를 가져온다.
-        email = sp.getString("email",null);     // 이메일을 가져온다
-        name = sp.getString("name",null);       // 이름을 가져온다.
+        if(!isServiceRunning()){    // 채팅 서비스가 실행중이지 않은 경우에만 새로운 채팅 서비스를 시작한다.
+            super.onCreate();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*Notification notification = new Notification();
+            startForeground(SERVICE_ID,notification);*/
+            }
 
-        // SQLite 연결
-        if(dbHelper == null){   // dbHelper 가 초기화 되어 있지 않다면
-            dbHelper = new DBHelper(getApplicationContext(),email,null,1);  // dbHelper 를 현재 로그인한 사용자의 이메일을 매개변수로 초기화한다.
-            dbHelper.chatDB();      // dbHelper 를 쓰기 상태로 변경한다.
-        }
+            //Timber.tag("ChatService").e("onCreate");
+            Log.e("ChatService","onCreate");
+            SharedPreferences sp = getSharedPreferences("login",MODE_PRIVATE);  // SharedPreference 에서 사용자의 정보를 가져온다.
+            email = sp.getString("email",null);     // 이메일을 가져온다
+            name = sp.getString("name",null);       // 이름을 가져온다.
 
-        // socket 연결
-        if(email != null){
-            setSocket();    // 네티 소켓에 연결한다.
+            // SQLite 연결
+            if(dbHelper == null){   // dbHelper 가 초기화 되어 있지 않다면
+                dbHelper = new DBHelper(getApplicationContext(),email,null,1);  // dbHelper 를 현재 로그인한 사용자의 이메일을 매개변수로 초기화한다.
+                dbHelper.chatDB();      // dbHelper 를 쓰기 상태로 변경한다.
+            }
+
+            // socket 연결
+            if(email != null){
+                setSocket();    // 네티 소켓에 연결한다.
+            }
         }
     }
 
@@ -111,6 +125,7 @@ public class ChatService extends Service {
      * 2. 소켓 연결이 성공하면 소켓에 이메일과 이름 정보를 설정한다.
      * 3. 소켓에서 새로운 메시지를 청취하는 스레드를 시작한다.
      */
+
     private void setSocket() {
         new Thread(() -> {
             try {
@@ -122,7 +137,8 @@ public class ChatService extends Service {
 
                     // 2. 소켓 연결이 성공하면 소켓에 이메일과 이름 정보를 설정한다.
                     if(socketChannel.isConnected()){    // 소켓 연결이 성공한 경우
-                        Timber.tag("socket").d("connected");
+                        //Timber.tag("socket").d("connected");
+                        Log.d("socket","connected");
                         msgObject = new JSONObject();   // 소켓 정보를 담을 JSONObject
                         msgObject.put("type","set");    // 소켓에 전달되는 메시지의 타입이 설정 메시지라는 것을 알려준다.
                         msgObject.put("email",email);       // 소켓에 연결된 이메일
@@ -137,7 +153,8 @@ public class ChatService extends Service {
                         checkSocket.start();
                     }
                 } else{
-                    Timber.tag("ChatService::setSocket").e("socket already connected");
+                    //Timber.tag("ChatService::setSocket").e("socket already connected");
+                    Log.e("ChatService::setSocket","socket already connected");
                 }
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
@@ -259,5 +276,35 @@ public class ChatService extends Service {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            if(socketChannel != null){
+                if(socketChannel.isConnected()){
+                    socketChannel.finishConnect();
+                    socketChannel.close();
+                    Log.e("socket","onDestroy");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+    // 서비스의 실행 여부를 확인하는 메소드
+    private boolean isServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : Objects.requireNonNull(activityManager).getRunningServices(Integer.MAX_VALUE)) {
+            System.out.println(runningServiceInfo.service.getClassName());
+            if (ChatService.class.getName().equals(runningServiceInfo.service.getClassName())) {
+                Log.e("isServiceRunning","already running ChatService");
+                return true;
+            }
+        }
+        Log.e("isServiceRunning","new ChatService");
+        return false;   // 실행중이지 않다.
     }
 }

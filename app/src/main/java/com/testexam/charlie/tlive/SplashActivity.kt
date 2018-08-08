@@ -32,7 +32,12 @@ class SplashActivity : BaseActivity() {
 
 
         if(prefs.getString("email","none") !== "none"){
-            startService(Intent(applicationContext, ChatService::class.java))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //startForegroundService(Intent(applicationContext, ChatService::class.java))
+                startService(Intent(applicationContext, ChatService::class.java))
+            }else{
+                startService(Intent(applicationContext, ChatService::class.java))
+            }
         }
         startActivity(nextIntent)
         finish()

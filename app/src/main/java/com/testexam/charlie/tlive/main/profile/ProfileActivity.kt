@@ -85,8 +85,10 @@ class ProfileActivity : BaseActivity() , View.OnClickListener{
                     followNumber = resultObject.getInt("followerNumber")  // JSON 에서 팔로우 숫자를 가져온다.
                     viewerNumber = resultObject.getInt("viewerNumber")  // JSON 에서 시청자 숫자를 가져온다.
 
-                    profileFollowNumTv.text = followNumber.toString()   // 팔로우 텍스트 뷰에 팔로우 숫자를 설정한다.
-                    profileViewerNumTv.text = viewerNumber.toString()   // 시청자 텍스트 뷰에 시청자 숫자를 설정한다.
+                    runOnUiThread{
+                        profileFollowNumTv.text = followNumber.toString()   // 팔로우 텍스트 뷰에 팔로우 숫자를 설정한다.
+                        profileViewerNumTv.text = viewerNumber.toString()   // 시청자 텍스트 뷰에 시청자 숫자를 설정한다.
+                    }
                 }
             }).start()  // HTTP 스레드 시작.
         }catch (e:Exception){
