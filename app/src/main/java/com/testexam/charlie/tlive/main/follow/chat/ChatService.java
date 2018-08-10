@@ -54,6 +54,8 @@ public class ChatService extends Service {
     private ReceiveCallback receiveCallBack;    // ReceiveCallback 객체.
     private final IBinder mBinder = new ChatBinder();
 
+    private Thread setThread;
+
     // 다른 액티비티에서 서비스를 바인드하기 위한 메소드.
     public class ChatBinder extends Binder{
         public ChatService getService() { return ChatService.this; }    // getService 메소드를 호출하면 ChatService 자신을 리턴해준다.
@@ -80,6 +82,11 @@ public class ChatService extends Service {
      */
     public void registerCallback(ReceiveCallback callback) { receiveCallBack = callback; }  // ReceiveCallback 를 매개변수로 전달된 callback 으로 초기화한다.
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_NOT_STICKY;    // 서비스 강제 종료시 서비스를 재시작하지 않는다.
+    }
+
     /*
      * 채팅 서비스가 생성되었을 때 호출되는 메소드
      *
@@ -89,12 +96,8 @@ public class ChatService extends Service {
      */
     @Override
     public void onCreate() {
-        if(!isServiceRunning()){    // 채팅 서비스가 실행중이지 않은 경우에만 새로운 채팅 서비스를 시작한다.
+        /*if(!isServiceRunning()){    // 채팅 서비스가 실행중이지 않은 경우에만 새로운 채팅 서비스를 시작한다.
             super.onCreate();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            /*Notification notification = new Notification();
-            startForeground(SERVICE_ID,notification);*/
-            }
 
             //Timber.tag("ChatService").e("onCreate");
             Log.e("ChatService","onCreate");
@@ -110,8 +113,30 @@ public class ChatService extends Service {
 
             // socket 연결
             if(email != null){
+                Log.d("ChatService", "email is not null");
                 setSocket();    // 네티 소켓에 연결한다.
             }
+        }*/
+
+        super.onCreate();
+
+        //Log.e("ChatService is running ", isServiceRunning()+"..");
+        //Timber.tag("ChatService").e("onCreate");
+        Log.e("ChatService","onCreate");
+        SharedPreferences sp = getSharedPreferences("login",MODE_PRIVATE);  // SharedPreference 에서 사용자의 정보를 가져온다.
+        email = sp.getString("email",null);     // 이메일을 가져온다
+        name = sp.getString("name",null);       // 이름을 가져온다.
+
+        // SQLite 연결
+        if(dbHelper == null){   // dbHelper 가 초기화 되어 있지 않다면
+            dbHelper = new DBHelper(getApplicationContext(),email,null,1);  // dbHelper 를 현재 로그인한 사용자의 이메일을 매개변수로 초기화한다.
+            dbHelper.chatDB();      // dbHelper 를 쓰기 상태로 변경한다.
+        }
+
+        // socket 연결
+        if(email != null){
+            Log.d("ChatService", "email is not null");
+            setSocket();    // 네티 소켓에 연결한다.
         }
     }
 
@@ -127,10 +152,11 @@ public class ChatService extends Service {
      */
 
     private void setSocket() {
-        new Thread(() -> {
+        setThread = new Thread(() -> {
             try {
                 // 1. 네티 소켓 채널이 없는 경우 새로운 소켓(IP,PORT)을 만든다.
                 if(socketChannel == null){
+                    Log.d("setSocket","socketChannel is null");
                     socketChannel = SocketChannel.open();   // 새로운 SocketChannel 오픈
                     socketChannel.configureBlocking(true);
                     socketChannel.connect(new InetSocketAddress(IP,PORT)); // AWS IP 와 Netty 가 청취하고 있는 포트로 연결을 시도한다.
@@ -151,6 +177,8 @@ public class ChatService extends Service {
 
                         // 3. 소켓에서 새로운 메시지를 청취하는 스레드를 시작한다.
                         checkSocket.start();
+                    }else{
+                        Log.e("setSocket","socket connect fail");
                     }
                 } else{
                     //Timber.tag("ChatService::setSocket").e("socket already connected");
@@ -159,7 +187,8 @@ public class ChatService extends Service {
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-        }).start(); // 소켓 채널 설정 스레드 시작.
+        }); // 소켓 채널 설정 스레드 시작.
+        setThread.start();
     }
 
     /*
@@ -280,17 +309,30 @@ public class ChatService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.e("ChatService","onDestroy");
+        if(checkSocket != null)
+            if(checkSocket.isAlive())
+                checkSocket.interrupt();
+        if(setThread != null)
+            if(setThread.isAlive())
+                setThread.interrupt();
         try {
             if(socketChannel != null){
                 if(socketChannel.isConnected()){
                     socketChannel.finishConnect();
                     socketChannel.close();
-                    Log.e("socket","onDestroy");
+                    Log.e("socket","disConnected");
+
+                }else{
+                    Log.e("socket","is not connected");
                 }
+            }else{
+                Log.e("socket","is null");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        stopSelf();
         super.onDestroy();
     }
 

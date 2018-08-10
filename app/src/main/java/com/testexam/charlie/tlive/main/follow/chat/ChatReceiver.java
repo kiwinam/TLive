@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.Objects;
@@ -23,9 +24,12 @@ public class ChatReceiver extends BroadcastReceiver {
             SharedPreferences sp = context.getSharedPreferences("login",Context.MODE_PRIVATE);
             // 로그인이 되어 있는 경우에만 서비스를 시작한다.
             if(sp.getString("email",null) != null){
-                context.startService(new Intent(context,ChatService.class));
-                //Timber.tag("chatReceiver").d("start chatting service");
-                Log.d("chatReceiver","start chatting service");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Log.d("chatReceiver","oreo can not start service");
+                }else{
+                    context.startService(new Intent(context,ChatService.class));
+                    Log.d("chatReceiver","start chatting service");
+                }
             }
         }
     }

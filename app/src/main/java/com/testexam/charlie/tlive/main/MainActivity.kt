@@ -1,5 +1,6 @@
 package com.testexam.charlie.tlive.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     external fun stringFromJNI(): String
 
     private var prefs : SharedPreferences? = null
+    @SuppressLint("LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main) // MainActivity 에 activity_main 레이아웃을 설정한다.
@@ -42,7 +44,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
          */
         prefs = getSharedPreferences("login", Context.MODE_PRIVATE)
         val email = prefs?.getString("email","no")
-        Log.d("email",email+"..") // 현재 로그인한 사용자의 이메일
+        Log.d("email", "$email..") // 현재 로그인한 사용자의 이메일
 
     }
 

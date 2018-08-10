@@ -106,4 +106,5 @@
     <string name="logo">logo</string>
     <string name="logo_text_ko">함께하는 즐거운 먹방</string>
 
+    <string name="default_notification_channel_id">channel id</string>
 </resources>

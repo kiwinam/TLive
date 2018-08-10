@@ -4,7 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
 import com.testexam.charlie.tlive.R
 import com.testexam.charlie.tlive.common.BaseActivity
 import com.testexam.charlie.tlive.common.HttpTask
@@ -77,6 +83,12 @@ class LoginActivity : BaseActivity() {
                 editor.putString("profileUrl",loginObject.getString("profileUrl"))  // profileUrl 을 editor 객체에 넣는다
                 editor.apply()  // SharedPreference 수정 사항을 승인한다.
 
+                Log.d("Firebase InstanceID","try")
+                FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(this) {
+                    Log.d("Firebase Token", it.result.token)
+                    registerTokenToServer(it.result.token)
+                }
+
                 startActivity(Intent(applicationContext, MainActivity::class.java)) // 메인 액티비티로 이동한다.
                 startService(Intent(applicationContext, ChatService::class.java)) // Netty 1:1 채팅을 위해 채팅 서비스를 시작한다.
                 finish()    // 현재 액티비티를 종료한다.
@@ -88,6 +100,32 @@ class LoginActivity : BaseActivity() {
         }catch (e:Exception){   // 에러 발생시
             e.printStackTrace() // 에러 메시지를 로그로 표시한다.
             Toast.makeText(applicationContext,"일시적인 에러가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /*
+     * 서버에 새롭게 생성된 토큰을 등록하는 메소드
+     */
+    private fun registerTokenToServer(token : String) {
+        try{
+            val email = getSharedPreferences("login", Context.MODE_PRIVATE).getString("email",null)
+            if(!email.isNullOrEmpty()){ // 현재 사용자가 로그인한 상태일 경우
+                val paramList = ArrayList<Params>()     // 파라미터를 담을 어레이리스트
+                paramList.add(Params("email",email))    // 이메일
+                paramList.add(Params("token",token))    // 토큰 값
+
+                val result = HttpTask("updateToken.php",paramList).execute().get()
+                if(!result.isNullOrEmpty()){
+                    val resultObject = JSONObject(result)
+                    if(resultObject.getBoolean("success")){
+                        Log.e("updateToken result","success")
+                    }else{
+                        Log.e("updateToken result","fail")
+                    }
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 }

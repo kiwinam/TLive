@@ -63,19 +63,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation 'com.crust87:texturevideoview:1.0.4'
     implementation 'com.github.nhancv:nc-android-webrtcpeer:2.1.0'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
     //Android annotation
     annotationProcessor "org.androidannotations:androidannotations:4.4.0"
     implementation 'org.androidannotations:androidannotations-api:4.4.0'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.6.0'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.6.0'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.6.0'
+
+
     implementation 'com.github.wseemann:FFmpegMediaPlayer:1.0.4'
     implementation 'com.android.support:support-annotations:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
@@ -106,12 +100,29 @@ dependencies {
     // Album
     implementation 'com.yanzhenjie:album:2.1.2'
 
-    // Mobile vision
-    implementation 'com.google.android.gms:play-services-vision:15.0.2'
+
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    // FireBase
-    compile 'com.google.firebase:firebase-core:16.0.1'
+    // Google
+        // Gson
+        implementation 'com.google.code.gson:gson:2.8.2'
+
+        // exo
+        implementation 'com.google.android.exoplayer:exoplayer-core:2.6.0'
+        implementation 'com.google.android.exoplayer:exoplayer-ui:2.6.0'
+        implementation 'com.google.android.exoplayer:exoplayer-hls:2.6.0'
+
+        // gms
+        implementation 'com.google.android.gms:play-services-maps:15.0.1'
+        implementation 'com.google.android.gms:play-services-location:15.0.1'
+        implementation 'com.google.maps.android:android-maps-utils:0.5'
+
+        // Mobile vision
+        implementation 'com.google.android.gms:play-services-vision:15.0.2'
+
+        // FireBase
+        implementation 'com.google.firebase:firebase-core:16.0.1'
+        implementation 'com.google.firebase:firebase-messaging:17.1.0'
 }
 apply plugin: 'com.google.gms.google-services'

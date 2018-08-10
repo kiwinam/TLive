@@ -107,6 +107,7 @@ class ProfileActivity : BaseActivity() , View.OnClickListener{
                 settingIntent.putExtra("viewerNumber",viewerNumber)     // 시청자 숫자
                 settingIntent.putExtra("name",userName)     // 유저 이름
                 settingIntent.putExtra("email",userEmail)   // 유저 이메일
+                settingIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(settingIntent)    // 셋팅 액티비티로 이동한다.
             }
         }
