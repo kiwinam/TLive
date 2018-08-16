@@ -4,13 +4,9 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
-import com.testexam.charlie.tlive.common.HttpTask
-import com.testexam.charlie.tlive.common.Params
 import com.testexam.charlie.tlive.main.follow.chat.ChatService
-import org.json.JSONObject
 import java.util.*
 
 /**

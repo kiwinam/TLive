@@ -20,13 +20,11 @@ public class ChatReceiver extends BroadcastReceiver {
     @SuppressLint("LogNotTimber")
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(Objects.equals(intent.getAction(), Intent.ACTION_BOOT_COMPLETED)){
-            SharedPreferences sp = context.getSharedPreferences("login",Context.MODE_PRIVATE);
-            // 로그인이 되어 있는 경우에만 서비스를 시작한다.
-            if(sp.getString("email",null) != null){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Log.d("chatReceiver","oreo can not start service");
-                }else{
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            if(Objects.equals(intent.getAction(), Intent.ACTION_BOOT_COMPLETED)){
+                SharedPreferences sp = context.getSharedPreferences("login",Context.MODE_PRIVATE);
+                // 로그인이 되어 있는 경우에만 서비스를 시작한다.
+                if(sp.getString("email",null) != null){
                     context.startService(new Intent(context,ChatService.class));
                     Log.d("chatReceiver","start chatting service");
                 }
