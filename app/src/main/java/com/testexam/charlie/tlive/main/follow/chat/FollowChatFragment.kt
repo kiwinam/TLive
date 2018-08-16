@@ -143,7 +143,8 @@ class FollowChatFragment : Fragment(){
                 val room = roomList[position]   // 클릭한 포지션의 Room 객체를 가져온다.
                 val intent = Intent(context, ChatActivity::class.java)  // ChatActivity 로 이동하는 Intent 를 초기화한다.
                 intent.putExtra("targetEmail",room.targetEmail) // 인텐트 Extra 에 targetEmail 를 추가한다.
-                intent.putExtra("targetName",room.targetName)   // // 인텐트 Extra 에 targetName 를 추가한다.
+                intent.putExtra("targetName",room.targetName)   // 인텐트 Extra 에 targetName 를 추가한다.
+                intent.putExtra("roomNo",room.roomNo)
                 context!!.startActivity(intent)     // ChatActivity 로 이동한다.
             }
             override fun onLongItemClick(view: View?, position: Int) { }})
@@ -166,5 +167,10 @@ class FollowChatFragment : Fragment(){
             })
 
         }.run()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getRoomList()
     }
 }

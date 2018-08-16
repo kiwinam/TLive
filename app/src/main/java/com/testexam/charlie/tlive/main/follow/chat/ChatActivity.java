@@ -53,6 +53,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
 
     private String mTargetEmail; // 채팅 상대방 이메일
     private String mTargetName; // 채팅 상대방 이름
+    private int roomNo;
 
     private DBHelper dbHelper;  // 디바이스에 SQLite 를 이용하여 채팅 내역을 저장할 때 사용하는 DBHelper 객체
 
@@ -116,7 +117,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
     private void readHandlerMsg(){
         //chatService.sendSocket(dbHelper.getCurrentGID(roomId),"read","subFlag",roomId,String.valueOf(dbHelper.getLastReadGID(roomId)),target,roomName,"none","none","none");
         //dbHelper.myGIDUpdate(roomId,mEmail,dbHelper.getCurrentGID(roomId));
-        chatList = dbHelper.getChatList(mTargetEmail);
+        chatList = dbHelper.getChatList(mTargetEmail,roomNo);
         chatAdapter.updateList(chatList);
         chatRv.scrollToPosition(chatAdapter.getItemCount()-1); // 최근 받은 메시지 위치로 스크롤 이동
     }
@@ -140,7 +141,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
 
     // 채팅을 DB 에서 읽어와 업데이트하는 메소드
     private void updateHandlerMsg(){
-        chatList = dbHelper.getChatList(mTargetEmail);
+        chatList = dbHelper.getChatList(mTargetEmail,roomNo);
         chatAdapter.updateList(chatList);
         chatRv.scrollToPosition(chatAdapter.getItemCount()-1); // 최근 받은 메시지 위치로 스크롤 이동
     }
@@ -182,6 +183,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener{
         Timber.tag("ChatActivity myEmail").d(myEmail);
         mTargetEmail = getIntent().getStringExtra("targetEmail");
         mTargetName = getIntent().getStringExtra("targetName");
+        roomNo = getIntent().getIntExtra("roomNo",-1);
 
         if(dbHelper == null){
             dbHelper = new DBHelper(getApplicationContext(),myEmail,null,1);

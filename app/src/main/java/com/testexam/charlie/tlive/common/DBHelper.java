@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.testexam.charlie.tlive.main.follow.chat.Chat;
 import com.testexam.charlie.tlive.main.follow.chat.Room;
@@ -86,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper{
          */
         sb = new StringBuffer();
         sb.append("CREATE TABLE chatRooms (");  // 채팅 방 목록 테이블 생성
-        sb.append("no INTEGER PRIMARY KEY AUTOINCREMENT,"); // no Int , Primary key, 인덱스 자동 증가
+        sb.append("roomNo INTEGER PRIMARY KEY AUTOINCREMENT,"); // no Int , Primary key, 인덱스 자동 증가
         sb.append("targetEmail TEXT,");     // targetEmail Text, 채팅 방 상대 이메일
         sb.append("targetName TEXT,");      // targetName Text, 채팅 방 상대 이름
         sb.append("currentChat TEXT,");     // currentChat Text, 가장 최근 나눈 대화
@@ -162,7 +163,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         //  2. 같은 roomId 를 가지고 있는 채팅방이 있는지 확인한다.
         StringBuffer sb = new StringBuffer();
-        sb.append("SELECT no FROM chatRooms where targetEmail = ?");
+        sb.append("SELECT roomNo FROM chatRooms where targetEmail = ?");
         SQLiteDatabase db = getReadableDatabase();
 
         // 내가 받은 메시지라면 보낸 사람의 이메일을
@@ -267,17 +268,18 @@ public class DBHelper extends SQLiteOpenHelper{
      */
     public ArrayList<Room> getChatRoomList(){
         ArrayList<Room> roomItems = new ArrayList<>();
-        String sb = "SELECT targetEmail, targetName, currentChat, badgeCount FROM chatRooms " +
+        String sb = "SELECT roomNo,targetEmail, targetName, currentChat, badgeCount FROM chatRooms " +
                 "Order by datetime(currentTime) desc";
 
         Cursor cursor = db.rawQuery(sb,null);
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
             //String roodId,String name, int size, String content, String currentTime
             roomItems.add(new Room(
-                    cursor.getString(0),
+                    cursor.getInt(0),
                     cursor.getString(1),
                     cursor.getString(2),
-                    cursor.getInt(3)
+                    cursor.getString(3),
+                    cursor.getInt(4)
             ));
         }
         cursor.close();
@@ -289,7 +291,8 @@ public class DBHelper extends SQLiteOpenHelper{
      * @param targetEmail : 불러올 채팅 상대방의 이메일
      * @return 채팅 내역
      */
-    public ArrayList<Chat> getChatList(String targetEmail) {
+    @SuppressLint("LogNotTimber")
+    public ArrayList<Chat> getChatList(String targetEmail, int roomNo) {
 
         ArrayList<Chat> chatArray = new ArrayList<>();
         StringBuffer sb = new StringBuffer();
@@ -310,29 +313,18 @@ public class DBHelper extends SQLiteOpenHelper{
                 cursor.close();
             }
         }else{
-            Timber.tag("getChatList").d("cursor count 0");
+            //Timber.tag("getChatList").d("cursor count 0");
+            Log.e("getChatList","cursor count 0");
             return new ArrayList<>();
         }
+
         if(!cursor.isClosed()){
             cursor.close();
         }
-        sb = new StringBuffer();
-        sb.append("UPDATE chatRooms SET badgeCount = 0 WHERE targetEmail = ? ");
-        db.execSQL(sb.toString(),new String[]{targetEmail});
-        Timber.tag("getChatList").d("cursor count %s", chatArray.size());
-        return chatArray;
-    }
 
-    public int getRoomNum(String senderEmail) {
-        db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT 'no' FROM chatRooms WHERE targetEmail = ?",new String[]{senderEmail});
-        int roomNum;
-        if(cursor.moveToNext()){
-            roomNum = cursor.getInt(0);
-        }else{
-            roomNum = -1;
-        }
-        cursor.close();
-        return roomNum;
+        sb = new StringBuffer();
+        sb.append("UPDATE chatRooms SET badgeCount = 0 WHERE roomNo = ? ");
+        db.execSQL(sb.toString(),new Object[]{roomNo});
+        return chatArray;
     }
 }
